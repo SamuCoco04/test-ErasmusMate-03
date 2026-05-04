@@ -397,3 +397,33 @@ A major phase is not complete unless relevant decisions are documented here with
 - **Affected areas:** API design, dashboard copy, traceability status.
 - **Status:** Accepted
 - **Evidence level:** Confirmed by implementation
+
+### DEC-020 — Phase 3B submission workflow model and guards
+- **Date:** 2026-05-04
+- **Phase:** Phase 3B — Document submission workflow and coordinator review
+- **Decision:** Implement submission states `DRAFT`, `SUBMITTED`, `IN_REVIEW`, `APPROVED`, `REJECTED`, `REOPENED`, `RESUBMITTED` with backend-enforced action guards in a dedicated institutional submissions service.
+- **Rationale:** Keeps transition logic authoritative on the backend and aligned with institutional governance.
+- **Consequences / trade-offs:** Slightly more backend code; substantially lower risk of UI-only rule bypass.
+- **Affected areas:** `src/modules/institutional/submissions.ts`, submissions API routes, submission/review pages.
+- **Status:** Accepted
+- **Evidence level:** Confirmed by implementation
+
+### DEC-021 — Phase 3B rationale and audit/event policy
+- **Date:** 2026-05-04
+- **Phase:** Phase 3B — Document submission workflow and coordinator review
+- **Decision:** Require rationale for reject/reopen, keep submit rationale-free, and persist both submission event rows and `AuditRecord` rows for every state transition.
+- **Rationale:** Maintains institutional traceability and reviewer accountability while keeping student submission friction low.
+- **Consequences / trade-offs:** Additional storage writes per transition; clearer review history and auditability.
+- **Affected areas:** Prisma schema/migration, seed, submission service, tests.
+- **Status:** Accepted
+- **Evidence level:** Confirmed by implementation
+
+### DEC-022 — Phase 3B deferred scope boundaries
+- **Date:** 2026-05-04
+- **Phase:** Phase 3B — Document submission workflow and coordinator review
+- **Decision:** Keep this phase as metadata-only submission workflow; defer file upload/storage and deadline blocking/exception decision coupling to Phase 3C.
+- **Rationale:** Prevents overreach while delivering backend-backed submission and review actions now.
+- **Consequences / trade-offs:** Honest but partial workflow surface; clearer incremental roadmap.
+- **Affected areas:** UI copy, README scope section, traceability statuses.
+- **Status:** Accepted
+- **Evidence level:** Confirmed by implementation

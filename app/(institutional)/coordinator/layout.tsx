@@ -10,7 +10,7 @@ export default function CoordinatorInstitutionalLayout({ children }: { children:
           <SidebarNav
             items={[
               { label: 'Coordinator dashboard', href: '/coordinator/dashboard', active: true },
-              { label: 'Review queue', href: '/coordinator/dashboard' },
+              { label: 'Review queue', href: '/coordinator/review-queue' },
               { label: 'Deadlines', href: '/coordinator/dashboard' }
             ]}
           />

@@ -2,29 +2,33 @@
 
 ErasmusMate is a full-stack MVP for Erasmus mobility management.
 
-## Current scope (Phase 3A)
+## Current scope (Phase 3B)
 
 Implemented:
-- Institutional Prisma data foundation for read models.
-- Deterministic institutional seed data for student/coordinator/admin dashboards.
-- Read-only institutional services and API routes:
+- Institutional Prisma data foundation and deterministic seed data.
+- Backend submission workflow with transitions and coordinator review actions.
+- Institutional routes:
   - `GET /api/institutional/dashboard`
   - `GET /api/institutional/mobility-records/current`
   - `GET /api/institutional/procedures`
+  - `GET/POST /api/institutional/submissions`
+  - `GET /api/institutional/submissions/[submissionId]`
+  - `PATCH /api/institutional/submissions/[submissionId]/transition`
   - `GET /api/institutional/review-queue`
   - `GET /api/institutional/deadlines`
   - `GET /api/institutional/exceptions`
-- Backend-backed dashboard summaries:
+- Institutional pages:
   - `/student/dashboard`
+  - `/student/submissions`
   - `/coordinator/dashboard`
+  - `/coordinator/review-queue`
   - `/admin/dashboard`
 
-Not implemented yet:
-- Submission mutations and transitions.
-- Coordinator approve/reject/reopen decisions.
-- Exception decision/apply actions.
-- Learning Agreement workflows.
-- Social workflows, moderation, and real map.
+Pending (Phase 3C / Phase 4):
+- File upload/storage integration for submissions.
+- Deadline blocking and exception decision/apply workflows.
+- Learning Agreement workflow.
+- Social workflows, moderation, and real map integration.
 - Production authentication.
 
 ## Demo mode
@@ -53,5 +57,6 @@ npm run dev
 npm run test
 npm run lint
 npm run build
+npm run start
 npm run test:e2e:smoke
 ```

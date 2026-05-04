@@ -90,6 +90,9 @@ model DocumentSubmission {
   submittedAt    DateTime?
   reviewedAt     DateTime?
   reviewerNotes  String?
+  reopeningRationale String?
+  
+  events        DocumentSubmissionEvent[]
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
 
@@ -97,6 +100,21 @@ model DocumentSubmission {
   procedure      ProcedureDefinition @relation(fields: [procedureId], references: [id])
 
   @@index([mobilityRecordId, state])
+}
+
+model DocumentSubmissionEvent {
+  id            String   @id
+  submissionId  String
+  actorId       String
+  actionType    String
+  priorState    String
+  newState      String
+  rationale     String?
+  createdAt     DateTime @default(now())
+
+  submission    DocumentSubmission @relation(fields: [submissionId], references: [id])
+
+  @@index([submissionId, createdAt])
 }
 
 model Deadline {
