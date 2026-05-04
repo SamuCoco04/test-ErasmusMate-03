@@ -2,32 +2,31 @@
 
 ErasmusMate is a full-stack MVP for Erasmus mobility management.
 
-## Current scope (Phase 3D)
+## Current scope (Phase 4A)
 
 Completed institutional scope:
-- Student dashboard, submissions, deadlines, and exceptions pages.
-- Coordinator dashboard, review queue, deadlines, and exceptions pages.
-- Admin institutional overview dashboard.
-- Backend submissions workflow with role/ownership guards, deadline blocking, transitions, and audit/event records.
-- Backend exceptions workflow with review/apply transitions, deadline override application, and audit records.
+- Phase 3 dashboards, submissions, deadlines, and exceptions backend/UI shells.
+- Learning Agreement backend foundation (model, services, API routes, deterministic seed, and service tests).
+- Academic Summary derived read model from latest approved Learning Agreement rows.
 
-Current institutional routes:
-- `/student/dashboard`
-- `/student/submissions`
-- `/student/deadlines`
-- `/student/exceptions`
-- `/coordinator/dashboard`
-- `/coordinator/review-queue`
-- `/coordinator/deadlines`
-- `/coordinator/exceptions`
-- `/admin/dashboard`
+Learning Agreement API routes added:
+- `GET/POST /api/institutional/learning-agreement`
+- `GET /api/institutional/learning-agreement/review-queue`
+- `GET /api/institutional/learning-agreement/[agreementId]`
+- `POST /api/institutional/learning-agreement/[agreementId]/rows`
+- `PATCH /api/institutional/learning-agreement/[agreementId]/rows/[rowId]`
+- `POST /api/institutional/learning-agreement/[agreementId]/submit`
+- `POST /api/institutional/learning-agreement/[agreementId]/resubmit`
+- `POST /api/institutional/learning-agreement/[agreementId]/rows/[rowId]/decision`
+- `GET /api/institutional/academic-summary`
 
-Pending areas:
-- Learning Agreement / Academic Summary in Phase 4.
-- Social support MVP in Phase 5.
-- Moderation and real map integration in Phase 6.
-- Production authentication deferred.
-- File upload/storage deferred.
+Pending scope:
+- Full student Learning Agreement table editor UI (Phase 4B).
+- Full coordinator Learning Agreement review UI (Phase 4C).
+- Polished Mobility Record – Academic Summary UI (Phase 4D).
+- Social support MVP (Phase 5).
+- Moderation + real map integration (Phase 6).
+- Production authentication and file upload/storage (deferred).
 
 ## Demo mode
 
@@ -37,6 +36,7 @@ Demo context is cookie-backed (`erasmusmate_demo_context`) and server-readable.
 
 ```bash
 npm install
+export DATABASE_URL="file:./dev.db"
 npx prisma generate
 npx prisma migrate dev
 npm run db:seed

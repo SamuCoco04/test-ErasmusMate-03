@@ -32,10 +32,15 @@ model User {
 
   institution               Institution        @relation(fields: [institutionId], references: [id])
   mobilityRecords           MobilityRecord[]   @relation("StudentMobilityRecords")
+  learningAgreementsAsStudent LearningAgreement[] @relation("LearningAgreementStudent")
   coordinatedMobilityRecords MobilityRecord[]  @relation("CoordinatorMobilityRecords")
+  learningAgreementsAsCoordinator LearningAgreement[] @relation("LearningAgreementCoordinator")
   exceptionRequests         ExceptionRequest[] @relation("ExceptionRequester")
   reviewedExceptions        ExceptionRequest[] @relation("ExceptionReviewer")
   auditRecords              AuditRecord[]
+  createdLearningAgreementRows LearningAgreementRow[] @relation("LearningAgreementRowCreator")
+  reviewedLearningAgreementRows LearningAgreementRow[] @relation("LearningAgreementRowReviewer")
+  learningAgreementEvents      LearningAgreementEvent[]
 
   @@index([role])
   @@index([institutionId])
@@ -61,6 +66,7 @@ model MobilityRecord {
   deadlines          Deadline[]
   exceptionRequests  ExceptionRequest[]
   auditRecords       AuditRecord[]
+  learningAgreement   LearningAgreement?
 
   @@index([studentId])
   @@index([coordinatorId])
@@ -174,4 +180,75 @@ model AuditRecord {
   actor          User           @relation(fields: [actorId], references: [id])
 
   @@index([mobilityRecordId, createdAt])
+}
+
+
+model LearningAgreement {
+  id             String   @id
+  mobilityRecordId String @unique
+  studentId      String
+  coordinatorId  String
+  state          String
+  version        Int      @default(1)
+  submittedAt    DateTime?
+  lastReviewedAt DateTime?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  mobilityRecord MobilityRecord @relation(fields: [mobilityRecordId], references: [id])
+  student        User           @relation("LearningAgreementStudent", fields: [studentId], references: [id])
+  coordinator    User           @relation("LearningAgreementCoordinator", fields: [coordinatorId], references: [id])
+  rows           LearningAgreementRow[]
+  events         LearningAgreementEvent[]
+
+  @@index([studentId])
+  @@index([coordinatorId])
+  @@index([state])
+}
+
+model LearningAgreementRow {
+  id                    String   @id
+  agreementId           String
+  rowKey                String
+  revision              Int
+  isLatest              Boolean
+  supersedesRowId       String?
+  homeCourseCode        String
+  homeCourseName        String
+  destinationCourseCode String
+  destinationCourseName String
+  ects                  Int
+  semester              String
+  grade                 String?
+  status                String
+  decisionRationale     String?
+  reviewedById          String?
+  reviewedAt            DateTime?
+  createdById           String
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+
+  agreement             LearningAgreement @relation(fields: [agreementId], references: [id])
+  reviewedBy            User?             @relation("LearningAgreementRowReviewer", fields: [reviewedById], references: [id])
+  createdBy             User              @relation("LearningAgreementRowCreator", fields: [createdById], references: [id])
+
+  @@index([agreementId, isLatest])
+  @@index([rowKey, revision])
+}
+
+model LearningAgreementEvent {
+  id              String   @id
+  agreementId     String
+  rowId           String?
+  actorId         String
+  actionType      String
+  fromState       String?
+  toState         String?
+  noteOrRationale String?
+  createdAt       DateTime @default(now())
+
+  agreement       LearningAgreement @relation(fields: [agreementId], references: [id])
+  actor           User              @relation(fields: [actorId], references: [id])
+
+  @@index([agreementId, createdAt])
 }

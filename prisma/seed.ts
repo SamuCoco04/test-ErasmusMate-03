@@ -3,6 +3,9 @@ import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 
 export async function seed() {
+  await prisma.learningAgreementEvent.deleteMany();
+  await prisma.learningAgreementRow.deleteMany();
+  await prisma.learningAgreement.deleteMany();
   await prisma.documentSubmissionEvent.deleteMany();
 
   await prisma.institution.upsert({ where: { id: 'inst-home-1' }, update: { name: 'Universidad de Sevilla', code: 'US', country: 'Spain' }, create: { id: 'inst-home-1', name: 'Universidad de Sevilla', code: 'US', country: 'Spain' } });
@@ -60,6 +63,18 @@ export async function seed() {
     await prisma.exceptionRequest.upsert({ where: { id: exception.id }, update: exception, create: exception });
   }
 
+
+  await prisma.learningAgreement.upsert({ where: { mobilityRecordId: 'mobility-1' }, update: { id:'la-seed-1', studentId:'student-1', coordinatorId:'coordinator-1', state:'IN_REVIEW', version:2, submittedAt:new Date('2026-05-01T10:00:00.000Z') }, create: { id:'la-seed-1', mobilityRecordId:'mobility-1', studentId:'student-1', coordinatorId:'coordinator-1', state:'IN_REVIEW', version:2, submittedAt:new Date('2026-05-01T10:00:00.000Z') } });
+
+  const laRows = [
+    { id:'lar-seed-1', agreementId:'la-seed-1', rowKey:'rk-1', revision:1, isLatest:false, supersedesRowId:null, homeCourseCode:'SEV-101', homeCourseName:'Databases', destinationCourseCode:'KUL-DB1', destinationCourseName:'Database Systems', ects:6, semester:'FALL', grade:'8.5', status:'APPROVED', decisionRationale:null, reviewedById:'coordinator-1', reviewedAt:new Date('2026-04-20T10:00:00.000Z'), createdById:'student-1' },
+    { id:'lar-seed-2', agreementId:'la-seed-1', rowKey:'rk-1', revision:2, isLatest:true, supersedesRowId:'lar-seed-1', homeCourseCode:'SEV-101', homeCourseName:'Databases and SQL', destinationCourseCode:'KUL-DB1', destinationCourseName:'Database Systems', ects:6, semester:'FALL', grade:null, status:'IN_REVIEW', decisionRationale:null, reviewedById:null, reviewedAt:null, createdById:'student-1' },
+    { id:'lar-seed-3', agreementId:'la-seed-1', rowKey:'rk-2', revision:1, isLatest:true, supersedesRowId:null, homeCourseCode:'SEV-220', homeCourseName:'Operating Systems', destinationCourseCode:'KUL-OS2', destinationCourseName:'Operating Systems', ects:6, semester:'FALL', grade:null, status:'DENIED', decisionRationale:'Course content mismatch', reviewedById:'coordinator-1', reviewedAt:new Date('2026-04-21T10:00:00.000Z'), createdById:'student-1' },
+    { id:'lar-seed-4', agreementId:'la-seed-1', rowKey:'rk-3', revision:1, isLatest:true, supersedesRowId:null, homeCourseCode:'SEV-330', homeCourseName:'Computer Networks', destinationCourseCode:'KUL-NET1', destinationCourseName:'Networks', ects:5, semester:'SPRING', grade:null, status:'APPROVED', decisionRationale:null, reviewedById:'coordinator-1', reviewedAt:new Date('2026-04-22T10:00:00.000Z'), createdById:'student-1' }
+  ] as const;
+  for (const row of laRows) {
+    await prisma.learningAgreementRow.upsert({ where: { id: row.id }, update: row, create: row });
+  }
   const auditSeedData = [
     { id: 'audit-1', mobilityRecordId: 'mobility-1', actorId: 'student-1', eventType: 'SUBMISSION_CREATED', details: 'Created draft for Passport copy' },
     { id: 'audit-2', mobilityRecordId: 'mobility-1', actorId: 'coordinator-1', eventType: 'SUBMISSION_APPROVED', details: 'Approved Arrival certificate' },
