@@ -138,7 +138,7 @@ Use the following test type values:
 | E2E-LA-010 | Denied-row resubmission | Denied rows must be revised before resubmission | Student | E2E | Student tries to resubmit unchanged denied rows | Resubmission is blocked | Planned |
 | E2E-LA-011 | Denied-row revision | Student can revise denied row and resubmit | Student | E2E | Student edits denied row and resubmits | Agreement returns to review | Planned |
 | E2E-LA-012 | Approved-row safe edit | Approved row edit creates new reviewable revision | Student | E2E | Student edits previously approved row | Original approved row remains historical; new row revision enters review | Planned |
-| E2E-LA-013 | Academic Summary | Approved latest rows appear in summary | Student | E2E | Student opens Academic Summary | Summary shows latest approved rows only | Planned |
+| E2E-LA-013 | Academic Summary | Approved latest rows appear in summary | Student | E2E | Student opens Academic Summary | Summary shows latest approved rows only | Planned (Phase 4D UI ready; E2E pending execution) |
 | E2E-LA-014 | Grade ownership | Student cannot edit grade | Student | E2E | Student attempts grade entry/edit | Grade is hidden or read-only for student | Planned |
 | E2E-LA-015 | Grade coordinator control | Coordinator can enter/update grade where allowed | Coordinator | E2E | Coordinator updates grade in allowed screen | Grade is saved and does not govern approval | Planned |
 | SERVICE-LA-001 | Learning Agreement validation | Duplicate equivalences blocked | Student | Service/API | Create duplicate home/destination equivalence (`tests/institutional/learning-agreement.test.ts`) | Backend rejects duplicate or conflict | Implemented - passing |
@@ -147,6 +147,8 @@ Use the following test type values:
 | SERVICE-LA-004 | Safe revision | Approved row not silently mutated | Student | Service/API | Edit approved row (`tests/institutional/learning-agreement.test.ts`) | Backend creates new revision and keeps old row immutable | Implemented - passing |
 | SERVICE-LA-005 | Grade permissions | Student cannot mutate grade | Student | Service/API | Student sends payload with grade value (`tests/institutional/learning-agreement.test.ts`) | Backend rejects or ignores unauthorized grade mutation | Implemented - passing |
 | SERVICE-LA-006 | Auditability | Learning Agreement actions audited | Student / Coordinator | Service/API | Create, submit, decide, resubmit, revise row (`tests/institutional/learning-agreement.test.ts`) | Event records are created | Implemented - passing |
+| SERVICE-LA-007 | Academic Summary API guard | Summary route is role/ownership scoped | Student / Coordinator / Admin | Service/API | Call `/api/institutional/academic-summary` as unauthorized role or non-owner (`tests/institutional/learning-agreement-api.test.ts`) | API returns controlled forbidden for unauthorized access | Implemented - passing |
+| SERVICE-LA-008 | Academic Summary display values | Summary UI uses human-friendly labels and empty grade value | Student | Service/API | Render source for `/student/academic-summary` and assert copy/fallbacks (`tests/institutional/student-learning-agreement-ui.test.ts`) | Page shows “Approved courses”, “Total ECTS”, “No approved courses yet”, and “Not recorded” | Implemented - passing |
 
 ---
 

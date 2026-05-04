@@ -9,7 +9,7 @@ export default async function StudentDashboardPage() {
   const data = ctx.role === 'STUDENT' ? await getStudentDashboardSummary(ctx) : null;
   return <div className='space-y-6'>
     <PageHeader sectionLabel='Student dashboard' title='Official mobility workspace' subtitle='Document metadata workflow is now active. File upload will be connected in a later phase.' />
-    <div className='flex justify-end'><ButtonLink href='/student/learning-agreement' variant='secondary'>Open Learning Agreement</ButtonLink></div>
+    <div className='flex flex-wrap justify-end gap-2'><ButtonLink href='/student/learning-agreement' variant='secondary'>Open Learning Agreement</ButtonLink><ButtonLink href='/student/academic-summary'>Open Academic Summary</ButtonLink></div>
     {data && <div className='grid gap-4 md:grid-cols-2'>
       <DashboardCard title='Current Erasmus stay' description={`${data.record?.homeInstitutionId} → ${data.record?.hostInstitution.name} (${data.record?.mobilityStatus})`} status='Active record' />
       <DashboardCard title='Procedure summary' description={`Draft: ${data.submissions.filter(s=>s.state==='DRAFT').length} · Pending review: ${data.submissions.filter(s=>s.state==='SUBMITTED').length} · Approved: ${data.submissions.filter(s=>s.state==='APPROVED').length} · Needs correction: ${data.submissions.filter(s=>s.state==='REJECTED').length}`} status='Open /student/exceptions' />

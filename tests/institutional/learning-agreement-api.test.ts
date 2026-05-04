@@ -3,6 +3,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { seed } from '@/prisma/seed';
 import { GET as getLearningAgreement } from '@/app/api/institutional/learning-agreement/route';
 import { GET as getReviewQueue } from '@/app/api/institutional/learning-agreement/review-queue/route';
+import { GET as getAcademicSummary } from '@/app/api/institutional/academic-summary/route';
 
 const getDemoContextFromRequest = vi.hoisted(() => vi.fn());
 
@@ -48,5 +49,15 @@ describe('Institutional API: Learning Agreement role guards', () => {
 
     expect(response.status).toBe(200);
     expect(Array.isArray(payload.data)).toBe(true);
+  });
+
+  it('guards academic-summary endpoint by role and ownership', async () => {
+    getDemoContextFromRequest.mockResolvedValue({ role: 'ADMIN', userId: 'admin-1' });
+    const blocked = await getAcademicSummary(new Request('http://localhost/api/institutional/academic-summary'));
+    expect(blocked.status).toBe(403);
+
+    getDemoContextFromRequest.mockResolvedValue({ role: 'STUDENT', userId: 'student-2' });
+    const forbidden = await getAcademicSummary(new Request('http://localhost/api/institutional/academic-summary?mobilityRecordId=mobility-1'));
+    expect(forbidden.status).toBe(403);
   });
 });

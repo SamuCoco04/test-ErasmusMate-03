@@ -570,3 +570,25 @@ A major phase is not complete unless relevant decisions are documented here with
 - **Affected areas:** institutional roadmap, coordinator/student IA.
 - **Status:** Accepted
 - **Evidence level:** Confirmed by implementation
+
+### DEC-017 — Phase 4D Academic Summary uses latest approved rows and read-only student view
+- **Date:** 2026-05-04
+- **Phase:** Phase 4D — Academic Summary
+- **Decision:** Student Academic Summary (`/student/academic-summary`) reads only latest approved Learning Agreement rows; students can view grades when present but cannot edit grades.
+- **Rationale:** Keeps Academic Summary aligned with approved institutional outcomes and prevents unauthorized grade changes.
+- **Alternatives considered:** Showing all row states/revisions; allowing student grade editing.
+- **Consequences / trade-offs:** Cleaner and safer summary; coordinator grade editing is explicitly deferred to a later institutional polish phase.
+- **Affected areas:** student institutional page, learning-agreement summary service, API role guard behavior.
+- **Status:** Accepted
+- **Evidence level:** Confirmed by implementation
+
+### DEC-018 — Phase 4D defers transcript import/export and coordinator grade editing UI
+- **Date:** 2026-05-04
+- **Phase:** Phase 4D — Academic Summary
+- **Decision:** Do not add transcript import/export or coordinator grade editing UI in this phase; keep grade display only with “Not recorded” fallback.
+- **Rationale:** Maintains Phase 4D scope and avoids shipping partial high-complexity flows without complete validation/auditing UX.
+- **Alternatives considered:** Implementing quick coordinator grade form in Phase 4D.
+- **Consequences / trade-offs:** Faster delivery of stable student-facing summary; coordinator grade workflow remains pending.
+- **Affected areas:** student academic summary UI, roadmap documentation.
+- **Status:** Accepted
+- **Evidence level:** Confirmed by implementation

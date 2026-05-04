@@ -156,10 +156,17 @@ export async function getLearningAgreementDetail(ctx:DemoContext,agreementId:str
 }
 
 export async function getAcademicSummaryForMobilityRecord(ctx:DemoContext,mobilityRecordId?:string){
-  const mr = mobilityRecordId ? await prisma.mobilityRecord.findUnique({where:{id:mobilityRecordId}}) : await prisma.mobilityRecord.findFirst({where:ctx.role==='STUDENT'?{studentId:ctx.userId}:ctx.role==='COORDINATOR'?{coordinatorId:ctx.userId}:undefined});
+  requireRole(ctx, [...STUDENT, ...COORDINATOR]);
+  const mr = mobilityRecordId ? await prisma.mobilityRecord.findUnique({where:{id:mobilityRecordId},include:{homeInstitution:true,hostInstitution:true}}) : await prisma.mobilityRecord.findFirst({where:ctx.role==='STUDENT'?{studentId:ctx.userId}:ctx.role==='COORDINATOR'?{coordinatorId:ctx.userId}:undefined,include:{homeInstitution:true,hostInstitution:true}});
   if(!mr) throw new LearningAgreementError('NOT_FOUND','Mobility record not found');
   if(ctx.role==='STUDENT'&&mr.studentId!==ctx.userId) throw new LearningAgreementError('FORBIDDEN','Forbidden');
   if(ctx.role==='COORDINATOR'&&mr.coordinatorId!==ctx.userId) throw new LearningAgreementError('FORBIDDEN','Forbidden');
   const rows = await prisma.learningAgreementRow.findMany({where:{agreement:{mobilityRecordId:mr.id},isLatest:true,status:'APPROVED'}});
-  return {mobilityRecordId:mr.id,studentId:mr.studentId,homeInstitutionId:mr.homeInstitutionId,hostInstitutionId:mr.hostInstitutionId,totalEcts:rows.reduce((s,r)=>s+r.ects,0),rows};
+  return {
+    mobilityRecordId:mr.id,
+    homeInstitutionName:mr.homeInstitution?.name ?? null,
+    hostInstitutionName:mr.hostInstitution?.name ?? null,
+    totalEcts:rows.reduce((s,r)=>s+r.ects,0),
+    rows:rows.map((row)=>({id:row.id,homeCourseCode:row.homeCourseCode,homeCourseName:row.homeCourseName,destinationCourseCode:row.destinationCourseCode,destinationCourseName:row.destinationCourseName,ects:row.ects,semester:row.semester,grade:row.grade})),
+  };
 }
