@@ -1,9 +1,10 @@
 import { beforeAll, describe, expect, it } from 'vitest';
 import { prisma } from '../../src/lib/prisma';
+import { seed } from '../../prisma/seed';
 import { getCoordinatorDashboardSummary, getCoordinatorReviewQueuePreview, getDeadlineSummary, getExceptionSummary, getStudentDashboardSummary } from '../../src/modules/institutional/read-models';
 
 beforeAll(async () => {
-  await import('../../prisma/seed');
+  await seed();
 });
 
 describe('institutional read models', () => {
@@ -51,7 +52,7 @@ describe('institutional read models', () => {
         email: 'student-no-record@erasmusmate.local',
         displayName: 'Student No Record',
         role: 'STUDENT',
-        institutionId: 'inst-upv',
+        institutionId: 'inst-home-1',
       },
     });
 

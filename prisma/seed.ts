@@ -1,7 +1,8 @@
 import { PrismaClient } from '@prisma/client';
+
 const prisma = new PrismaClient();
 
-async function main() {
+export async function seed() {
   await prisma.auditRecord.deleteMany();
   await prisma.exceptionRequest.deleteMany();
   await prisma.deadline.deleteMany();
@@ -32,20 +33,33 @@ async function main() {
     { id: 'sub-2', mobilityRecordId: 'mobility-1', procedureId: 'proc-2', state: 'SUBMITTED', submittedAt: new Date('2026-05-01T09:00:00.000Z') },
     { id: 'sub-3', mobilityRecordId: 'mobility-1', procedureId: 'proc-3', state: 'APPROVED', submittedAt: new Date('2026-04-10T09:00:00.000Z'), reviewedAt: new Date('2026-04-12T09:00:00.000Z') },
     { id: 'sub-4', mobilityRecordId: 'mobility-1', procedureId: 'proc-4', state: 'REJECTED', submittedAt: new Date('2026-04-09T09:00:00.000Z'), reviewedAt: new Date('2026-04-11T09:00:00.000Z'), reviewerNotes: 'Needs corrected file format' },
-  ], skipDuplicates: true });
+  ] });
 
   await prisma.deadline.createMany({ data: [
     { id: 'dead-1', mobilityRecordId: 'mobility-1', title: 'Before departure documents', dueDate: new Date('2026-06-10T00:00:00.000Z'), state: 'UPCOMING' },
     { id: 'dead-2', mobilityRecordId: 'mobility-1', title: 'Accommodation proof', dueDate: new Date('2026-04-15T00:00:00.000Z'), state: 'OVERDUE' },
     { id: 'dead-3', mobilityRecordId: 'mobility-1', title: 'Arrival registration', dueDate: new Date('2026-03-20T00:00:00.000Z'), state: 'FULFILLED', fulfilledAt: new Date('2026-03-18T00:00:00.000Z') },
-  ], skipDuplicates: true });
+  ] });
 
   await prisma.exceptionRequest.upsert({ where: { id: 'exc-1' }, update: { mobilityRecordId: 'mobility-1', requestedById: 'student-1', title: 'Deadline extension request', reason: 'Visa appointment delayed by embassy.', state: 'PENDING' }, create: { id: 'exc-1', mobilityRecordId: 'mobility-1', requestedById: 'student-1', title: 'Deadline extension request', reason: 'Visa appointment delayed by embassy.', state: 'PENDING' } });
 
   await prisma.auditRecord.createMany({ data: [
     { id: 'audit-1', mobilityRecordId: 'mobility-1', actorId: 'student-1', eventType: 'SUBMISSION_CREATED', details: 'Created draft for Passport copy' },
     { id: 'audit-2', mobilityRecordId: 'mobility-1', actorId: 'coordinator-1', eventType: 'SUBMISSION_APPROVED', details: 'Approved Arrival certificate' },
-  ], skipDuplicates: true });
+  ] });
 }
 
-main().then(async () => prisma.$disconnect()).catch(async (error) => { console.error(error); await prisma.$disconnect(); process.exit(1); });
+async function runSeedCli() {
+  try {
+    await seed();
+  } catch (error) {
+    console.error(error);
+    process.exit(1);
+  } finally {
+    await prisma.$disconnect();
+  }
+}
+
+if (require.main === module) {
+  void runSeedCli();
+}

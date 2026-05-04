@@ -34,7 +34,6 @@ export function DemoRoleSwitcher({ currentRole, currentUserId }: { currentRole: 
       // network failure — revert handled below
     }
     if (!switchOk) {
-      // eslint-disable-next-line no-console
       console.error('[DemoRoleSwitcher] Failed to update demo role; reverting selection.');
       setSelectedRole(previousRole);
       setIsFetching(false);
