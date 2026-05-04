@@ -1,0 +1,44 @@
+import { beforeAll, describe, expect, it } from 'vitest';
+import { prisma } from '../../src/lib/prisma';
+import { getCoordinatorDashboardSummary, getCoordinatorReviewQueuePreview, getDeadlineSummary, getExceptionSummary, getStudentDashboardSummary } from '../../src/modules/institutional/read-models';
+
+beforeAll(async () => {
+  await import('../../prisma/seed');
+});
+
+describe('institutional read models', () => {
+  it('student dashboard returns only student scoped data', async () => {
+    const result = await getStudentDashboardSummary({ role: 'STUDENT', userId: 'student-1' });
+    expect(result.record?.studentId).toBe('student-1');
+    expect(result.submissions.every((s) => s.mobilityRecordId === 'mobility-1')).toBe(true);
+  });
+
+  it('coordinator dashboard returns only assigned data', async () => {
+    const result = await getCoordinatorDashboardSummary({ role: 'COORDINATOR', userId: 'coordinator-1' });
+    expect(result.assignedCount).toBeGreaterThan(0);
+    expect(result.reviewQueue.some((s) => s.state === 'SUBMITTED')).toBe(true);
+  });
+
+  it('review queue preview includes submitted items', async () => {
+    const queue = await getCoordinatorReviewQueuePreview({ role: 'COORDINATOR', userId: 'coordinator-1' });
+    expect(queue.some((item) => item.state === 'SUBMITTED')).toBe(true);
+  });
+
+  it('deadline summary classifies seeded states', async () => {
+    const deadlines = await getDeadlineSummary({ role: 'STUDENT', userId: 'student-1' });
+    expect(deadlines.some((d) => d.state === 'UPCOMING')).toBe(true);
+    expect(deadlines.some((d) => d.state === 'OVERDUE')).toBe(true);
+    expect(deadlines.some((d) => d.state === 'FULFILLED')).toBe(true);
+  });
+
+  it('exception summary returns role-appropriate rows', async () => {
+    const studentRows = await getExceptionSummary({ role: 'STUDENT', userId: 'student-1' });
+    expect(studentRows.every((e) => e.requestedById === 'student-1')).toBe(true);
+    const coordinatorRows = await getExceptionSummary({ role: 'COORDINATOR', userId: 'coordinator-1' });
+    expect(coordinatorRows.length).toBeGreaterThan(0);
+  });
+
+  it('unauthorized role access is blocked', async () => {
+    await expect(getStudentDashboardSummary({ role: 'ADMIN', userId: 'admin-1' } as never)).rejects.toThrow('FORBIDDEN');
+  });
+});
