@@ -39,3 +39,24 @@ export interface SocialDiscoveryItem {
   contactPreference?: string;
   connectionStatus?: DiscoveryConnectionStatus;
 }
+
+export interface ConnectionListItem {
+  id: string;
+  state: string;
+  requestedAt: Date;
+  respondedAt?: Date | null;
+  blockedAt?: Date | null;
+  requesterProfile: SocialProfileRow;
+  receiverProfile: SocialProfileRow;
+}
+
+export interface ConnectionListsResponse {
+  incomingPending: ConnectionListItem[];
+  outgoingPending: ConnectionListItem[];
+  accepted: ConnectionListItem[];
+  unavailable: ConnectionListItem[];
+}
+
+export interface ConnectionTransitionPayload {
+  action: 'accept' | 'reject' | 'cancel' | 'block';
+}
