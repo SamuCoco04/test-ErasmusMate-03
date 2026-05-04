@@ -6,13 +6,14 @@ const discoveryPage = readFileSync('app/(social)/social/student/discovery/page.t
 const messagesPage = readFileSync('app/(social)/social/student/messages/page.tsx', 'utf8');
 
 describe('Social UI hardening contracts', () => {
-  it('connections page has clear sections and connected-only actions', () => {
+  it('connections page has clear sections and supports blocking from requests and accepted rows', () => {
     expect(connectionsPage).toContain('Requests received');
     expect(connectionsPage).toContain('Requests sent');
     expect(connectionsPage).toContain('Connected students');
     expect(connectionsPage).not.toContain('& {c.receiverProfile.displayName}');
     expect(connectionsPage).toContain('window.confirm(');
     expect(connectionsPage).toContain('Message');
+    expect(connectionsPage).toContain("act(c.id, 'block')");
   });
 
   it('discovery page uses safe contact labels and guarded send request action', () => {

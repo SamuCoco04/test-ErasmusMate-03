@@ -62,6 +62,7 @@ export default function ConnectionsPage() {
       {data.incomingPending.length === 0 ? <p className='text-sm text-slate-500'>No incoming requests.</p> : data.incomingPending.map((c) => renderRow(c, 'Pending received', <>
         <button className='rounded bg-slate-900 px-2 py-1 text-white' onClick={() => act(c.id, 'accept')}>Accept</button>
         <button className='rounded border px-2 py-1' onClick={() => act(c.id, 'reject')}>Reject</button>
+        <button className='rounded border px-2 py-1' onClick={() => act(c.id, 'block')}>Block</button>
       </>))}
     </section>
 
