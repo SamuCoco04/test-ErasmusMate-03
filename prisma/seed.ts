@@ -64,7 +64,26 @@ export async function seed() {
   }
 
 
-  await prisma.learningAgreement.upsert({ where: { mobilityRecordId: 'mobility-1' }, update: { id:'la-seed-1', studentId:'student-1', coordinatorId:'coordinator-1', state:'IN_REVIEW', version:2, submittedAt:new Date('2026-05-01T10:00:00.000Z') }, create: { id:'la-seed-1', mobilityRecordId:'mobility-1', studentId:'student-1', coordinatorId:'coordinator-1', state:'IN_REVIEW', version:2, submittedAt:new Date('2026-05-01T10:00:00.000Z') } });
+  await prisma.learningAgreement.upsert({
+    where: { id: 'la-seed-1' },
+    update: {
+      mobilityRecordId: 'mobility-1',
+      studentId: 'student-1',
+      coordinatorId: 'coordinator-1',
+      state: 'IN_REVIEW',
+      version: 2,
+      submittedAt: new Date('2026-05-01T10:00:00.000Z'),
+    },
+    create: {
+      id: 'la-seed-1',
+      mobilityRecordId: 'mobility-1',
+      studentId: 'student-1',
+      coordinatorId: 'coordinator-1',
+      state: 'IN_REVIEW',
+      version: 2,
+      submittedAt: new Date('2026-05-01T10:00:00.000Z'),
+    },
+  });
 
   const laRows = [
     { id:'lar-seed-1', agreementId:'la-seed-1', rowKey:'rk-1', revision:1, isLatest:false, supersedesRowId:null, homeCourseCode:'SEV-101', homeCourseName:'Databases', destinationCourseCode:'KUL-DB1', destinationCourseName:'Database Systems', ects:6, semester:'FALL', grade:'8.5', status:'APPROVED', decisionRationale:null, reviewedById:'coordinator-1', reviewedAt:new Date('2026-04-20T10:00:00.000Z'), createdById:'student-1' },
@@ -72,7 +91,16 @@ export async function seed() {
     { id:'lar-seed-3', agreementId:'la-seed-1', rowKey:'rk-2', revision:1, isLatest:true, supersedesRowId:null, homeCourseCode:'SEV-220', homeCourseName:'Operating Systems', destinationCourseCode:'KUL-OS2', destinationCourseName:'Operating Systems', ects:6, semester:'FALL', grade:null, status:'DENIED', decisionRationale:'Course content mismatch', reviewedById:'coordinator-1', reviewedAt:new Date('2026-04-21T10:00:00.000Z'), createdById:'student-1' },
     { id:'lar-seed-4', agreementId:'la-seed-1', rowKey:'rk-3', revision:1, isLatest:true, supersedesRowId:null, homeCourseCode:'SEV-330', homeCourseName:'Computer Networks', destinationCourseCode:'KUL-NET1', destinationCourseName:'Networks', ects:5, semester:'SPRING', grade:null, status:'APPROVED', decisionRationale:null, reviewedById:'coordinator-1', reviewedAt:new Date('2026-04-22T10:00:00.000Z'), createdById:'student-1' }
   ] as const;
-  for (const row of laRows) {
+  for (const row of laRows.filter((candidate) => candidate.supersedesRowId === null)) {
+    await prisma.learningAgreementRow.upsert({ where: { id: row.id }, update: row, create: row });
+  }
+  for (const row of laRows.filter((candidate) => candidate.supersedesRowId !== null)) {
+    if (row.supersedesRowId) {
+      const superseded = await prisma.learningAgreementRow.findUnique({ where: { id: row.supersedesRowId } });
+      if (!superseded) {
+        throw new Error(`Missing superseded learning agreement row: ${row.supersedesRowId}`);
+      }
+    }
     await prisma.learningAgreementRow.upsert({ where: { id: row.id }, update: row, create: row });
   }
   const auditSeedData = [

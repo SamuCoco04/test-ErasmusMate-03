@@ -3,12 +3,22 @@ import { prisma } from '@/src/lib/prisma';
 import { addAgreementRow, createOrGetDraftAgreement, decideAgreementRow, getAcademicSummaryForMobilityRecord, getLearningAgreementReviewQueue, resubmitAgreement, submitAgreement, updateAgreementRow } from '@/src/modules/institutional/learning-agreement';
 import { seed } from '@/prisma/seed';
 
-const studentCtx={role:'STUDENT' as const,userId:'student-1'};
-const coordinatorCtx={role:'COORDINATOR' as const,userId:'coordinator-1'};
-const anotherStudent={role:'STUDENT' as const,userId:'student-x'};
+const studentCtx={role:'STUDENT' as const,userId:'la-student-1'};
+const coordinatorCtx={role:'COORDINATOR' as const,userId:'la-coordinator-1'};
+const anotherStudent={role:'STUDENT' as const,userId:'la-student-x'};
 
 describe('Institutional: Learning Agreement service',()=>{
-  beforeEach(async()=>{ await seed(); await prisma.user.upsert({where:{id:'student-x'},update:{email:'x@x.com',displayName:'X',role:'STUDENT',institutionId:'inst-home-1'},create:{id:'student-x',email:'x@x.com',displayName:'X',role:'STUDENT',institutionId:'inst-home-1'}}); });
+  beforeEach(async()=>{
+    await seed();
+    await prisma.user.upsert({where:{id:'la-student-1'},update:{email:'la.student1@x.com',displayName:'LA Student',role:'STUDENT',institutionId:'inst-home-1'},create:{id:'la-student-1',email:'la.student1@x.com',displayName:'LA Student',role:'STUDENT',institutionId:'inst-home-1'}});
+    await prisma.user.upsert({where:{id:'la-student-x'},update:{email:'la.studentx@x.com',displayName:'LA Student X',role:'STUDENT',institutionId:'inst-home-1'},create:{id:'la-student-x',email:'la.studentx@x.com',displayName:'LA Student X',role:'STUDENT',institutionId:'inst-home-1'}});
+    await prisma.user.upsert({where:{id:'la-coordinator-1'},update:{email:'la.coordinator@x.com',displayName:'LA Coordinator',role:'COORDINATOR',institutionId:'inst-home-1'},create:{id:'la-coordinator-1',email:'la.coordinator@x.com',displayName:'LA Coordinator',role:'COORDINATOR',institutionId:'inst-home-1'}});
+    await prisma.mobilityRecord.upsert({
+      where:{id:'mobility-la-test-1'},
+      update:{studentId:'la-student-1',coordinatorId:'la-coordinator-1',homeInstitutionId:'inst-home-1',hostInstitutionId:'inst-host-1',mobilityStatus:'ACTIVE',startDate:new Date('2026-09-01T00:00:00.000Z'),endDate:new Date('2027-01-31T00:00:00.000Z')},
+      create:{id:'mobility-la-test-1',studentId:'la-student-1',coordinatorId:'la-coordinator-1',homeInstitutionId:'inst-home-1',hostInstitutionId:'inst-host-1',mobilityStatus:'ACTIVE',startDate:new Date('2026-09-01T00:00:00.000Z'),endDate:new Date('2027-01-31T00:00:00.000Z')},
+    });
+  });
 
   it('student can create/get draft and add rows, but not submit empty', async()=>{
     const agreement=await createOrGetDraftAgreement(studentCtx);
@@ -72,7 +82,7 @@ describe('Institutional: Learning Agreement service',()=>{
     await submitAgreement(studentCtx,agreement.id);
     await decideAgreementRow(coordinatorCtx,agreement.id,row1.id,'APPROVED');
     await decideAgreementRow(coordinatorCtx,agreement.id,row2.id,'DENIED','Not equivalent');
-    const summary=await getAcademicSummaryForMobilityRecord(studentCtx,'mobility-1');
+    const summary=await getAcademicSummaryForMobilityRecord(studentCtx,'mobility-la-test-1');
     expect(summary.rows.length).toBe(1);
     const events=await prisma.learningAgreementEvent.findMany({where:{agreementId:agreement.id}});
     expect(events.length).toBeGreaterThan(3);
