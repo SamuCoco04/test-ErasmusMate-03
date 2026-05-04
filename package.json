@@ -4,14 +4,27 @@
   "private": true,
   "description": "ErasmusMate Iteration 3 testing foundation",
   "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "lint": "next lint",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:service": "vitest run tests",
     "test:e2e": "playwright test",
     "test:e2e:smoke": "playwright test e2e/smoke"
   },
+  "dependencies": {
+    "next": "^15.3.1",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0"
+  },
   "devDependencies": {
     "@playwright/test": "^1.54.2",
+    "autoprefixer": "^10.4.21",
+    "eslint": "^9.25.0",
+    "eslint-config-next": "^15.3.1",
+    "postcss": "^8.5.3",
+    "tailwindcss": "^3.4.17",
     "typescript": "^5.9.2",
     "vitest": "^3.2.4"
   }

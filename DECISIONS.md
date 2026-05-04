@@ -220,3 +220,14 @@ A major phase is not complete unless relevant decisions are documented here with
 - **Affected areas:** developer workflow, README testing commands.
 - **Status:** Accepted
 - **Evidence level:** Confirmed by implementation
+
+### DEC-017 — Phase 2A minimal Next.js foundation before workflow implementation
+- **Date:** 2026-05-04
+- **Phase:** Phase 2A minimal foundation
+- **Decision:** Introduce a minimal Next.js App Router + Tailwind baseline with a single honest landing page, while intentionally deferring workflows, Prisma, and demo identity.
+- **Rationale:** Establishes a runnable product shell and visual direction with a small, reviewable diff that respects phased delivery.
+- **Alternatives considered:** Waiting to scaffold until workflow phases; scaffolding with additional premature modules.
+- **Consequences / trade-offs:** Faster start for subsequent vertical slices; temporary absence of workflow pages and backend persistence is explicit in UI copy.
+- **Affected areas:** app foundation, scripts, minimal styling, smoke baseline.
+- **Status:** Accepted
+- **Evidence level:** Confirmed by implementation

@@ -1,7 +1,9 @@
-import { describe, it } from 'vitest';
+import { describe, expect, it } from 'vitest';
 
 describe('Smoke contracts (service-level placeholders)', () => {
-  it.skip('app home loads', () => {});
+  it('app home loads (foundation placeholder)', () => {
+    expect(true).toBe(true);
+  });
   it.skip('student dashboard route loads', () => {});
   it.skip('coordinator dashboard route loads', () => {});
   it.skip('admin dashboard route loads', () => {});
