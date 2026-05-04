@@ -1,9 +1,9 @@
-import { beforeAll, describe, expect, it } from 'vitest';
+import { beforeEach, describe, expect, it } from 'vitest';
 import { prisma } from '@/src/lib/prisma';
 import { seed } from '@/prisma/seed';
 import { createDraftSubmission, listReviewQueueForCoordinator, transitionSubmission } from '@/src/modules/institutional/submissions';
 
-beforeAll(async () => {
+beforeEach(async () => {
   await seed();
   await prisma.user.upsert({ where: { id: 'student-2' }, update: { email: 'student2@erasmusmate.demo', displayName: 'Student Two', role: 'STUDENT', institutionId: 'inst-home-1' }, create: { id: 'student-2', email: 'student2@erasmusmate.demo', displayName: 'Student Two', role: 'STUDENT', institutionId: 'inst-home-1' } });
   await prisma.user.upsert({ where: { id: 'coordinator-2' }, update: { email: 'coordinator2@erasmusmate.demo', displayName: 'Coordinator Two', role: 'COORDINATOR', institutionId: 'inst-home-1' }, create: { id: 'coordinator-2', email: 'coordinator2@erasmusmate.demo', displayName: 'Coordinator Two', role: 'COORDINATOR', institutionId: 'inst-home-1' } });
@@ -42,6 +42,7 @@ describe('Institutional submissions workflow', () => {
   });
 
   it('reject requires rationale', async () => {
+    await transitionSubmission({ role: 'COORDINATOR', userId: 'coordinator-1' }, 'sub-2', 'start_review');
     await expect(transitionSubmission({ role: 'COORDINATOR', userId: 'coordinator-1' }, 'sub-2', 'reject')).rejects.toThrow('Rationale is required');
   });
 
@@ -56,11 +57,23 @@ describe('Institutional submissions workflow', () => {
 
 
   it('student rationale does not overwrite reviewer notes on resubmit', async () => {
-    const before = await prisma.documentSubmission.findUniqueOrThrow({ where: { id: 'sub-4' } });
-    expect(before.reviewerNotes).toBe('Needs corrected file format');
+    await prisma.documentSubmission.create({
+      data: {
+        id: 'sub-regression-reviewer-notes',
+        mobilityRecordId: 'mobility-1',
+        procedureId: 'proc-4',
+        state: 'REJECTED',
+        submittedAt: new Date('2026-04-09T09:00:00.000Z'),
+        reviewedAt: new Date('2026-04-11T09:00:00.000Z'),
+        reviewerNotes: 'Coordinator note must persist',
+      },
+    });
 
-    const updated = await transitionSubmission({ role: 'STUDENT', userId: 'student-1' }, 'sub-4', 'resubmit', 'Student explanation');
-    expect(updated.reviewerNotes).toBe('Needs corrected file format');
+    const before = await prisma.documentSubmission.findUniqueOrThrow({ where: { id: 'sub-regression-reviewer-notes' } });
+    expect(before.reviewerNotes).toBe('Coordinator note must persist');
+
+    const updated = await transitionSubmission({ role: 'STUDENT', userId: 'student-1' }, 'sub-regression-reviewer-notes', 'resubmit', 'Student explanation');
+    expect(updated.reviewerNotes).toBe('Coordinator note must persist');
   });
 
   it('invalid transitions are blocked', async () => {
