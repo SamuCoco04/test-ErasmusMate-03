@@ -2,8 +2,11 @@
 import { useEffect, useState } from 'react';
 import { PageHeader } from '@/src/components/PageHeader';
 
+type ExceptionItem = { id: string; title: string; state: string; coordinatorRationale: string | null };
+type DeadlineItem = { id: string; title: string };
+
 export default function Page(){
-  const [items,setItems]=useState<any[]>([]); const [deadlines,setDeadlines]=useState<any[]>([]);
+  const [items,setItems]=useState<ExceptionItem[]>([]); const [deadlines,setDeadlines]=useState<DeadlineItem[]>([]);
   const [title,setTitle]=useState('Ask for more time'); const [reason,setReason]=useState(''); const [deadlineId,setDeadlineId]=useState('');
   useEffect(()=>{void (async()=>{ const e=await fetch('/api/institutional/exceptions').then(r=>r.json()); setItems(e.data??[]); const d=await fetch('/api/institutional/deadlines').then(r=>r.json()); setDeadlines(d.data?.items??[]); })();},[]);
   return <div className='space-y-6'><PageHeader sectionLabel='Student exceptions' title='Exception requests' subtitle='Ask for more time when a deadline needs review.'/>

@@ -57,8 +57,15 @@ describe('Institutional submissions workflow', () => {
 
 
   it('student rationale does not overwrite reviewer notes on resubmit', async () => {
-    await prisma.documentSubmission.create({
-      data: {
+    await prisma.documentSubmission.upsert({
+      where: { id: 'sub-regression-reviewer-notes' },
+      update: {
+        state: 'REJECTED',
+        submittedAt: new Date('2026-04-09T09:00:00.000Z'),
+        reviewedAt: new Date('2026-04-11T09:00:00.000Z'),
+        reviewerNotes: 'Coordinator note must persist',
+      },
+      create: {
         id: 'sub-regression-reviewer-notes',
         mobilityRecordId: 'mobility-1',
         procedureId: 'proc-4',
