@@ -78,6 +78,7 @@ model ProcedureDefinition {
 
   institution Institution          @relation(fields: [institutionId], references: [id])
   submissions DocumentSubmission[]
+  deadlines Deadline[]
 
   @@index([institutionId])
 }
@@ -118,38 +119,47 @@ model DocumentSubmissionEvent {
 }
 
 model Deadline {
-  id              String   @id
-  mobilityRecordId String
-  title           String
-  dueDate         DateTime
-  state           String
-  fulfilledAt     DateTime?
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
+  id                String   @id
+  mobilityRecordId  String
+  title             String
+  dueDate           DateTime
+  state             String
+  overrideDueDate   DateTime?
+  fulfilledAt       DateTime?
+  relatedProcedureId String?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
 
-  mobilityRecord MobilityRecord @relation(fields: [mobilityRecordId], references: [id])
+  mobilityRecord    MobilityRecord      @relation(fields: [mobilityRecordId], references: [id])
+  relatedProcedure  ProcedureDefinition? @relation(fields: [relatedProcedureId], references: [id])
+  exceptionRequests ExceptionRequest[]
 
   @@index([mobilityRecordId, state])
   @@index([dueDate])
+  @@index([relatedProcedureId])
 }
 
 model ExceptionRequest {
-  id               String   @id
-  mobilityRecordId String
-  requestedById    String
-  reviewedById     String?
-  title            String
-  reason           String
-  state            String
-  createdAt        DateTime @default(now())
-  updatedAt        DateTime @updatedAt
+  id                  String   @id
+  mobilityRecordId    String
+  requestedById       String
+  reviewedById        String?
+  title               String
+  reason              String
+  state               String
+  deadlineId          String?
+  coordinatorRationale String?
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
 
   mobilityRecord MobilityRecord @relation(fields: [mobilityRecordId], references: [id])
   requestedBy    User           @relation("ExceptionRequester", fields: [requestedById], references: [id])
   reviewedBy     User?          @relation("ExceptionReviewer", fields: [reviewedById], references: [id])
+  deadline       Deadline?      @relation(fields: [deadlineId], references: [id])
 
   @@index([mobilityRecordId, state])
   @@index([requestedById])
+  @@index([deadlineId])
 }
 
 model AuditRecord {

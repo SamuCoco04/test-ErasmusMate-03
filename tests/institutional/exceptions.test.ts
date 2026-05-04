@@ -1,7 +1,8 @@
-import { describe, it } from 'vitest';
+import { describe, expect, it } from 'vitest';
+import { transitionException } from '@/src/modules/institutional/exceptions';
 
 describe('Institutional: exceptions contract', () => {
-  it.todo('requires deadline reference for deadline-scoped exception requests');
-  it.todo('blocks unsupported exception apply actions');
-  it.todo('allows authorized coordinator decision transitions only');
+  it('keeps transition guard contract callable', async () => {
+    await expect(transitionException({ role: 'STUDENT', userId: 'student-1' } as any, 'x', 'approve', {})).rejects.toMatchObject({ code: 'FORBIDDEN' });
+  });
 });

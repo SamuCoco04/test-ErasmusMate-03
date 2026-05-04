@@ -1,3 +1,7 @@
-import { withInstitutionalRead } from '../_shared';
-import { getDeadlineSummary } from '@/src/modules/institutional/read-models';
-export async function GET() { return withInstitutionalRead(['STUDENT','COORDINATOR','ADMIN'], getDeadlineSummary); }
+import { getDemoContextFromRequest } from '@/src/modules/shared/demo-context';
+import { getDeadlineSummary } from '@/src/modules/institutional/deadlines';
+
+export async function GET() {
+  const ctx = await getDemoContextFromRequest();
+  return Response.json({ data: await getDeadlineSummary(ctx) });
+}

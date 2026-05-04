@@ -100,7 +100,7 @@ Use the following test type values:
 |---|---|---|---|---|---|---|---|
 | E2E-DEAD-001 | Deadlines | Student sees upcoming deadlines | Student | E2E | Student opens deadlines page/dashboard widget | Upcoming deadlines are visible and understandable | Planned |
 | E2E-DEAD-002 | Deadlines | Coordinator sees risk/overdue items | Coordinator | E2E | Coordinator opens deadline view | Assigned students’ risk/overdue obligations are visible | Planned |
-| SERVICE-DEAD-001 | Deadline blocking | Overdue deadline blocks submission when policy requires | Student | Service/API | Student submits after effective due date (`tests/institutional/deadlines.test.ts`) | Backend blocks action when rule applies | Planned |
+| SERVICE-DEAD-001 | Deadline blocking | Overdue deadline blocks submission when policy requires | Student | Service/API | Student submits after effective due date (tests/institutional/deadlines.test.ts + submission guards) | Backend blocks action when rule applies | Implemented - passing |
 | SERVICE-DEAD-002 | Deadline override | Override due date is respected | Student / Coordinator | Service/API | Exception extends due date | Submission allowed until override date | Planned |
 | SERVICE-DEAD-003 | Expired override | Expired override can become overdue again | Student / Coordinator | Service/API | Override date passes | Deadline state becomes overdue or blocks when designed | Planned |
 | SERVICE-DEAD-004 | Fulfilled deadline | Fulfilled deadline does not block | Student | Service/API | Submit after obligation fulfilled | Backend does not block due to fulfilled deadline | Planned |

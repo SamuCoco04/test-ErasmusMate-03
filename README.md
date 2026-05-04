@@ -60,3 +60,7 @@ npm run build
 npm run start
 npm run test:e2e:smoke
 ```
+
+## Phase 3C notes
+- Added deadline governance and exception request workflow routes: /student/deadlines, /student/exceptions, /coordinator/deadlines, /coordinator/exceptions.
+- Pending: Learning Agreement (Phase 4), social (Phase 5), moderation/map (Phase 6), production auth.

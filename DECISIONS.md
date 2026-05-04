@@ -427,3 +427,9 @@ A major phase is not complete unless relevant decisions are documented here with
 - **Affected areas:** UI copy, README scope section, traceability statuses.
 - **Status:** Accepted
 - **Evidence level:** Confirmed by implementation
+
+- 2026-05-04 — Phase 3C: Effective due date = override date when present, but expired override reverts to overdue behavior unless fulfilled. Status: accepted.
+- 2026-05-04 — Phase 3C: Submission submit/resubmit is blocked only when linked deadline is effectively overdue. Status: accepted.
+- 2026-05-04 — Phase 3C: Exception states use PENDING/IN_REVIEW/APPROVED/REJECTED/APPLIED/CLOSED with rationale on decisions. Status: accepted.
+- 2026-05-04 — Phase 3C: Applying approved exception writes audit for exception transition and deadline override. Status: accepted.
+- 2026-05-04 — Phase 3C: Full deadline CRUD, policy templates, file upload remain deferred. Status: deferred.

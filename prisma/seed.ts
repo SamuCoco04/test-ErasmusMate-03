@@ -37,16 +37,28 @@ export async function seed() {
   }
 
   const deadlines = [
-    { id: 'dead-1', mobilityRecordId: 'mobility-1', title: 'Before departure documents', dueDate: new Date('2026-06-10T00:00:00.000Z'), state: 'UPCOMING', fulfilledAt: null },
-    { id: 'dead-2', mobilityRecordId: 'mobility-1', title: 'Accommodation proof', dueDate: new Date('2026-04-15T00:00:00.000Z'), state: 'OVERDUE', fulfilledAt: null },
-    { id: 'dead-3', mobilityRecordId: 'mobility-1', title: 'Arrival registration', dueDate: new Date('2026-03-20T00:00:00.000Z'), state: 'FULFILLED', fulfilledAt: new Date('2026-03-18T00:00:00.000Z') },
+    { id: 'dead-1', mobilityRecordId: 'mobility-1', title: 'Before departure documents', dueDate: new Date('2026-06-10T00:00:00.000Z'), overrideDueDate: null, relatedProcedureId: 'proc-1', state: 'UPCOMING', fulfilledAt: null },
+    { id: 'dead-2', mobilityRecordId: 'mobility-1', title: 'Accommodation proof', dueDate: new Date('2026-04-15T00:00:00.000Z'), overrideDueDate: null, relatedProcedureId: 'proc-2', state: 'OVERDUE', fulfilledAt: null },
+    { id: 'dead-3', mobilityRecordId: 'mobility-1', title: 'Arrival registration', dueDate: new Date('2026-03-20T00:00:00.000Z'), overrideDueDate: null, relatedProcedureId: 'proc-3', state: 'FULFILLED', fulfilledAt: new Date('2026-03-18T00:00:00.000Z') },
+    { id: 'dead-4', mobilityRecordId: 'mobility-1', title: 'Insurance extension', dueDate: new Date('2026-04-20T00:00:00.000Z'), overrideDueDate: new Date('2026-05-20T00:00:00.000Z'), relatedProcedureId: 'proc-2', state: 'OVERRIDDEN', fulfilledAt: null },
+    { id: 'dead-5', mobilityRecordId: 'mobility-1', title: 'Late transcript support', dueDate: new Date('2026-03-15T00:00:00.000Z'), overrideDueDate: new Date('2026-04-01T00:00:00.000Z'), relatedProcedureId: 'proc-4', state: 'OVERRIDDEN', fulfilledAt: null },
   ] as const;
 
   for (const deadline of deadlines) {
     await prisma.deadline.upsert({ where: { id: deadline.id }, update: deadline, create: deadline });
   }
 
-  await prisma.exceptionRequest.upsert({ where: { id: 'exc-1' }, update: { mobilityRecordId: 'mobility-1', requestedById: 'student-1', title: 'Deadline extension request', reason: 'Visa appointment delayed by embassy.', state: 'PENDING' }, create: { id: 'exc-1', mobilityRecordId: 'mobility-1', requestedById: 'student-1', title: 'Deadline extension request', reason: 'Visa appointment delayed by embassy.', state: 'PENDING' } });
+  const exceptions = [
+    { id: 'exc-1', mobilityRecordId: 'mobility-1', requestedById: 'student-1', deadlineId: 'dead-2', title: 'Deadline extension request', reason: 'Visa appointment delayed by embassy.', state: 'PENDING', coordinatorRationale: null, reviewedById: null },
+    { id: 'exc-2', mobilityRecordId: 'mobility-1', requestedById: 'student-1', deadlineId: 'dead-4', title: 'Need more time for insurance docs', reason: 'Insurer issued corrected policy late.', state: 'IN_REVIEW', coordinatorRationale: null, reviewedById: 'coordinator-1' },
+    { id: 'exc-3', mobilityRecordId: 'mobility-1', requestedById: 'student-1', deadlineId: 'dead-2', title: 'Accommodation contract delay', reason: 'Landlord signed the document late.', state: 'APPROVED', coordinatorRationale: 'Evidence accepted. Extension can be applied.', reviewedById: 'coordinator-1' },
+    { id: 'exc-4', mobilityRecordId: 'mobility-1', requestedById: 'student-1', deadlineId: 'dead-4', title: 'Already resolved request', reason: 'Handled in earlier meeting.', state: 'APPLIED', coordinatorRationale: 'Applied with approved extension.', reviewedById: 'coordinator-1' },
+    { id: 'exc-5', mobilityRecordId: 'mobility-1', requestedById: 'student-1', deadlineId: 'dead-5', title: 'Rejected request sample', reason: 'No supporting evidence available.', state: 'REJECTED', coordinatorRationale: 'Please attach supporting evidence before requesting again.', reviewedById: 'coordinator-1' },
+  ] as const;
+
+  for (const exception of exceptions) {
+    await prisma.exceptionRequest.upsert({ where: { id: exception.id }, update: exception, create: exception });
+  }
 
   const auditSeedData = [
     { id: 'audit-1', mobilityRecordId: 'mobility-1', actorId: 'student-1', eventType: 'SUBMISSION_CREATED', details: 'Created draft for Passport copy' },
