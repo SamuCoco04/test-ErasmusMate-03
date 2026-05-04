@@ -12,7 +12,8 @@ export default function SocialStudentLayout({ children }: { children: React.Reac
               { label: 'Social dashboard', href: '/social/student/dashboard' },
               { label: 'Discover students', href: '/social/student/discovery' },
               { label: 'Connections', href: '/social/student/connections' },
-              { label: 'Messages', href: '/social/student/messages' }
+              { label: 'Messages', href: '/social/student/messages' },
+              { label: 'Back to official mobility area', href: '/student/dashboard' }
             ]}
           />
         </aside>
