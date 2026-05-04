@@ -319,3 +319,37 @@ A major phase is not complete unless relevant decisions are documented here with
 - **Affected areas:** `prisma/seed.ts`, package scripts, README setup commands.
 - **Status:** Accepted
 - **Evidence level:** Confirmed by implementation
+
+
+### DEC-026 — Phase 2D server-readable demo cookie as authoritative context
+- **Date:** 2026-05-04
+- **Phase:** Phase 2D — Demo context cookie and role switching
+- **Decision:** Use an HTTP-only server-readable cookie (`erasmusmate_demo_context`) as the authoritative demo identity context for role/user resolution.
+- **Rationale:** Server-rendered pages and API guards must resolve the same context without relying on client-only state.
+- **Alternatives considered:** localStorage-only context; query-parameter authoritative context.
+- **Consequences / trade-offs:** Reliable server visibility and refresh consistency; this remains demo-only and not real authentication.
+- **Affected areas:** `src/modules/shared/demo-context.ts`, `app/api/demo-context/route.ts`, top bar role switcher behavior.
+- **Status:** Accepted
+- **Evidence level:** Confirmed by implementation
+
+### DEC-027 — Local storage remains non-authoritative in demo mode
+- **Date:** 2026-05-04
+- **Phase:** Phase 2D — Demo context cookie and role switching
+- **Decision:** Do not use localStorage as authoritative identity; only cookie-backed server context is authoritative.
+- **Rationale:** localStorage cannot be read by route handlers or server components.
+- **Alternatives considered:** dual-authority client/server context.
+- **Consequences / trade-offs:** Removes mismatch risk between UI and backend context.
+- **Affected areas:** demo identity strategy and tests.
+- **Status:** Accepted
+- **Evidence level:** Confirmed by implementation
+
+### DEC-028 — Demo context API + switcher behavior and auth deferral
+- **Date:** 2026-05-04
+- **Phase:** Phase 2D — Demo context cookie and role switching
+- **Decision:** Add `/api/demo-context` GET/PATCH routes for demo context read/update, wire top-bar role switcher to this API, and refresh after switching. Keep production authentication explicitly deferred and keep placeholders workflow-free.
+- **Rationale:** Provides deterministic demo role switching while honestly communicating auth/workflow scope.
+- **Alternatives considered:** hardcoded role switch UI without server update; introducing production auth early.
+- **Consequences / trade-offs:** Reliable demo behavior now, no false claim of production auth, and workflows remain intentionally pending.
+- **Affected areas:** API route, top bar UI, dashboard placeholders, smoke tests, docs.
+- **Status:** Accepted
+- **Evidence level:** Confirmed by implementation
