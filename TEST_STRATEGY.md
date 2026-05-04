@@ -347,7 +347,7 @@ They are not a substitute for workflow tests.
 - student dashboard loads
 - coordinator dashboard loads
 - admin dashboard loads
-- social area loads
+- social student dashboard loads
 - map page loads
 - Learning Agreement page loads
 - API health or basic read endpoints respond

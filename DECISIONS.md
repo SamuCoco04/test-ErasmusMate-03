@@ -231,3 +231,58 @@ A major phase is not complete unless relevant decisions are documented here with
 - **Affected areas:** app foundation, scripts, minimal styling, smoke baseline.
 - **Status:** Accepted
 - **Evidence level:** Confirmed by implementation
+
+### DEC-018 — Phase 2B shared UI primitives for shell-first delivery
+- **Date:** 2026-05-04
+- **Phase:** Phase 2B — UI primitives and shell placeholders
+- **Decision:** Add a lightweight shared primitive set (`Button`, `Card`, `Badge/StatusBadge`, `PageHeader`, `DashboardCard`, state cards, sidebar/top bar) in `src/components` with Tailwind classes and no large UI dependency expansion.
+- **Rationale:** Establishes a reusable visual baseline aligned with Figma direction while keeping this phase small and reviewable.
+- **Alternatives considered:** Build each placeholder page ad-hoc; import a large component library immediately.
+- **Consequences / trade-offs:** Faster consistency across role dashboards; some primitives may be refactored as workflow complexity grows.
+- **Affected areas:** `src/components/*`, `src/lib/cn.ts`, route placeholder pages.
+- **Status:** Accepted
+- **Evidence level:** Confirmed by implementation
+
+### DEC-019 — Institutional shell placeholder strategy before workflow logic
+- **Date:** 2026-05-04
+- **Phase:** Phase 2B — UI primitives and shell placeholders
+- **Decision:** Create institutional route-group layouts and dashboard placeholders for student, coordinator, and admin with clear “coming later phase” messaging and visible navigation regions.
+- **Rationale:** Validates IA and shell structure early without misrepresenting workflow completion.
+- **Alternatives considered:** Delay all role pages until business logic implementation.
+- **Consequences / trade-offs:** Enables visual/product review and smoke-route evolution now; requires later replacement of placeholder cards with real workflow surfaces.
+- **Affected areas:** `app/(institutional)/*`.
+- **Status:** Accepted
+- **Evidence level:** Confirmed by implementation
+
+### DEC-020 — Social shell remains secondary with explicit return path
+- **Date:** 2026-05-04
+- **Phase:** Phase 2B — UI primitives and shell placeholders
+- **Decision:** Add a student social shell placeholder with secondary positioning and an explicit link back to the institutional student dashboard.
+- **Rationale:** Reinforces institutional primacy and separation while still exposing planned social IA.
+- **Alternatives considered:** Single mixed dashboard for institutional + social placeholders.
+- **Consequences / trade-offs:** Clearer product boundaries; minor duplication in shell navigation until shared navigation rules mature.
+- **Affected areas:** `app/(social)/student/*`, landing navigation.
+- **Status:** Accepted
+- **Evidence level:** Confirmed by implementation
+
+### DEC-021 — Honest placeholder copy rule for Phase 2B
+- **Date:** 2026-05-04
+- **Phase:** Phase 2B — UI primitives and shell placeholders
+- **Decision:** All new shell pages must explicitly state that workflows, demo mode identity, and data-backed features are pending later phases.
+- **Rationale:** Prevents misleading stakeholders during demos and aligns with tutor guidance for honest MVP communication.
+- **Alternatives considered:** Marketing-style copy implying workflows are available.
+- **Consequences / trade-offs:** Reduces confusion and trust risk; copy will need phased updates as features land.
+- **Affected areas:** `app/page.tsx`, institutional/social dashboard placeholders.
+- **Status:** Accepted
+- **Evidence level:** Confirmed by implementation
+
+### DEC-022 — Demo identity deferred to Phase 2D
+- **Date:** 2026-05-04
+- **Phase:** Phase 2B — UI primitives and shell placeholders
+- **Decision:** Keep demo identity/context mechanics out of Phase 2B and surface a “Demo mode setup pending” notice in shells.
+- **Rationale:** Keeps Phase 2B focused on layout primitives and avoids partial/fragile identity behavior.
+- **Alternatives considered:** Partial query/localStorage role toggles in Phase 2B.
+- **Consequences / trade-offs:** No role persistence yet; cleaner separation for planned Phase 2D identity implementation.
+- **Affected areas:** top bar messaging, dashboard copy, phase planning continuity.
+- **Status:** Accepted
+- **Evidence level:** Confirmed by implementation
