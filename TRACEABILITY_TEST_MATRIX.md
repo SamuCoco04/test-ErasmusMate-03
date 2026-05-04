@@ -51,11 +51,11 @@ Use the following test type values:
 
 | Test ID | Workflow / Area | Requirement / Rule | Actor | Type | Scenario | Expected result | Status |
 |---|---|---|---|---|---|---|---|
-| SMOKE-001 | App boot | App must run locally | Developer | Smoke | Start application from clean setup | App starts without critical runtime errors | Planned |
+| SMOKE-001 | App boot | App must run locally | Developer | Smoke | Start application from clean setup (`e2e/smoke/routes.spec.ts`) | App starts without critical runtime errors | Planned |
 | SMOKE-002 | Database setup | Prisma + SQLite local persistence | Developer | Smoke | Run Prisma generate, migrate, and seed | Database is created and seeded successfully | Planned |
-| SMOKE-003 | Main routes | Main pages must load | Student / Coordinator / Admin | Smoke | Open student, coordinator, admin, social and map entry routes | Main routes render without 500 errors | Planned |
+| SMOKE-003 | Main routes | Main pages must load | Student / Coordinator / Admin | Smoke | Open student, coordinator, admin, social and map entry routes (`e2e/smoke/routes.spec.ts`) | Main routes render without 500 errors | Planned |
 | SMOKE-004 | Demo users | Seeded demo context | Student / Coordinator / Admin | Smoke | Load app with demo users | Student, coordinator and admin contexts are available | Planned |
-| SMOKE-005 | Navigation context | Demo context must be reliable | Student / Coordinator / Admin | E2E | Navigate between main pages after selecting demo role | Active demo context is preserved across navigation | Planned |
+| SMOKE-005 | Navigation context | Demo context must be reliable | Student / Coordinator / Admin | E2E | Navigate between main pages after selecting demo role (`e2e/smoke/routes.spec.ts`) | Active demo context is preserved across navigation | Planned |
 | SMOKE-006 | Figma style baseline | Visual reference must be used | Developer | Manual | Compare key screens with Figma/frontend-concept references | UI follows the same visual direction and does not look like a plain scaffold | Planned |
 | SMOKE-007 | Conventional commits | Conventional commits required | Developer / Codex | Manual | Review commit history for phase | Commits follow Conventional Commits format | Planned |
 | SMOKE-008 | Decision log | Decisions must be documented | Developer / Codex | Manual | Review phase completion | DECISIONS.md contains meaningful decisions from phase | Planned |
@@ -86,7 +86,7 @@ Use the following test type values:
 | E2E-SUB-005 | Rejection rationale | Rejection requires rationale | Coordinator | E2E | Coordinator attempts reject without rationale | Action is blocked with clear message | Planned |
 | E2E-SUB-006 | Resubmission | Student can resubmit after rejection | Student | E2E | Student revises rejected item and resubmits | Submission returns to review queue | Planned |
 | E2E-SUB-007 | Reopen | Coordinator can reopen when supported | Coordinator / Student | E2E | Coordinator reopens approved/reviewed item | Student sees item as needing correction or review again | Planned |
-| SERVICE-SUB-001 | Submission transitions | Invalid transitions blocked | Student / Coordinator | Service/API | Attempt invalid state transition | Backend rejects transition | Planned |
+| SERVICE-SUB-001 | Submission transitions | Invalid transitions blocked | Student / Coordinator | Service/API | Attempt invalid state transition (`tests/institutional/submissions.test.ts`) | Backend rejects transition | Planned |
 | SERVICE-SUB-002 | Submission ownership | Student cannot submit another student’s item | Student | Service/API | Student attempts to mutate another student submission | Backend rejects action | Planned |
 | SERVICE-SUB-003 | Coordinator assignment | Coordinator can only review assigned items | Coordinator | Service/API | Unassigned coordinator attempts decision | Backend rejects action | Planned |
 | SERVICE-SUB-004 | Auditability | Critical submission actions audited | Student / Coordinator | Service/API | Submit, approve, reject, reopen | Event/audit records are created | Planned |
@@ -99,7 +99,7 @@ Use the following test type values:
 |---|---|---|---|---|---|---|---|
 | E2E-DEAD-001 | Deadlines | Student sees upcoming deadlines | Student | E2E | Student opens deadlines page/dashboard widget | Upcoming deadlines are visible and understandable | Planned |
 | E2E-DEAD-002 | Deadlines | Coordinator sees risk/overdue items | Coordinator | E2E | Coordinator opens deadline view | Assigned students’ risk/overdue obligations are visible | Planned |
-| SERVICE-DEAD-001 | Deadline blocking | Overdue deadline blocks submission when policy requires | Student | Service/API | Student submits after effective due date | Backend blocks action when rule applies | Planned |
+| SERVICE-DEAD-001 | Deadline blocking | Overdue deadline blocks submission when policy requires | Student | Service/API | Student submits after effective due date (`tests/institutional/deadlines.test.ts`) | Backend blocks action when rule applies | Planned |
 | SERVICE-DEAD-002 | Deadline override | Override due date is respected | Student / Coordinator | Service/API | Exception extends due date | Submission allowed until override date | Planned |
 | SERVICE-DEAD-003 | Expired override | Expired override can become overdue again | Student / Coordinator | Service/API | Override date passes | Deadline state becomes overdue or blocks when designed | Planned |
 | SERVICE-DEAD-004 | Fulfilled deadline | Fulfilled deadline does not block | Student | Service/API | Submit after obligation fulfilled | Backend does not block due to fulfilled deadline | Planned |
@@ -114,7 +114,7 @@ Use the following test type values:
 | E2E-EXC-002 | Exception review | Coordinator can approve exception | Coordinator | E2E | Coordinator approves exception request | Exception state updates and student sees decision | Planned |
 | E2E-EXC-003 | Exception review | Coordinator can reject exception with rationale | Coordinator | E2E | Coordinator rejects exception request | Student sees rejection and rationale | Planned |
 | E2E-EXC-004 | Exception application | Approved exception can apply supported change | Coordinator | E2E | Coordinator applies deadline exception | Related deadline or obligation reflects approved exception | Planned |
-| SERVICE-EXC-001 | Scope validation | Deadline-scoped exception requires deadline reference | Student | Service/API | Create deadline exception without reference | Backend rejects request | Planned |
+| SERVICE-EXC-001 | Scope validation | Deadline-scoped exception requires deadline reference | Student | Service/API | Create deadline exception without reference (`tests/institutional/exceptions.test.ts`) | Backend rejects request | Planned |
 | SERVICE-EXC-002 | Apply guard | Unsupported apply action blocked | Coordinator | Service/API | Apply exception without supported target | Backend rejects action | Planned |
 | SERVICE-EXC-003 | Exception permissions | Only authorized coordinator decides | Coordinator | Service/API | Unassigned coordinator tries to decide | Backend rejects action | Planned |
 | SERVICE-EXC-004 | Auditability | Exception actions audited | Student / Coordinator | Service/API | Create, approve, reject, apply exception | Event/audit records are created | Planned |
@@ -141,7 +141,7 @@ Use the following test type values:
 | E2E-LA-014 | Grade ownership | Student cannot edit grade | Student | E2E | Student attempts grade entry/edit | Grade is hidden or read-only for student | Planned |
 | E2E-LA-015 | Grade coordinator control | Coordinator can enter/update grade where allowed | Coordinator | E2E | Coordinator updates grade in allowed screen | Grade is saved and does not govern approval | Planned |
 | SERVICE-LA-001 | Learning Agreement validation | Duplicate equivalences blocked | Student | Service/API | Create duplicate home/destination equivalence | Backend rejects duplicate or conflict | Planned |
-| SERVICE-LA-002 | Row state rules | Invalid row decision blocked | Coordinator | Service/API | Decide non-latest or already decided row | Backend rejects action | Planned |
+| SERVICE-LA-002 | Row state rules | Invalid row decision blocked | Coordinator | Service/API | Decide non-latest or already decided row (`tests/institutional/learning-agreement.test.ts`) | Backend rejects action | Planned |
 | SERVICE-LA-003 | Aggregate state | State computed from latest rows | Student / Coordinator | Service/API | Multiple row decisions across revisions | Agreement aggregate state is correct | Planned |
 | SERVICE-LA-004 | Safe revision | Approved row not silently mutated | Student | Service/API | Edit approved row | Backend creates new revision and keeps old row immutable | Planned |
 | SERVICE-LA-005 | Grade permissions | Student cannot mutate grade | Student | Service/API | Student sends payload with grade value | Backend rejects or ignores unauthorized grade mutation | Planned |
@@ -157,7 +157,7 @@ Use the following test type values:
 | E2E-SOC-DISC-002 | Visibility settings | Student can control discoverability | Student | E2E | Student disables discoverability | Student disappears from discovery results | Planned |
 | E2E-SOC-DISC-003 | Discovery | Student can find visible eligible students | Student | E2E | Student filters discovery by city/institution/stage | Results update with eligible visible profiles | Planned |
 | E2E-SOC-DISC-004 | Contactability | Non-contactable profiles cannot be contacted | Student | E2E | Student tries to request connection with non-contactable profile | Request action is not available or blocked | Planned |
-| SERVICE-SOC-DISC-001 | Discoverability | Hidden profiles excluded server-side | Student | Service/API | Query discovery with hidden profile in DB | Hidden profile is not returned | Planned |
+| SERVICE-SOC-DISC-001 | Discoverability | Hidden profiles excluded server-side | Student | Service/API | Query discovery with hidden profile in DB (`tests/social/discovery.test.ts`) | Hidden profile is not returned | Planned |
 | SERVICE-SOC-DISC-002 | Consent/contactability | Contactability enforced server-side | Student | Service/API | Attempt request when target is not contactable | Backend rejects request | Planned |
 | SERVICE-SOC-DISC-003 | Separation | Social discovery does not expose official institutional records | Student | Service/API | Query social discovery | Response contains social-safe profile fields only | Planned |
 
@@ -175,8 +175,8 @@ Use the following test type values:
 | E2E-MSG-001 | Messaging | Accepted connections can message | Student | E2E | Accepted pair opens thread and sends message | Message appears in thread and persists | Planned |
 | E2E-MSG-002 | Messaging guard | Pending connection cannot message | Student | E2E | Pending pair attempts message | Messaging is blocked | Planned |
 | E2E-MSG-003 | Messaging guard | Blocked users cannot message | Student | E2E | Blocked pair attempts message | Backend/UI blocks message | Planned |
-| SERVICE-CONN-001 | Connection state | Invalid connection transitions blocked | Student | Service/API | Attempt invalid accept/cancel/block transition | Backend rejects action | Planned |
-| SERVICE-MSG-001 | Messaging permission | Accepted-only rule enforced server-side | Student | Service/API | Send message without accepted connection | Backend rejects message | Planned |
+| SERVICE-CONN-001 | Connection state | Invalid connection transitions blocked | Student | Service/API | Attempt invalid accept/cancel/block transition (`tests/social/connections.test.ts`) | Backend rejects action | Planned |
+| SERVICE-MSG-001 | Messaging permission | Accepted-only rule enforced server-side | Student | Service/API | Send message without accepted connection (`tests/social/messaging.test.ts`) | Backend rejects message | Planned |
 | SERVICE-MSG-002 | Messaging persistence | Messages persist | Student | Service/API | Send message and fetch thread | Message is present with correct author/time | Planned |
 
 ---
@@ -196,7 +196,7 @@ Use the following test type values:
 | E2E-MOD-003 | Moderation action | Admin can remove content | Admin | E2E | Admin removes content | Content is removed or unavailable according to rule | Planned |
 | SERVICE-CONT-001 | Content ownership | Only owner edits own content | Student | Service/API | Non-owner attempts edit/delete | Backend rejects action | Planned |
 | SERVICE-FAV-001 | Favorites persistence | Favorites persist by user | Student | Service/API | Add/remove favorite and fetch list | Favorite state is correct | Planned |
-| SERVICE-REP-001 | Reporting | Report creates moderation case/record | Student | Service/API | Submit content report | Moderation data is created | Planned |
+| SERVICE-REP-001 | Reporting | Report creates moderation case/record | Student | Service/API | Submit content report (`tests/social/content-moderation.test.ts`) | Moderation data is created | Planned |
 | SERVICE-MOD-001 | Moderation enforcement | Hidden/removed content filtered server-side | Student / Admin | Service/API | Query content after moderation action | Visibility matches moderation decision | Planned |
 | SERVICE-MOD-002 | Report threshold | Highly reported content hidden/obscured if implemented | Student / Admin | Service/API | Create multiple reports over threshold | Content visibility changes according to rule | Planned |
 
@@ -213,7 +213,7 @@ Use the following test type values:
 | E2E-MAP-005 | Map marker/preview | Selecting marker updates preview | Student | E2E | Student clicks marker | Preview panel shows selected item | Planned |
 | E2E-MAP-006 | Map detail | Student opens detail from map | Student | E2E | Student clicks open detail from preview | Content detail page opens | Planned |
 | E2E-MAP-007 | Report from map | Student reports mapped content | Student | E2E | Student clicks report from map | Report is created through moderation flow | Planned |
-| SERVICE-MAP-001 | Map visibility | Hidden/removed content excluded | Student | Service/API | Query map items with hidden/removed content | Hidden/removed items are not returned | Planned |
+| SERVICE-MAP-001 | Map visibility | Hidden/removed content excluded | Student | Service/API | Query map items with hidden/removed content (`tests/social/map-visibility.test.ts`) | Hidden/removed items are not returned | Planned |
 | SERVICE-MAP-002 | Map privacy | Private unsafe locations not exposed | Student | Service/API | Query map data | Response contains only approved public place context | Planned |
 | SERVICE-MAP-003 | Map moderation | Server-side moderation filtering enforced | Student | Service/API | Query map data after moderation action | Visibility reflects moderation decision | Planned |
 

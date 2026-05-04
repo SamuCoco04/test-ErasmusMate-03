@@ -296,3 +296,12 @@ Do not start implementation blindly.
 
 `PLAN.md` now contains the accepted Iteration 3 execution plan baseline used before implementation starts.
 
+
+
+## Testing commands
+
+- `npm run test` — run Vitest contracts in `tests/`.
+- `npm run test:watch` — run Vitest in watch mode.
+- `npm run test:service` — run service/API/domain contract tests.
+- `npm run test:e2e` — run Playwright E2E contracts in `e2e/`.
+- `npm run test:e2e:smoke` — run Playwright smoke route contracts only.
