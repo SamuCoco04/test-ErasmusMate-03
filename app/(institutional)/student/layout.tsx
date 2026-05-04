@@ -10,8 +10,8 @@ export default function StudentInstitutionalLayout({ children }: { children: Rea
           <SidebarNav
             items={[
               { label: 'Student dashboard', href: '/student/dashboard', active: true },
-              { label: 'Official mobility', href: '/student/dashboard' },
-              { label: 'Review area', href: '/student/dashboard' }
+              { label: 'My submissions', href: '/student/submissions' },
+              { label: 'Deadlines and exceptions', href: '/student/dashboard' }
             ]}
           />
         </aside>

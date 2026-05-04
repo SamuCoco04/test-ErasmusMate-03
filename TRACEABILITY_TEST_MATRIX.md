@@ -87,10 +87,10 @@ Use the following test type values:
 | E2E-SUB-005 | Rejection rationale | Rejection requires rationale | Coordinator | E2E | Coordinator attempts reject without rationale | Action is blocked with clear message | Planned |
 | E2E-SUB-006 | Resubmission | Student can resubmit after rejection | Student | E2E | Student revises rejected item and resubmits | Submission returns to review queue | Planned |
 | E2E-SUB-007 | Reopen | Coordinator can reopen when supported | Coordinator / Student | E2E | Coordinator reopens approved/reviewed item | Student sees item as needing correction or review again | Planned |
-| SERVICE-SUB-001 | Submission transitions | Invalid transitions blocked | Student / Coordinator | Service/API | Attempt invalid state transition (`tests/institutional/submissions.test.ts`) | Backend rejects transition | Planned |
-| SERVICE-SUB-002 | Submission ownership | Student cannot submit another student’s item | Student | Service/API | Student attempts to mutate another student submission | Backend rejects action | Planned |
-| SERVICE-SUB-003 | Coordinator assignment | Coordinator can only review assigned items | Coordinator | Service/API | Unassigned coordinator attempts decision | Backend rejects action | Planned |
-| SERVICE-SUB-004 | Auditability | Critical submission actions audited | Student / Coordinator | Service/API | Submit, approve, reject, reopen | Event/audit records are created | Planned |
+| SERVICE-SUB-001 | Submission transitions | Invalid transitions blocked | Student / Coordinator | Service/API | Attempt invalid state transition (`tests/institutional/submissions.test.ts`) | Backend rejects transition | Implemented - passing |
+| SERVICE-SUB-002 | Submission ownership | Student cannot submit another student’s item | Student | Service/API | Student attempts to mutate another student submission | Backend rejects action | Implemented - passing |
+| SERVICE-SUB-003 | Coordinator assignment | Coordinator can only review assigned items | Coordinator | Service/API | Unassigned coordinator attempts decision | Backend rejects action | Implemented - passing |
+| SERVICE-SUB-004 | Auditability | Critical submission actions audited | Student / Coordinator | Service/API | Submit, approve, reject, reopen | Event/audit records are created | Implemented - passing |
 
 ---
 
