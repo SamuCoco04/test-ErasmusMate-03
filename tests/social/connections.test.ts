@@ -32,6 +32,19 @@ describe('Social: connection lifecycle contract', () => {
     expect(mine.accepted.some((x:any)=>x.id==='conn-seed-2')).toBe(true);
     await expect(requestConnection(prisma as any, { role: 'STUDENT', userId: 'student-1' }, 'sp-student-6')).rejects.toThrow();
   });
+
+  it('re-requesting after rejected reuses the existing pair row', async () => {
+    const conn = await requestConnection(prisma as any, { role: 'STUDENT', userId: 'student-6' }, 'sp-student-2');
+    expect(conn.id).toBe('conn-seed-3');
+    expect(conn.state).toBe('PENDING');
+    expect(conn.requesterProfileId).toBe('sp-student-6');
+    expect(conn.receiverProfileId).toBe('sp-student-2');
+
+    const stored = await prisma.socialConnection.findUnique({ where: { id: 'conn-seed-3' } });
+    expect(stored?.state).toBe('PENDING');
+    expect(stored?.respondedAt).toBeNull();
+  });
+
   it('coordinator and admin are forbidden, discovery includes safe connection status', async () => {
     await expect(getMyConnections(prisma as any, { role: 'COORDINATOR', userId: 'coordinator-1' })).rejects.toThrow('Forbidden');
     await expect(requestConnection(prisma as any, { role: 'ADMIN', userId: 'admin-1' }, 'sp-student-2')).rejects.toThrow('Forbidden');
