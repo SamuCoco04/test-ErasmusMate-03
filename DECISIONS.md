@@ -187,3 +187,36 @@ Implementation phases must append new decision entries when new choices are made
 ## 5. Working rule
 
 A major phase is not complete unless relevant decisions are documented here with rationale, trade-offs, and evidence level.
+
+### DEC-014 — Phase 1 minimal test harness before app scaffolding
+- **Date:** 2026-05-04
+- **Phase:** Phase 1 — Testing foundation first
+- **Decision:** Introduce only the minimal root-level testing harness (`package.json`, TypeScript test config, Vitest config, Playwright config, and test folders) before creating the Next.js app or Prisma schema.
+- **Rationale:** Keeps this phase strictly aligned with “testing foundation first” while preserving test-first execution.
+- **Alternatives considered:** Bootstrap Next.js and Prisma first to run non-placeholder tests.
+- **Consequences / trade-offs:** Clear scope control and faster contract setup; executable browser tests are deferred until app scaffolding exists.
+- **Affected areas:** test toolchain files, `tests/`, `e2e/`.
+- **Status:** Accepted
+- **Evidence level:** Confirmed by implementation
+
+### DEC-015 — Pre-implementation contract policy uses todo/skip
+- **Date:** 2026-05-04
+- **Phase:** Phase 1 — Testing foundation first
+- **Decision:** Use `it.todo` for service/API/domain contracts and `test.skip`/`it.skip` for E2E and route smoke contracts that require missing application routes.
+- **Rationale:** Establishes full planned coverage without forcing artificial failures before implementation exists.
+- **Alternatives considered:** Force failing tests immediately with “expected failing” status.
+- **Consequences / trade-offs:** Coverage intent is explicit and reviewable; pass/fail evidence is intentionally deferred.
+- **Affected areas:** `tests/**/*.test.ts`, `e2e/**/*.spec.ts`.
+- **Status:** Accepted
+- **Evidence level:** Confirmed by implementation
+
+### DEC-016 — Phase 1 validation command baseline
+- **Date:** 2026-05-04
+- **Phase:** Phase 1 — Testing foundation first
+- **Decision:** Keep validation command baseline as `npm install`, `npm run test`, and `npm run test:e2e`, documenting environment limitations when registry or browser prerequisites block execution.
+- **Rationale:** Matches requested validation while giving a deterministic command set for local continuation.
+- **Alternatives considered:** Skip E2E validation command entirely until app exists.
+- **Consequences / trade-offs:** Command surface is stable; some environments may require additional setup (`npx playwright install`) later.
+- **Affected areas:** developer workflow, README testing commands.
+- **Status:** Accepted
+- **Evidence level:** Confirmed by implementation

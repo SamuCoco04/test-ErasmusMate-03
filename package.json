@@ -1,0 +1,18 @@
+{
+  "name": "erasmusmate",
+  "version": "0.1.0",
+  "private": true,
+  "description": "ErasmusMate Iteration 3 testing foundation",
+  "scripts": {
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:service": "vitest run tests",
+    "test:e2e": "playwright test",
+    "test:e2e:smoke": "playwright test e2e/smoke"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.54.2",
+    "typescript": "^5.9.2",
+    "vitest": "^3.2.4"
+  }
+}
