@@ -14,15 +14,35 @@ const options: Array<{ role: DemoRole; label: string }> = [
 export function DemoRoleSwitcher({ currentRole, currentUserId }: { currentRole: DemoRole; currentUserId: string }) {
   const router = useRouter();
   const [selectedRole, setSelectedRole] = useState<DemoRole>(currentRole);
+  const [isFetching, setIsFetching] = useState(false);
   const [isPending, startTransition] = useTransition();
 
   async function onRoleChange(nextRole: DemoRole) {
+    if (isFetching || isPending) return;
+    const previousRole = selectedRole;
     setSelectedRole(nextRole);
-    await fetch('/api/demo-context', {
-      method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ role: nextRole }),
-    });
+    setIsFetching(true);
+    let switchOk = false;
+    try {
+      const res = await fetch('/api/demo-context', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ role: nextRole }),
+      });
+      switchOk = res.ok;
+    } catch {
+      // network failure — revert handled below
+    }
+    if (!switchOk) {
+      // eslint-disable-next-line no-console
+      console.error('[DemoRoleSwitcher] Failed to update demo role; reverting selection.');
+      setSelectedRole(previousRole);
+      setIsFetching(false);
+      return;
+    }
+    // Clear isFetching just before startTransition so isPending picks up
+    // immediately, leaving no window where both flags are false.
+    setIsFetching(false);
     startTransition(() => {
       router.refresh();
     });
@@ -36,7 +56,7 @@ export function DemoRoleSwitcher({ currentRole, currentUserId }: { currentRole: 
         id="demo-role-select"
         value={selectedRole}
         onChange={(event) => onRoleChange(event.target.value as DemoRole)}
-        disabled={isPending}
+        disabled={isFetching || isPending}
         className="rounded-md border border-slate-300 bg-white px-2 py-1 text-slate-800"
       >
         {options.map((option) => (
