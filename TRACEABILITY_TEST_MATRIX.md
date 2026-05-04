@@ -51,11 +51,11 @@ Use the following test type values:
 
 | Test ID | Workflow / Area | Requirement / Rule | Actor | Type | Scenario | Expected result | Status |
 |---|---|---|---|---|---|---|---|
-| SMOKE-001 | App boot | App must run locally | Developer | Smoke | Start application from clean setup (`e2e/smoke/routes.spec.ts`; `tests/smoke/routes-smoke.test.ts`) | App starts without critical runtime errors | Planned (route smoke tests skipped per DEC-015 until app is runnable) |
+| SMOKE-001 | App boot | App must run locally | Developer | Smoke | Start application from clean setup (`e2e/smoke/routes.spec.ts`; `tests/smoke/routes-smoke.test.ts`) | App starts without critical runtime errors | Implemented - passing |
 | SMOKE-002 | Database setup | Prisma + SQLite local persistence | Developer | Smoke | Run Prisma generate, migrate, and seed | Database is created and seeded successfully | Planned |
-| SMOKE-003 | Main routes | Main pages must load | Student / Coordinator / Admin | Smoke | Open home, student, coordinator, admin, social student, and map entry routes (`e2e/smoke/routes.spec.ts`) | Main routes render without 500 errors | Planned |
-| SMOKE-004 | Demo users | Seeded demo context | Student / Coordinator / Admin | Smoke | Load app with demo users | Student, coordinator and admin contexts are available | Planned |
-| SMOKE-005 | Navigation context | Demo context must be reliable | Student / Coordinator / Admin | E2E | Navigate between main pages after selecting demo role (`e2e/smoke/routes.spec.ts`) | Active demo context is preserved across navigation | Planned |
+| SMOKE-003 | Main routes | Main pages must load | Student / Coordinator / Admin | Smoke | Open home, student, coordinator, admin, and social student routes (`e2e/smoke/routes.spec.ts`) | Main routes render without 500 errors | Implemented - passing |
+| SMOKE-004 | Demo users | Seeded demo context | Student / Coordinator / Admin | Smoke | Read/update demo context via `/api/demo-context` and verify seeded role mapping (`tests/shared/demo-context.test.ts`; `e2e/smoke/routes.spec.ts`) | Student, coordinator and admin contexts are available via cookie-backed demo mode | Implemented - passing |
+| SMOKE-005 | Navigation context | Demo context must be reliable | Student / Coordinator / Admin | E2E | Switch role in demo mode and open dashboards (`e2e/smoke/routes.spec.ts`) | Active demo context remains server-readable after switching | Implemented - passing |
 | SMOKE-006 | Figma style baseline | Visual reference must be used | Developer | Manual | Compare key screens with Figma/frontend-concept references | UI follows the same visual direction and does not look like a plain scaffold | Planned |
 | SMOKE-007 | Conventional commits | Conventional commits required | Developer / Codex | Manual | Review commit history for phase | Commits follow Conventional Commits format | Planned |
 | SMOKE-008 | Decision log | Decisions must be documented | Developer / Codex | Manual | Review phase completion | DECISIONS.md contains meaningful decisions from phase | Planned |
