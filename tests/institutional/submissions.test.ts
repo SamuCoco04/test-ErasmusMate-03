@@ -54,6 +54,15 @@ describe('Institutional submissions workflow', () => {
     expect(updated.state).toBe('RESUBMITTED');
   });
 
+
+  it('student rationale does not overwrite reviewer notes on resubmit', async () => {
+    const before = await prisma.documentSubmission.findUniqueOrThrow({ where: { id: 'sub-4' } });
+    expect(before.reviewerNotes).toBe('Needs corrected file format');
+
+    const updated = await transitionSubmission({ role: 'STUDENT', userId: 'student-1' }, 'sub-4', 'resubmit', 'Student explanation');
+    expect(updated.reviewerNotes).toBe('Needs corrected file format');
+  });
+
   it('invalid transitions are blocked', async () => {
     await expect(transitionSubmission({ role: 'STUDENT', userId: 'student-1' }, 'sub-3', 'resubmit')).rejects.toThrow('Invalid state transition');
   });

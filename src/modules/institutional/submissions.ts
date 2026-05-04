@@ -65,7 +65,8 @@ export async function transitionSubmission(ctx:DemoContext, submissionId:string,
   if(!allowed[action].includes(state)) throw new SubmissionError('INVALID_TRANSITION','Invalid state transition');
   if((action==='reject'||action==='reopen') && !rationale?.trim()) throw new SubmissionError('VALIDATION','Rationale is required');
   const nextState = nextByAction[action];
-  const updated = await prisma.documentSubmission.update({where:{id:submissionId},data:{state:nextState,submittedAt:action==='submit'||action==='resubmit'?new Date():sub.submittedAt,reviewedAt:['approve','reject','reopen'].includes(action)?new Date():sub.reviewedAt,reviewerNotes:rationale??sub.reviewerNotes,reopeningRationale:action==='reopen'?(rationale??null):sub.reopeningRationale}});
+  const canWriteReviewerNotes = !isStudent && ['start_review','approve','reject','reopen'].includes(action);
+  const updated = await prisma.documentSubmission.update({where:{id:submissionId},data:{state:nextState,submittedAt:action==='submit'||action==='resubmit'?new Date():sub.submittedAt,reviewedAt:['approve','reject','reopen'].includes(action)?new Date():sub.reviewedAt,reviewerNotes:canWriteReviewerNotes?(rationale??sub.reviewerNotes):sub.reviewerNotes,reopeningRationale:action==='reopen'?(rationale??null):sub.reopeningRationale}});
   await writeAuditAndEvent(sub.id,sub.mobilityRecordId,ctx.userId,action,state,nextState,rationale);
   return updated;
 }
