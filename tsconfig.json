@@ -35,11 +35,23 @@
   },
   "include": [
     "next-env.d.ts",
-    "**/*.ts",
-    "**/*.tsx",
-    ".next/types/**/*.ts"
+    ".next/types/**/*.ts",
+    "app/**/*.ts",
+    "app/**/*.tsx",
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    "tests/**/*.ts",
+    "tests/**/*.tsx",
+    "e2e/**/*.ts",
+    "e2e/**/*.tsx",
+    "*.ts",
+    "*.tsx",
+    "*.mts",
+    "*.cts"
   ],
   "exclude": [
-    "node_modules"
+    "node_modules",
+    "figma",
+    "figma/frontend-concept"
   ]
 }

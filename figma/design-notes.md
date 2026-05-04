@@ -33,6 +33,12 @@ Do not create a different visual style for missing screens.
 
 The `figma/frontend-concept` folder is a visual and UX reference only.
 
+
+Build/tooling note:
+
+- `figma/frontend-concept` is intentionally excluded from the main Next.js TypeScript/build scope.
+- Do not install prototype-only dependencies (for example, `lucide-react`) in the MVP app just to compile the reference prototype.
+
 It may come from a Vite/React prototype.
 
 Codex must not:
