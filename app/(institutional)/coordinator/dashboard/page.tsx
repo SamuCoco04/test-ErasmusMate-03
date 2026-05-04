@@ -1,23 +1,18 @@
-import { getDemoContextFromRequest, resolveRoleLabel } from '@/src/modules/shared/demo-context';
 import { DashboardCard } from '@/src/components/DashboardCard';
-import { LoadingState } from '@/src/components/States';
 import { PageHeader } from '@/src/components/PageHeader';
+import { getDemoContextFromRequest } from '@/src/modules/shared/demo-context';
+import { getCoordinatorDashboardSummary } from '@/src/modules/institutional/read-models';
 
 export default async function CoordinatorDashboardPage() {
-    const demoContext = await getDemoContextFromRequest();
-
-  return (
-    <div className="space-y-6">
-      <PageHeader
-        sectionLabel="Coordinator dashboard"
-        title="Review area"
-        subtitle={`Demo user: ${demoContext.userId} (${resolveRoleLabel(demoContext.role)}). Queue and decision flows are planned for a later phase.`}
-      />
-      <div className="grid gap-4 md:grid-cols-2">
-        <DashboardCard title="Pending reviews" description="Submission and Learning Agreement decisions will be available soon." status="Pending setup" />
-        <DashboardCard title="Deadline watch" description="Urgency cards and reminders are planned for the next phase." status="Pending setup" />
-      </div>
-      <LoadingState description="Coordinator context is loaded from demo mode. Review data is not connected yet." />
-    </div>
-  );
+  const ctx = await getDemoContextFromRequest();
+  const data = ctx.role === 'COORDINATOR' ? await getCoordinatorDashboardSummary(ctx) : null;
+  return <div className='space-y-6'>
+    <PageHeader sectionLabel='Coordinator dashboard' title='Review area' subtitle='Queue and summaries are backend-backed in Phase 3A. Decision actions are coming in later Phase 3 subphases.' />
+    {data && <div className='grid gap-4 md:grid-cols-2'>
+      <DashboardCard title='Assigned mobility records' description={`${data.assignedCount} assigned records`} status='Current scope' />
+      <DashboardCard title='Review queue preview' description={`${data.reviewQueue.length} submissions pending review`} status='Pending review' />
+      <DashboardCard title='Deadline risk' description={`Overdue: ${data.deadlines.filter(d=>d.state==='OVERDUE').length} · Due soon: ${data.deadlines.filter(d=>d.state==='UPCOMING').length}`} status='Monitor' />
+      <DashboardCard title='Exception preview' description={`${data.exceptions.length} awaiting decision`} status='Awaiting decision' />
+    </div>}
+  </div>;
 }

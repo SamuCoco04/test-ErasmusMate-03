@@ -18,19 +18,24 @@ model Institution {
   users            User[]
   outgoingMobility MobilityRecord[] @relation("HomeInstitution")
   incomingMobility MobilityRecord[] @relation("HostInstitution")
+  procedures       ProcedureDefinition[]
 }
 
 model User {
-  id             String   @id
-  email          String   @unique
-  displayName    String
-  role           String // Allowed demo values for Phase 2C: STUDENT | COORDINATOR | ADMIN
-  institutionId  String
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
+  id            String   @id
+  email         String   @unique
+  displayName   String
+  role          String
+  institutionId String
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 
-  institution     Institution   @relation(fields: [institutionId], references: [id])
-  mobilityRecords MobilityRecord[]
+  institution               Institution        @relation(fields: [institutionId], references: [id])
+  mobilityRecords           MobilityRecord[]   @relation("StudentMobilityRecords")
+  coordinatedMobilityRecords MobilityRecord[]  @relation("CoordinatorMobilityRecords")
+  exceptionRequests         ExceptionRequest[] @relation("ExceptionRequester")
+  reviewedExceptions        ExceptionRequest[] @relation("ExceptionReviewer")
+  auditRecords              AuditRecord[]
 
   @@index([role])
   @@index([institutionId])
@@ -39,19 +44,106 @@ model User {
 model MobilityRecord {
   id                String   @id
   studentId         String
+  coordinatorId     String
   homeInstitutionId String
   hostInstitutionId String
-  mobilityStatus    String // Placeholder values for Phase 2C: DRAFT | ACTIVE | COMPLETED
+  mobilityStatus    String
   startDate         DateTime
   endDate           DateTime
   createdAt         DateTime @default(now())
   updatedAt         DateTime @updatedAt
 
-  student         User        @relation(fields: [studentId], references: [id])
-  homeInstitution Institution @relation("HomeInstitution", fields: [homeInstitutionId], references: [id])
-  hostInstitution Institution @relation("HostInstitution", fields: [hostInstitutionId], references: [id])
+  student            User                  @relation("StudentMobilityRecords", fields: [studentId], references: [id])
+  coordinator        User                  @relation("CoordinatorMobilityRecords", fields: [coordinatorId], references: [id])
+  homeInstitution    Institution           @relation("HomeInstitution", fields: [homeInstitutionId], references: [id])
+  hostInstitution    Institution           @relation("HostInstitution", fields: [hostInstitutionId], references: [id])
+  submissions        DocumentSubmission[]
+  deadlines          Deadline[]
+  exceptionRequests  ExceptionRequest[]
+  auditRecords       AuditRecord[]
 
   @@index([studentId])
-  @@index([homeInstitutionId])
-  @@index([hostInstitutionId])
+  @@index([coordinatorId])
+}
+
+model ProcedureDefinition {
+  id            String   @id
+  institutionId String
+  title         String
+  description   String
+  isRequired    Boolean  @default(true)
+  sortOrder     Int      @default(0)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  institution Institution          @relation(fields: [institutionId], references: [id])
+  submissions DocumentSubmission[]
+
+  @@index([institutionId])
+}
+
+model DocumentSubmission {
+  id             String   @id
+  mobilityRecordId String
+  procedureId    String
+  state          String
+  submittedAt    DateTime?
+  reviewedAt     DateTime?
+  reviewerNotes  String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  mobilityRecord MobilityRecord      @relation(fields: [mobilityRecordId], references: [id])
+  procedure      ProcedureDefinition @relation(fields: [procedureId], references: [id])
+
+  @@index([mobilityRecordId, state])
+}
+
+model Deadline {
+  id              String   @id
+  mobilityRecordId String
+  title           String
+  dueDate         DateTime
+  state           String
+  fulfilledAt     DateTime?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  mobilityRecord MobilityRecord @relation(fields: [mobilityRecordId], references: [id])
+
+  @@index([mobilityRecordId, state])
+  @@index([dueDate])
+}
+
+model ExceptionRequest {
+  id               String   @id
+  mobilityRecordId String
+  requestedById    String
+  reviewedById     String?
+  title            String
+  reason           String
+  state            String
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  mobilityRecord MobilityRecord @relation(fields: [mobilityRecordId], references: [id])
+  requestedBy    User           @relation("ExceptionRequester", fields: [requestedById], references: [id])
+  reviewedBy     User?          @relation("ExceptionReviewer", fields: [reviewedById], references: [id])
+
+  @@index([mobilityRecordId, state])
+  @@index([requestedById])
+}
+
+model AuditRecord {
+  id               String   @id
+  mobilityRecordId String
+  actorId          String
+  eventType        String
+  details          String
+  createdAt        DateTime @default(now())
+
+  mobilityRecord MobilityRecord @relation(fields: [mobilityRecordId], references: [id])
+  actor          User           @relation(fields: [actorId], references: [id])
+
+  @@index([mobilityRecordId, createdAt])
 }

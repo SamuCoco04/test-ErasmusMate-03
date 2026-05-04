@@ -52,7 +52,7 @@ Use the following test type values:
 | Test ID | Workflow / Area | Requirement / Rule | Actor | Type | Scenario | Expected result | Status |
 |---|---|---|---|---|---|---|---|
 | SMOKE-001 | App boot | App must run locally | Developer | Smoke | Start application from clean setup (`e2e/smoke/routes.spec.ts`; `tests/smoke/routes-smoke.test.ts`) | App starts without critical runtime errors | Implemented - passing |
-| SMOKE-002 | Database setup | Prisma + SQLite local persistence | Developer | Smoke | Run Prisma generate, migrate, and seed | Database is created and seeded successfully | Planned |
+| SMOKE-002 | Database setup | Prisma + SQLite local persistence | Developer | Smoke | Run Prisma generate, migrate, and seed | Database is created and seeded successfully | Implemented - passing |
 | SMOKE-003 | Main routes | Main pages must load | Student / Coordinator / Admin | Smoke | Open home, student, coordinator, admin, and social student routes (`e2e/smoke/routes.spec.ts`) | Main routes render without 500 errors | Implemented - passing |
 | SMOKE-004 | Demo users | Seeded demo context | Student / Coordinator / Admin | Smoke | Read/update demo context via `/api/demo-context` and verify seeded role mapping (`tests/shared/demo-context.test.ts`; `e2e/smoke/routes.spec.ts`) | Student, coordinator and admin contexts are available via cookie-backed demo mode | Implemented - passing |
 | SMOKE-005 | Navigation context | Demo context must be reliable | Student / Coordinator / Admin | API/Smoke | PATCH demo-context API and verify GET returns the updated role (`e2e/smoke/routes.spec.ts`) | API correctly persists and returns the updated demo role via cookie | Implemented - passing |
@@ -70,9 +70,9 @@ Use the following test type values:
 | E2E-INST-DASH-001 | Student dashboard | Student must see relevant mobility status | Student | E2E | Student opens dashboard | Dashboard shows current Erasmus stay, pending tasks, key deadlines and quick actions | Planned |
 | E2E-INST-DASH-002 | Student dashboard | Minimum-click UX | Student | E2E | Student opens dashboard with pending task | Student can access next pending action in one or few clicks | Planned |
 | E2E-INST-DASH-003 | Mobility record | Student can view mobility record | Student | E2E | Student opens My Mobility Record | Mobility details and academic summary entry are visible | Planned |
-| E2E-INST-DASH-004 | Coordinator dashboard | Coordinator must see assigned work | Coordinator | E2E | Coordinator opens dashboard | Review queue, exceptions, deadlines and Learning Agreement work are visible | Planned |
+| E2E-INST-DASH-004 | Coordinator dashboard | Coordinator must see assigned work | Coordinator | E2E | Coordinator opens dashboard | Review queue, exceptions and deadlines are visible (decision actions deferred) | Planned |
 | E2E-INST-DASH-005 | Admin dashboard | Admin must access governance areas | Admin | E2E | Admin opens dashboard | Moderation/governance entry points are visible | Planned |
-| SERVICE-INST-DASH-001 | Mobility read model | Role-scoped institutional data | Student / Coordinator | Service/API | Fetch mobility overview for authorized and unauthorized actors | Authorized users receive data; unauthorized users are blocked | Planned |
+| SERVICE-INST-DASH-001 | Mobility read model | Role-scoped institutional data | Student / Coordinator | Service/API | Fetch mobility overview for authorized and unauthorized actors (`tests/institutional/dashboard-read-models.test.ts`) | Authorized users receive data; unauthorized users are blocked | Implemented - passing |
 
 ---
 

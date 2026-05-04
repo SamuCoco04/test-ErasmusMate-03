@@ -353,3 +353,47 @@ A major phase is not complete unless relevant decisions are documented here with
 - **Affected areas:** API route, top bar UI, dashboard placeholders, smoke tests, docs.
 - **Status:** Accepted
 - **Evidence level:** Confirmed by implementation
+
+### DEC-029 — Phase 3A institutional read-model services
+- **Date:** 2026-05-04
+- **Phase:** Phase 3A — Institutional core data foundation
+- **Decision:** Implement read-only institutional services under `src/modules/institutional/read-models.ts` and keep API route handlers thin.
+- **Rationale:** Delivers backend-backed dashboards quickly while preserving separation of transport and data shaping.
+- **Alternatives considered:** Query Prisma directly in route handlers/pages.
+- **Consequences / trade-offs:** Cleaner boundary and testability; later mutations will require expanding module structure.
+- **Affected areas:** institutional services, API routes, dashboard pages.
+- **Status:** Accepted
+- **Evidence level:** Confirmed by implementation
+
+### DEC-030 — Phase 3A schema and state strategy
+- **Date:** 2026-05-04
+- **Phase:** Phase 3A — Institutional core data foundation
+- **Decision:** Add minimal institutional tables (`ProcedureDefinition`, `DocumentSubmission`, `Deadline`, `ExceptionRequest`, `AuditRecord`) and keep workflow states as `String` values.
+- **Rationale:** Enables Phase 3 read models without over-modeling future transitions while staying SQLite-safe.
+- **Alternatives considered:** Full enum-heavy workflow engine in Phase 3A.
+- **Consequences / trade-offs:** Faster delivery and migration simplicity; state validation remains service-level responsibility.
+- **Affected areas:** `prisma/schema.prisma`, seed data, read services.
+- **Status:** Accepted
+- **Evidence level:** Confirmed by implementation
+
+### DEC-031 — Phase 3A deterministic institutional seed scenario
+- **Date:** 2026-05-04
+- **Phase:** Phase 3A — Institutional core data foundation
+- **Decision:** Seed fixed institutional scenario with one student mobility record, assigned coordinator, representative submission/deadline/exception states, and basic audit rows.
+- **Rationale:** Supports reproducible dashboard reads and service/API tests.
+- **Alternatives considered:** Randomized or partial seed values.
+- **Consequences / trade-offs:** Stable demos/tests; less variability in seed scenarios.
+- **Affected areas:** `prisma/seed.ts`, dashboard and service tests.
+- **Status:** Accepted
+- **Evidence level:** Confirmed by implementation
+
+### DEC-032 — Mutations deferred to Phase 3B/3C
+- **Date:** 2026-05-04
+- **Phase:** Phase 3A — Institutional core data foundation
+- **Decision:** Keep institutional endpoints read-only and explicitly defer submission decisions and exception mutation workflows.
+- **Rationale:** Maintains strict phase scope and honest product behavior.
+- **Alternatives considered:** partial mutation actions in Phase 3A.
+- **Consequences / trade-offs:** Clear reviewable scope; action buttons/workflows remain unavailable until next subphases.
+- **Affected areas:** API design, dashboard copy, traceability status.
+- **Status:** Accepted
+- **Evidence level:** Confirmed by implementation

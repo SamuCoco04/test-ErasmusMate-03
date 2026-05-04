@@ -1,23 +1,18 @@
-import { getDemoContextFromRequest, resolveRoleLabel } from '@/src/modules/shared/demo-context';
 import { DashboardCard } from '@/src/components/DashboardCard';
-import { ErrorState } from '@/src/components/States';
 import { PageHeader } from '@/src/components/PageHeader';
+import { getDemoContextFromRequest } from '@/src/modules/shared/demo-context';
+import { getAdminInstitutionalOverview } from '@/src/modules/institutional/read-models';
 
 export default async function AdminDashboardPage() {
-    const demoContext = await getDemoContextFromRequest();
-
-  return (
-    <div className="space-y-6">
-      <PageHeader
-        sectionLabel="Admin dashboard"
-        title="Institutional oversight"
-        subtitle={`Demo user: ${demoContext.userId} (${resolveRoleLabel(demoContext.role)}). Admin workflows are placeholders in this phase.`}
-      />
-      <div className="grid gap-4 md:grid-cols-2">
-        <DashboardCard title="Moderation overview" description="Report handling and actions will be wired in a later phase." status="Pending setup" />
-        <DashboardCard title="System updates" description="Operational summaries will be added with backend support." status="Pending setup" />
-      </div>
-      <ErrorState description="Admin context is loaded from demo mode. Governance workflows are still pending." />
-    </div>
-  );
+  const ctx = await getDemoContextFromRequest();
+  const data = ctx.role === 'ADMIN' ? await getAdminInstitutionalOverview(ctx) : null;
+  return <div className='space-y-6'>
+    <PageHeader sectionLabel='Admin dashboard' title='Institutional overview' subtitle='Institutional totals are backend-backed in Phase 3A. Social moderation and map workflows are not implemented in this phase.' />
+    {data && <div className='grid gap-4 md:grid-cols-2'>
+      <DashboardCard title='Users' description={`${data.users} seeded users`} status='Institutional data' />
+      <DashboardCard title='Mobility records' description={`${data.mobilityRecords} active records`} status='Institutional data' />
+      <DashboardCard title='Procedure submissions' description={`${data.submissions} total submissions`} status='Read only' />
+      <DashboardCard title='Exception requests' description={`${data.exceptions} total requests`} status='Read only' />
+    </div>}
+  </div>;
 }
