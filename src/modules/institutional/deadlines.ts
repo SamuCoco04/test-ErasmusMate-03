@@ -2,6 +2,13 @@ import { prisma } from '@/src/lib/prisma';
 import { DemoContext } from '@/src/modules/shared/demo-context';
 
 export type DeadlineState = 'UPCOMING'|'OVERDUE'|'FULFILLED'|'OVERRIDDEN';
+type DeadlineWithEffectiveState = {
+  effectiveState?: DeadlineState;
+  dueDate: Date;
+  overrideDueDate: Date | null;
+  fulfilledAt: Date | null;
+  state: string;
+};
 
 export function computeEffectiveDeadlineState(deadline:{state:string;dueDate:Date;overrideDueDate:Date|null;fulfilledAt:Date|null}, now = new Date()): DeadlineState {
   if (deadline.fulfilledAt || deadline.state === 'FULFILLED') return 'FULFILLED';
@@ -29,7 +36,7 @@ export async function listDeadlinesForCoordinator(ctx: DemoContext) {
 
 export async function getDeadlineSummary(ctx: DemoContext) {
   const deadlines = ctx.role === 'STUDENT' ? await listDeadlinesForStudent(ctx) : ctx.role === 'COORDINATOR' ? await listDeadlinesForCoordinator(ctx) : await prisma.deadline.findMany({ include: { relatedProcedure: true } });
-  const normalized = deadlines.map((d:any) => ({ ...d, effectiveState: d.effectiveState ?? computeEffectiveDeadlineState(d) }));
+  const normalized = deadlines.map((d: DeadlineWithEffectiveState) => ({ ...d, effectiveState: d.effectiveState ?? computeEffectiveDeadlineState(d) }));
   return {
     counts: {
       upcoming: normalized.filter((d) => d.effectiveState === 'UPCOMING').length,
