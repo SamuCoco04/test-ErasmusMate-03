@@ -54,6 +54,7 @@ export async function createDraftSubmission(ctx:DemoContext, procedureId:string)
 }
 
 export async function transitionSubmission(ctx:DemoContext, submissionId:string, action:SubmissionAction, rationale?:string){
+  if (ctx.role !== 'STUDENT' && ctx.role !== 'COORDINATOR') throw new SubmissionError('FORBIDDEN', 'Forbidden');
   const isStudent = ctx.role==='STUDENT';
   const sub = isStudent ? await assertOwnedByStudent(submissionId,ctx.userId) : await assertCoordinatorAssigned(submissionId,ctx.userId);
   const nextByAction: Record<SubmissionAction, SubmissionState> = {create_draft:'DRAFT', submit:'SUBMITTED', start_review:'IN_REVIEW', approve:'APPROVED', reject:'REJECTED', reopen:'REOPENED', resubmit:'RESUBMITTED'};
