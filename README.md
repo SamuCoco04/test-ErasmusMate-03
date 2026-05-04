@@ -305,3 +305,15 @@ Do not start implementation blindly.
 - `npm run test:service` — run service/API/domain contract tests.
 - `npm run test:e2e` — run Playwright E2E contracts in `e2e/`.
 - `npm run test:e2e:smoke` — run Playwright smoke route contracts only.
+
+---
+
+
+# Minimal local commands (Phase 2A)
+
+    npm install
+    npm run dev
+    npm run test
+    npm run lint
+    npm run build
+
