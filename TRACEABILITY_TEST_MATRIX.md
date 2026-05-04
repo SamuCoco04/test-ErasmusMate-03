@@ -51,7 +51,7 @@ Use the following test type values:
 
 | Test ID | Workflow / Area | Requirement / Rule | Actor | Type | Scenario | Expected result | Status |
 |---|---|---|---|---|---|---|---|
-| SMOKE-001 | App boot | App must run locally | Developer | Smoke | Start application from clean setup (`e2e/smoke/routes.spec.ts`) | App starts without critical runtime errors | Planned |
+| SMOKE-001 | App boot | App must run locally | Developer | Smoke | Start application from clean setup (`e2e/smoke/routes.spec.ts`; `tests/smoke/routes-smoke.test.ts`) | App starts without critical runtime errors | Planned (route smoke tests skipped per DEC-015 until app is runnable) |
 | SMOKE-002 | Database setup | Prisma + SQLite local persistence | Developer | Smoke | Run Prisma generate, migrate, and seed | Database is created and seeded successfully | Planned |
 | SMOKE-003 | Main routes | Main pages must load | Student / Coordinator / Admin | Smoke | Open student, coordinator, admin, social and map entry routes (`e2e/smoke/routes.spec.ts`) | Main routes render without 500 errors | Planned |
 | SMOKE-004 | Demo users | Seeded demo context | Student / Coordinator / Admin | Smoke | Load app with demo users | Student, coordinator and admin contexts are available | Planned |
