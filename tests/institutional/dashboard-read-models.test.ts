@@ -41,4 +41,27 @@ describe('institutional read models', () => {
   it('unauthorized role access is blocked', async () => {
     await expect(getStudentDashboardSummary({ role: 'ADMIN', userId: 'admin-1' } as never)).rejects.toThrow('FORBIDDEN');
   });
+
+  it('student with no mobility record gets empty scoped summaries', async () => {
+    await prisma.user.upsert({
+      where: { id: 'student-no-record' },
+      update: {},
+      create: {
+        id: 'student-no-record',
+        email: 'student-no-record@erasmusmate.local',
+        displayName: 'Student No Record',
+        role: 'STUDENT',
+        institutionId: 'inst-upv',
+      },
+    });
+
+    const dashboard = await getStudentDashboardSummary({ role: 'STUDENT', userId: 'student-no-record' });
+    expect(dashboard.record).toBeNull();
+    expect(dashboard.submissions).toEqual([]);
+    expect(dashboard.deadlines).toEqual([]);
+    expect(dashboard.exceptions).toEqual([]);
+
+    const deadlines = await getDeadlineSummary({ role: 'STUDENT', userId: 'student-no-record' });
+    expect(deadlines).toEqual([]);
+  });
 });

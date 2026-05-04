@@ -8,9 +8,12 @@ function ensureRole(ctx: DemoContext, allowed: Array<DemoContext['role']>) {
 export async function getStudentDashboardSummary(ctx: DemoContext) {
   ensureRole(ctx, ['STUDENT']);
   const record = await prisma.mobilityRecord.findFirst({ where: { studentId: ctx.userId }, include: { hostInstitution: true } });
-  const submissions = await prisma.documentSubmission.findMany({ where: { mobilityRecordId: record?.id } });
-  const deadlines = await prisma.deadline.findMany({ where: { mobilityRecordId: record?.id } });
-  const exceptions = await prisma.exceptionRequest.findMany({ where: { mobilityRecordId: record?.id, requestedById: ctx.userId } });
+  if (!record) {
+    return { record: null, submissions: [], deadlines: [], exceptions: [] };
+  }
+  const submissions = await prisma.documentSubmission.findMany({ where: { mobilityRecordId: record.id } });
+  const deadlines = await prisma.deadline.findMany({ where: { mobilityRecordId: record.id } });
+  const exceptions = await prisma.exceptionRequest.findMany({ where: { mobilityRecordId: record.id, requestedById: ctx.userId } });
   return { record, submissions, deadlines, exceptions };
 }
 
@@ -42,7 +45,8 @@ export async function getCurrentMobilityRecord(ctx: DemoContext) {
 export async function getStudentProcedureSummary(ctx: DemoContext) {
   ensureRole(ctx, ['STUDENT']);
   const record = await prisma.mobilityRecord.findFirst({ where: { studentId: ctx.userId } });
-  return prisma.documentSubmission.findMany({ where: { mobilityRecordId: record?.id }, include: { procedure: true } });
+  if (!record) return [];
+  return prisma.documentSubmission.findMany({ where: { mobilityRecordId: record.id }, include: { procedure: true } });
 }
 
 export async function getCoordinatorReviewQueuePreview(ctx: DemoContext) {
@@ -54,7 +58,8 @@ export async function getCoordinatorReviewQueuePreview(ctx: DemoContext) {
 export async function getDeadlineSummary(ctx: DemoContext) {
   if (ctx.role === 'STUDENT') {
     const record = await prisma.mobilityRecord.findFirst({ where: { studentId: ctx.userId } });
-    return prisma.deadline.findMany({ where: { mobilityRecordId: record?.id } });
+    if (!record) return [];
+    return prisma.deadline.findMany({ where: { mobilityRecordId: record.id } });
   }
   if (ctx.role === 'COORDINATOR') {
     const ids = (await prisma.mobilityRecord.findMany({ where: { coordinatorId: ctx.userId }, select: { id: true } })).map((r) => r.id);
