@@ -636,3 +636,5 @@ A major phase is not complete unless relevant decisions are documented here with
 - Rationale: Preserve institutional primacy and avoid scope leakage.
 - Consequence: Social routes remain under `/social/student/*` and dashboard links back to institutional pages.
 - Status: Accepted.
+
+- Phase 5C social messaging: connection-based student messaging for accepted connections only; no realtime in this phase.

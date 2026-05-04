@@ -24,7 +24,7 @@ export default function ConnectionsPage() {
 
   return <div className='space-y-6'>
     <h1 className='text-2xl font-semibold'>Connections</h1>
-    <p className='text-sm text-slate-600'>Connections help you choose who can contact you later. Messaging will be available after the next phase.</p>
+    <p className='text-sm text-slate-600'>Connections help you choose who can contact you later. Message accepted connections from the Messages section.</p>
     <p className='text-sm text-slate-600'>You can only connect with visible Erasmus profiles.</p>
     <section>
       <h2 className='font-semibold'>Requests received</h2>
