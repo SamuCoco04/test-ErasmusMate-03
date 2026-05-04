@@ -16,9 +16,17 @@ describe('Student Learning Agreement UI shell', () => {
   it('student navigation does not use broken institutional learning agreement path', () => {
     const layout = readFileSync('app/(institutional)/student/layout.tsx', 'utf8');
     const dashboard = readFileSync('app/(institutional)/student/dashboard/page.tsx', 'utf8');
+    const summary = readFileSync('app/(institutional)/student/academic-summary/page.tsx', 'utf8');
     expect(layout.includes('/student/learning-agreement')).toBe(true);
     expect(dashboard.includes('/student/learning-agreement')).toBe(true);
+    expect(layout.includes('/student/academic-summary')).toBe(true);
+    expect(dashboard.includes('/student/academic-summary')).toBe(true);
     expect(layout.includes('/student/institutional/learning-agreement')).toBe(false);
     expect(dashboard.includes('/student/institutional/learning-agreement')).toBe(false);
+    expect(summary.includes('No approved courses yet')).toBe(true);
+    expect(summary.includes('Total ECTS')).toBe(true);
+    expect(summary.includes('Not recorded')).toBe(true);
+    expect(summary.includes('rowKey')).toBe(false);
+    expect(summary.includes('isLatest')).toBe(false);
   });
 });
