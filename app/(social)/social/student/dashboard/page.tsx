@@ -1,25 +1,16 @@
 import { getDemoContextFromRequest, resolveRoleLabel } from '@/src/modules/shared/demo-context';
 import { ButtonLink } from '@/src/components/Button';
 import { DashboardCard } from '@/src/components/DashboardCard';
-import { EmptyState } from '@/src/components/States';
 import { PageHeader } from '@/src/components/PageHeader';
 
 export default async function SocialStudentDashboardPage() {
-    const demoContext = await getDemoContextFromRequest();
-
-  return (
-    <div className="space-y-6">
-      <PageHeader
-        sectionLabel="Social support"
-        title="Student community area"
-        subtitle={`Demo user: ${demoContext.userId} (${resolveRoleLabel(demoContext.role)}). Social workflows are coming in a later phase.`}
-      />
-      <div className="grid gap-4 md:grid-cols-2">
-        <DashboardCard title="Discover students" description="Search, filters, and profile cards are planned for next phase." status="Pending setup" />
-        <DashboardCard title="Messages and connections" description="Accepted-only messaging is not active yet." status="Pending setup" />
-      </div>
-      <EmptyState description="Social page stays student-scoped in demo mode. Social workflows are pending." />
-      <ButtonLink href="/student/dashboard" variant="secondary">Back to official mobility area</ButtonLink>
+  const demoContext = await getDemoContextFromRequest();
+  return <div className='space-y-6'>
+    <PageHeader sectionLabel='Social support' title='Student community area' subtitle={`Demo user: ${demoContext.userId} (${resolveRoleLabel(demoContext.role)}). This area supports student social orientation only.`} />
+    <div className='grid gap-4 md:grid-cols-2'>
+      <DashboardCard title='My social profile' description='Manage what other Erasmus students can see in social discovery.' status='Available now' action={<ButtonLink href='/social/student/profile' variant='secondary'>Open profile</ButtonLink>} />
+      <DashboardCard title='Discover students' description='Find visible student profiles with simple city/study filters.' status='Available now' action={<ButtonLink href='/social/student/discovery' variant='secondary'>Open discovery</ButtonLink>} />
     </div>
-  );
+    <ButtonLink href='/student/dashboard' variant='secondary'>Back to official mobility area</ButtonLink>
+  </div>;
 }

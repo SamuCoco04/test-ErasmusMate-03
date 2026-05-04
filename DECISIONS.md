@@ -592,3 +592,30 @@ A major phase is not complete unless relevant decisions are documented here with
 - **Affected areas:** student academic summary UI, roadmap documentation.
 - **Status:** Accepted
 - **Evidence level:** Confirmed by implementation
+
+### DEC-036 — Phase 5A social profile as secondary support data
+- **Date:** 2026-05-04
+- **Phase:** Phase 5A — Social profile and discovery foundation
+- **Decision:** Introduce `SocialProfile` as student social-support data, explicitly separate from institutional records and workflow processing.
+- **Rationale:** Supports discovery MVP without mixing official mobility procedures.
+- **Consequences / trade-offs:** Clear separation and safer API outputs; social interactions remain limited in this phase.
+- **Status:** Accepted
+- **Evidence level:** Confirmed by implementation
+
+### DEC-037 — Phase 5A discovery visibility and safe-field filtering
+- **Date:** 2026-05-04
+- **Phase:** Phase 5A — Social profile and discovery foundation
+- **Decision:** Discovery excludes own profile, hidden profiles, and moderation-hidden profiles and returns only safe public fields.
+- **Rationale:** Prevents accidental exposure and keeps social discovery deterministic.
+- **Consequences / trade-offs:** Stronger privacy and moderation baseline; richer social actions deferred.
+- **Status:** Accepted
+- **Evidence level:** Confirmed by implementation
+
+### DEC-038 — Phase 5A contact preference informational only
+- **Date:** 2026-05-04
+- **Phase:** Phase 5A — Social profile and discovery foundation
+- **Decision:** Contact preference is shown as profile metadata only and does not enable connection or messaging actions yet.
+- **Rationale:** Keeps Phase 5A strictly foundational and honest.
+- **Consequences / trade-offs:** Clear UX boundaries; interaction workflows deferred to Phase 5B+.
+- **Status:** Accepted
+- **Evidence level:** Confirmed by implementation

@@ -41,6 +41,7 @@ model User {
   createdLearningAgreementRows LearningAgreementRow[] @relation("LearningAgreementRowCreator")
   reviewedLearningAgreementRows LearningAgreementRow[] @relation("LearningAgreementRowReviewer")
   learningAgreementEvents      LearningAgreementEvent[]
+  socialProfile               SocialProfile?
 
   @@index([role])
   @@index([institutionId])
@@ -182,6 +183,33 @@ model AuditRecord {
   @@index([mobilityRecordId, createdAt])
 }
 
+
+
+model SocialProfile {
+  id                  String   @id
+  userId              String   @unique
+  displayName         String
+  homeCity            String?
+  hostCity            String?
+  hostCountry         String?
+  homeInstitutionName String?
+  hostInstitutionName String?
+  studyArea           String?
+  mobilityPhase       String?
+  languagesJson       String
+  interestsJson       String
+  bio                 String?
+  visibility          String
+  contactPreference   String
+  moderationState     String
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@index([visibility, moderationState])
+  @@index([hostCity, studyArea])
+}
 
 model LearningAgreement {
   id             String   @id

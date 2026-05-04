@@ -160,11 +160,16 @@ Use the following test type values:
 | E2E-SOC-DISC-002 | Visibility settings | Student can control discoverability | Student | E2E | Student disables discoverability | Student disappears from discovery results | Planned |
 | E2E-SOC-DISC-003 | Discovery | Student can find visible eligible students | Student | E2E | Student filters discovery by city/institution/stage | Results update with eligible visible profiles | Planned |
 | E2E-SOC-DISC-004 | Contactability | Non-contactable profiles cannot be contacted | Student | E2E | Student tries to request connection with non-contactable profile | Request action is not available or blocked | Planned |
-| SERVICE-SOC-DISC-001 | Discoverability | Hidden profiles excluded server-side | Student | Service/API | Query discovery with hidden profile in DB (`tests/social/discovery.test.ts`) | Hidden profile is not returned | Planned |
+| SERVICE-SOC-DISC-001 | Discoverability | Hidden profiles excluded server-side | Student | Service/API | Query discovery with hidden and moderation-hidden profiles (`tests/social/discovery.test.ts`) | Hidden and moderation-hidden profiles are not returned | Implemented - passing |
 | SERVICE-SOC-DISC-002 | Consent/contactability | Contactability enforced server-side | Student | Service/API | Attempt request when target is not contactable | Backend rejects request | Planned |
-| SERVICE-SOC-DISC-003 | Separation | Social discovery does not expose official institutional records | Student | Service/API | Query social discovery | Response contains social-safe profile fields only | Planned |
+| SERVICE-SOC-DISC-003 | Separation | Social discovery does not expose official institutional records | Student | Service/API | Query social discovery (`tests/social/discovery.test.ts`) | Response contains social-safe profile fields only | Implemented - passing |
 
 ---
+
+| SERVICE-SOC-PROF-001 | Social profile | Student can read own social profile | Student | Service/API | Read own profile (`tests/social/profile.test.ts`) | Current student profile is returned | Implemented - passing |
+| SERVICE-SOC-PROF-002 | Social profile | Student can update allowed fields only | Student | Service/API | Update own profile and attempt forbidden field (`tests/social/profile.test.ts`) | Allowed fields update; internal moderation field stays protected | Implemented - passing |
+| SERVICE-SOC-PROF-003 | Social role guards | Coordinator/admin social-student endpoints are forbidden | Coordinator / Admin | Service/API | Call social profile/discovery services with non-student roles (`tests/social/social-api.test.ts`) | Controlled forbidden response/error | Implemented - passing |
+| SMOKE-SOC-SEED-001 | Seed idempotency | Social seed reruns safely | Developer | Smoke | Run seed twice (`tests/social/social-api.test.ts`) | Seed reruns without unique constraint errors | Implemented - passing |
 
 ## 3.8 Connections and messaging
 
