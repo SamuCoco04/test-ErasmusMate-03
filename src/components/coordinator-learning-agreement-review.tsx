@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useState, useTransition } from 'react';
+import { useMemo, useRef, useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/src/components/Button';
 import { Card } from '@/src/components/Card';
@@ -44,6 +44,7 @@ export function CoordinatorLearningAgreementReview({ queue, initialDetail }: { q
   const [denyRationales, setDenyRationales] = useState<Record<string, string>>({});
   const [isPending, startTransition] = useTransition();
   const router = useRouter();
+  const latestRequestIdRef = useRef(0);
 
   const reviewCounts = useMemo(() => {
     const rows = detail?.rows.filter((row) => row.isLatest) ?? [];
@@ -58,8 +59,16 @@ export function CoordinatorLearningAgreementReview({ queue, initialDetail }: { q
     setErrorMessage(null);
     setSuccessMessage(null);
     setSelectedAgreementId(agreementId);
+    const requestId = latestRequestIdRef.current + 1;
+    latestRequestIdRef.current = requestId;
+
     const response = await fetch(`/api/institutional/learning-agreement/${agreementId}`);
     const payload = await response.json();
+
+    if (requestId != latestRequestIdRef.current) {
+      return;
+    }
+
     if (!response.ok) {
       setErrorMessage(payload.error ?? 'Unable to load agreement details.');
       return;
