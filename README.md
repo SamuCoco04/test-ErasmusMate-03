@@ -317,3 +317,36 @@ Do not start implementation blindly.
     npm run lint
     npm run build
 
+
+
+---
+
+
+## Database setup (Phase 2C)
+
+1. Copy env template:
+
+       cp .env.example .env
+
+2. Generate Prisma client:
+
+       npm run db:generate
+
+3. Create/update local SQLite schema:
+
+       npm run db:migrate
+
+4. Seed deterministic demo data:
+
+       npm run db:seed
+
+### Database scripts
+
+- `npm run db:generate` — generate Prisma client.
+- `npm run db:migrate` — run local Prisma migrations against SQLite.
+- `npm run db:seed` — seed deterministic demo users and base mobility context.
+- `npm run db:reset` — reset local SQLite DB and re-apply migrations.
+
+Environment template is provided in `.env.example` with:
+
+- `DATABASE_URL="file:./prisma/dev.db"`

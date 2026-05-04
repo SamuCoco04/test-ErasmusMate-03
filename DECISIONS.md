@@ -286,3 +286,36 @@ A major phase is not complete unless relevant decisions are documented here with
 - **Affected areas:** top bar messaging, dashboard copy, phase planning continuity.
 - **Status:** Accepted
 - **Evidence level:** Confirmed by implementation
+
+### DEC-023 — Phase 2C minimal Prisma schema boundary
+- **Date:** 2026-05-04
+- **Phase:** Phase 2C — Prisma SQLite foundation and deterministic demo seed
+- **Decision:** Implement only foundational persistence models (`Institution`, `User`, `MobilityRecord`) and defer workflow-heavy tables.
+- **Rationale:** Phase scope requires DB foundation without prematurely implementing institutional/social workflow semantics.
+- **Alternatives considered:** Modeling full submissions/deadlines/exceptions/social/moderation/map schemas now.
+- **Consequences / trade-offs:** Faster stable base for next phases; later phases must add domain-specific models incrementally.
+- **Affected areas:** `prisma/schema.prisma`, seed strategy, upcoming workflow modules.
+- **Status:** Accepted
+- **Evidence level:** Confirmed by implementation
+
+### DEC-024 — String-based role/status fields for SQLite-safe early phase
+- **Date:** 2026-05-04
+- **Phase:** Phase 2C — Prisma SQLite foundation and deterministic demo seed
+- **Decision:** Use `String` fields for role and mobility status in foundation schema, with documented allowed values in comments and shared constants.
+- **Rationale:** Avoid enum migration friction in an early SQLite phase while preserving clear allowed demo values.
+- **Alternatives considered:** Prisma enums in Phase 2C.
+- **Consequences / trade-offs:** Simpler early migrations; strict validation must be enforced at service/validation layer in later phases.
+- **Affected areas:** `prisma/schema.prisma`, `src/modules/shared/demo-identity.ts`, tests.
+- **Status:** Accepted
+- **Evidence level:** Confirmed by implementation
+
+### DEC-025 — Deterministic idempotent demo seed baseline
+- **Date:** 2026-05-04
+- **Phase:** Phase 2C — Prisma SQLite foundation and deterministic demo seed
+- **Decision:** Seed fixed IDs (`student-1`, `coordinator-1`, `admin-1`, institution IDs, mobility record ID) using Prisma upserts.
+- **Rationale:** Ensures repeatable local demos and stable references for future tests/routes.
+- **Alternatives considered:** Randomized seed data; insert-only seed scripts.
+- **Consequences / trade-offs:** Predictable local environment and rerun safety; less variability for exploratory scenarios.
+- **Affected areas:** `prisma/seed.ts`, package scripts, README setup commands.
+- **Status:** Accepted
+- **Evidence level:** Confirmed by implementation

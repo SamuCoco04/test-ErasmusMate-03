@@ -1,0 +1,57 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Institution {
+  id        String   @id
+  code      String   @unique
+  name      String
+  country   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  users            User[]
+  outgoingMobility MobilityRecord[] @relation("HomeInstitution")
+  incomingMobility MobilityRecord[] @relation("HostInstitution")
+}
+
+model User {
+  id             String   @id
+  email          String   @unique
+  displayName    String
+  role           String // Allowed demo values for Phase 2C: STUDENT | COORDINATOR | ADMIN
+  institutionId  String
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  institution     Institution   @relation(fields: [institutionId], references: [id])
+  mobilityRecords MobilityRecord[]
+
+  @@index([role])
+  @@index([institutionId])
+}
+
+model MobilityRecord {
+  id                String   @id
+  studentId         String
+  homeInstitutionId String
+  hostInstitutionId String
+  mobilityStatus    String // Placeholder values for Phase 2C: DRAFT | ACTIVE | COMPLETED
+  startDate         DateTime
+  endDate           DateTime
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  student         User        @relation(fields: [studentId], references: [id])
+  homeInstitution Institution @relation("HomeInstitution", fields: [homeInstitutionId], references: [id])
+  hostInstitution Institution @relation("HostInstitution", fields: [hostInstitutionId], references: [id])
+
+  @@index([studentId])
+  @@index([homeInstitutionId])
+  @@index([hostInstitutionId])
+}
