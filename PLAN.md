@@ -190,7 +190,7 @@ Maintain `TRACEABILITY_TEST_MATRIX.md` continuously:
 
 - update planned rows before/with test creation
 - keep test IDs, workflow links, actor, type, scenario, expected result, status current
-- use explicit status progression (Planned → Implemented-expected-failing → Implemented-passing)
+- use explicit status progression (Planned → Implemented - expected failing → Implemented - passing)
 - do not close a major phase with missing traceability for its tests
 
 ---
