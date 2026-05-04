@@ -537,3 +537,36 @@ A major phase is not complete unless relevant decisions are documented here with
 - **Affected areas:** roadmap communication, README, traceability statuses.
 - **Status:** Accepted
 - **Evidence level:** Confirmed by implementation
+
+### DEC-017 — Phase 4C coordinator Learning Agreement review UI pattern
+- **Date:** 2026-05-04
+- **Phase:** Phase 4C — Coordinator Learning Agreement review UI
+- **Decision:** Build `/coordinator/learning-agreement-review` as a server-rendered page with initial queue/detail fetch and a client component for row decisions + refresh.
+- **Rationale:** Keeps route handler/service logic unchanged while enabling fast, low-click coordinator decisions.
+- **Alternatives considered:** Fully client-side page fetch; new server action layer.
+- **Consequences / trade-offs:** Simple integration and predictable UX; client state must handle success/error messages.
+- **Affected areas:** coordinator page, coordinator navigation, Learning Agreement review interactions.
+- **Status:** Accepted
+- **Evidence level:** Confirmed by implementation
+
+### DEC-018 — Deny rationale UX is enforced before backend call
+- **Date:** 2026-05-04
+- **Phase:** Phase 4C — Coordinator Learning Agreement review UI
+- **Decision:** Deny action requires visible rationale input and client-side pre-check; backend remains final validator.
+- **Rationale:** Reduces failed clicks while preserving backend source-of-truth validation.
+- **Alternatives considered:** Backend-only validation with no inline pre-check.
+- **Consequences / trade-offs:** Better coordinator feedback; still handles blocked actions from API cleanly.
+- **Affected areas:** coordinator row decision form, API error display.
+- **Status:** Accepted
+- **Evidence level:** Confirmed by implementation
+
+### DEC-019 — Academic Summary UI deferred to Phase 4D
+- **Date:** 2026-05-04
+- **Phase:** Phase 4C — Coordinator Learning Agreement review UI
+- **Decision:** Keep Academic Summary as backend-derived output and defer polished standalone page to Phase 4D.
+- **Rationale:** Phase 4C focuses coordinator review workflow scope.
+- **Alternatives considered:** Build summary page now.
+- **Consequences / trade-offs:** Tighter focus for Phase 4C; summary presentation remains pending.
+- **Affected areas:** institutional roadmap, coordinator/student IA.
+- **Status:** Accepted
+- **Evidence level:** Confirmed by implementation

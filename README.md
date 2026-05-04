@@ -55,3 +55,20 @@ npm run build
   - `GET /api/institutional/learning-agreement` is for `STUDENT`.
   - `GET /api/institutional/learning-agreement/review-queue` is for `COORDINATOR`.
   - Wrong roles return controlled `403 {"error":"Forbidden"}` responses.
+
+
+## Phase 4C update
+
+Implemented coordinator Learning Agreement review route:
+- `/coordinator/learning-agreement-review`
+
+Current Phase 4C scope implemented:
+- Coordinator queue and row-level approve/request-changes UI for assigned agreements
+- Coordinator dashboard + sidebar navigation link to Learning Agreement Review
+
+Pending/deferred:
+- Polished Academic Summary page (Phase 4D)
+- Social support MVP (Phase 5)
+- Moderation + map workflows (Phase 6)
+- Production authentication
+- File upload/storage
