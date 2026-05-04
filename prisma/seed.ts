@@ -3,10 +3,20 @@ import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 
 export async function seed() {
-  await prisma.learningAgreementEvent.deleteMany();
-  await prisma.learningAgreementRow.deleteMany();
-  await prisma.learningAgreement.deleteMany();
-  await prisma.documentSubmissionEvent.deleteMany();
+  await prisma.$transaction([
+    prisma.learningAgreementEvent.deleteMany(),
+    prisma.learningAgreementRow.deleteMany(),
+    prisma.learningAgreement.deleteMany(),
+    prisma.auditRecord.deleteMany(),
+    prisma.exceptionRequest.deleteMany(),
+    prisma.deadline.deleteMany(),
+    prisma.documentSubmissionEvent.deleteMany(),
+    prisma.documentSubmission.deleteMany(),
+    prisma.procedureDefinition.deleteMany(),
+    prisma.mobilityRecord.deleteMany(),
+    prisma.user.deleteMany(),
+    prisma.institution.deleteMany(),
+  ]);
 
   await prisma.institution.upsert({ where: { id: 'inst-home-1' }, update: { name: 'Universidad de Sevilla', code: 'US', country: 'Spain' }, create: { id: 'inst-home-1', name: 'Universidad de Sevilla', code: 'US', country: 'Spain' } });
   await prisma.institution.upsert({ where: { id: 'inst-host-1' }, update: { name: 'KU Leuven', code: 'KUL', country: 'Belgium' }, create: { id: 'inst-host-1', name: 'KU Leuven', code: 'KUL', country: 'Belgium' } });
@@ -103,6 +113,14 @@ export async function seed() {
     }
     await prisma.learningAgreementRow.upsert({ where: { id: row.id }, update: row, create: row });
   }
+  const laEvents = [
+    { id: 'laevt-seed-1', agreementId: 'la-seed-1', actorId: 'student-1', actionType: 'submit_agreement', fromState: 'DRAFT', toState: 'SUBMITTED', rowId: null, noteOrRationale: null },
+    { id: 'laevt-seed-2', agreementId: 'la-seed-1', actorId: 'coordinator-1', actionType: 'deny_row', fromState: 'IN_REVIEW', toState: 'DENIED', rowId: 'lar-seed-3', noteOrRationale: 'Course content mismatch' },
+  ] as const;
+  for (const event of laEvents) {
+    await prisma.learningAgreementEvent.upsert({ where: { id: event.id }, update: event, create: event });
+  }
+
   const auditSeedData = [
     { id: 'audit-1', mobilityRecordId: 'mobility-1', actorId: 'student-1', eventType: 'SUBMISSION_CREATED', details: 'Created draft for Passport copy' },
     { id: 'audit-2', mobilityRecordId: 'mobility-1', actorId: 'coordinator-1', eventType: 'SUBMISSION_APPROVED', details: 'Approved Arrival certificate' },

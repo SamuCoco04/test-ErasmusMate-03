@@ -11,7 +11,8 @@ export default function StudentInstitutionalLayout({ children }: { children: Rea
             items={[
               { label: 'Student dashboard', href: '/student/dashboard', active: true },
               { label: 'My submissions', href: '/student/submissions' },
-              { label: 'Deadlines and exceptions', href: '/student/dashboard' }
+              { label: 'Learning Agreement', href: '/student/learning-agreement' },
+              { label: 'Deadlines and exceptions', href: '/student/deadlines' }
             ]}
           />
         </aside>

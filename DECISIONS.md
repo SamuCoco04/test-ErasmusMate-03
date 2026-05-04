@@ -491,3 +491,15 @@ A major phase is not complete unless relevant decisions are documented here with
 - **Affected areas:** `vitest.config.ts`, institutional service/API tests using Prisma seed data.
 - **Status:** Accepted
 - **Evidence level:** Confirmed by implementation
+
+
+### DEC-021 — Phase 4A transactional reseed and strict FK-safe Learning Agreement event writes
+- **Date:** 2026-05-04
+- **Phase:** Phase 4A stabilization
+- **Decision:** Keep seed setup deterministic by clearing dependent tables in transactional dependency order and preserve strict Learning Agreement event integrity checks before event creation (agreement, actor, and row consistency checks).
+- **Rationale:** Prevent cross-suite test interference with shared SQLite state and avoid dangling audit/event records.
+- **Alternatives considered:** Relax FK integrity for events; remove Learning Agreement seed coverage; skip failing suites.
+- **Consequences / trade-offs:** More explicit seed ordering and setup discipline; stronger data integrity and reliable reseeding.
+- **Affected areas:** `prisma/seed.ts`, learning-agreement service/event flows, Vitest DB-backed test stability.
+- **Status:** Accepted
+- **Evidence level:** Confirmed by implementation
