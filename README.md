@@ -291,3 +291,8 @@ Before implementing anything, Codex must:
 7. create or update tests and traceability before or alongside implementation
 
 Do not start implementation blindly.
+
+## Planning status
+
+`PLAN.md` now contains the accepted Iteration 3 execution plan baseline used before implementation starts.
+
