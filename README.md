@@ -2,7 +2,7 @@
 
 ErasmusMate is a full-stack MVP for Erasmus mobility management.
 
-## Current scope (Phase 4A)
+## Current scope (Phase 4B)
 
 Completed institutional scope:
 - Phase 3 dashboards, submissions, deadlines, and exceptions backend/UI shells.
@@ -21,7 +21,7 @@ Learning Agreement API routes added:
 - `GET /api/institutional/academic-summary`
 
 Pending scope:
-- Full student Learning Agreement table editor UI (Phase 4B).
+- Student Learning Agreement table editor UI at `/student/learning-agreement` (Phase 4B).
 - Full coordinator Learning Agreement review UI (Phase 4C).
 - Polished Mobility Record – Academic Summary UI (Phase 4D).
 - Social support MVP (Phase 5).

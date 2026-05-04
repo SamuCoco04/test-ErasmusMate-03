@@ -1,16 +1,25 @@
 import { PageHeader } from '@/src/components/PageHeader';
+import { ErrorState } from '@/src/components/States';
+import { getDemoContextFromRequest } from '@/src/modules/shared/demo-context';
+import { createOrGetDraftAgreement, getLearningAgreementDetail } from '@/src/modules/institutional/learning-agreement';
+import { StudentLearningAgreementEditor } from '@/src/components/student-learning-agreement-editor';
 
-export default function StudentLearningAgreementPlaceholderPage() {
-  return (
-    <div className="space-y-4">
-      <PageHeader
-        sectionLabel="Learning Agreement"
-        title="Learning Agreement editor is coming next"
-        subtitle="Phase 4A includes stable APIs and rules. The full table editor UI lands in Phase 4B."
-      />
-      <p className="rounded-xl border border-slate-200 bg-white p-4 text-sm text-slate-700">
-        For now, use the API endpoints for workflow validation. This page is intentionally a placeholder.
-      </p>
-    </div>
-  );
+export default async function StudentLearningAgreementPage() {
+  try {
+    const ctx = await getDemoContextFromRequest();
+    const base = await createOrGetDraftAgreement(ctx);
+    const detail = await getLearningAgreementDetail(ctx, base.id);
+    if (!detail) throw new Error('Learning Agreement not found');
+
+    return <div className="space-y-6">
+      <PageHeader sectionLabel="Learning Agreement" title="My Learning Agreement" subtitle="Manage your course equivalences and send updates for coordinator review." />
+      <p className="text-sm text-slate-600">Editing an approved row creates a new version for review.</p>
+      <StudentLearningAgreementEditor agreement={detail as never} />
+    </div>;
+  } catch (error) {
+    return <div className="space-y-6">
+      <PageHeader sectionLabel="Learning Agreement" title="My Learning Agreement" subtitle="Manage your course equivalences and send updates for coordinator review." />
+      <ErrorState description={error instanceof Error ? error.message : 'Unable to load Learning Agreement.'} />
+    </div>;
+  }
 }
