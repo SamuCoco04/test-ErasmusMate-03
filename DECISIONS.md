@@ -638,3 +638,12 @@ A major phase is not complete unless relevant decisions are documented here with
 - Status: Accepted.
 
 - Phase 5C social messaging: connection-based student messaging for accepted connections only; no realtime in this phase.
+
+### DEC-039 — Phase 5D social UX + safety hardening keeps accepted-only messaging and participant-scoped block semantics
+- **Date:** 2026-05-04
+- **Phase:** Phase 5D — Social UX and safety hardening
+- **Decision:** Clarify social navigation labels and active state, show only the other student in connection rows, and require explicit confirmation before blocking while preserving accepted-only messaging safeguards.
+- **Rationale:** Reduces user confusion (especially around ambiguous pair labels) and lowers accidental safety actions without broadening feature scope.
+- **Consequences / trade-offs:** Improved clarity and safer social actions; real-time chat and moderation dashboard remain deferred.
+- **Status:** Accepted
+- **Evidence level:** Confirmed by implementation

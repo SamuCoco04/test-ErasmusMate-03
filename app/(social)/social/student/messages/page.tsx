@@ -9,6 +9,7 @@ export default function MessagesPage() {
   const [selected, setSelected] = useState<string | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
   const [body, setBody] = useState('');
+  const [error, setError] = useState('');
 
   const selectedThread = useMemo(() => threads.find((x) => x.connectionId === selected) ?? null, [threads, selected]);
 
@@ -30,12 +31,20 @@ export default function MessagesPage() {
 
   const send = async () => {
     if (!selected) return;
-    const response = await fetch(`/api/social/messages/${selected}`, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ body }) });
-    if (response.ok) {
-      setBody('');
-      await loadMessages(selected);
-      await loadThreads();
+    if (!body.trim()) {
+      setError('Please write a message before sending.');
+      return;
     }
+    const response = await fetch(`/api/social/messages/${selected}`, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ body }) });
+    if (!response.ok) {
+      const json = (await response.json().catch(() => ({ error: 'Message could not be sent right now.' }))) as { error?: string };
+      setError(json.error ?? 'Message could not be sent right now.');
+      return;
+    }
+    setError('');
+    setBody('');
+    await loadMessages(selected);
+    await loadThreads();
   };
 
   if (threads.length === 0) return <div className='rounded-xl border bg-white p-6'>No accepted connections yet. Accept a connection to start messaging.</div>;
@@ -58,9 +67,10 @@ export default function MessagesPage() {
         </div>)}
       </div>
       <div className='mt-4 flex gap-2'>
-        <input className='flex-1 rounded border px-3 py-2' value={body} onChange={(e)=>setBody(e.target.value)} placeholder='Write a message' maxLength={1000} />
-        <button className='rounded bg-slate-900 px-3 py-2 text-white' onClick={send}>Send</button>
+        <input className='flex-1 rounded border px-3 py-2' value={body} onChange={(e) => setBody(e.target.value)} placeholder='Write a message' maxLength={1000} />
+        <button className='rounded bg-slate-900 px-3 py-2 text-white disabled:opacity-50' disabled={!body.trim()} onClick={send}>Send</button>
       </div>
+      {error ? <p className='mt-2 text-sm text-red-600'>{error}</p> : null}
     </section>
   </div>;
 }
