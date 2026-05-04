@@ -101,7 +101,7 @@ Use the following test type values:
 | E2E-DEAD-001 | Deadlines | Student sees upcoming deadlines | Student | E2E | Student opens deadlines page/dashboard widget | Upcoming deadlines are visible and understandable | Planned |
 | E2E-DEAD-002 | Deadlines | Coordinator sees risk/overdue items | Coordinator | E2E | Coordinator opens deadline view | Assigned students’ risk/overdue obligations are visible | Planned |
 | SERVICE-DEAD-001 | Deadline blocking | Overdue deadline blocks submission when policy requires | Student | Service/API | Student submits after effective due date (tests/institutional/deadlines.test.ts + submission guards) | Backend blocks action when rule applies | Implemented - passing |
-| SERVICE-DEAD-002 | Deadline override | Override due date is respected | Student / Coordinator | Service/API | Exception extends due date | Submission allowed until override date | Planned |
+| SERVICE-DEAD-002 | Deadline override | Override due date is respected | Student / Coordinator | Service/API | Exception extends due date (tests/institutional/deadlines.test.ts, tests/institutional/exceptions.test.ts) | Submission allowed until override date | Implemented - passing |
 | SERVICE-DEAD-003 | Expired override | Expired override can become overdue again | Student / Coordinator | Service/API | Override date passes | Deadline state becomes overdue or blocks when designed | Planned |
 | SERVICE-DEAD-004 | Fulfilled deadline | Fulfilled deadline does not block | Student | Service/API | Submit after obligation fulfilled | Backend does not block due to fulfilled deadline | Planned |
 
@@ -117,8 +117,8 @@ Use the following test type values:
 | E2E-EXC-004 | Exception application | Approved exception can apply supported change | Coordinator | E2E | Coordinator applies deadline exception | Related deadline or obligation reflects approved exception | Planned |
 | SERVICE-EXC-001 | Scope validation | Deadline-scoped exception requires deadline reference | Student | Service/API | Create deadline exception without reference (`tests/institutional/exceptions.test.ts`) | Backend rejects request | Planned |
 | SERVICE-EXC-002 | Apply guard | Unsupported apply action blocked | Coordinator | Service/API | Apply exception without supported target | Backend rejects action | Planned |
-| SERVICE-EXC-003 | Exception permissions | Only authorized coordinator decides | Coordinator | Service/API | Unassigned coordinator tries to decide | Backend rejects action | Planned |
-| SERVICE-EXC-004 | Auditability | Exception actions audited | Student / Coordinator | Service/API | Create, approve, reject, apply exception | Event/audit records are created | Planned |
+| SERVICE-EXC-003 | Exception permissions | Only authorized coordinator decides | Coordinator | Service/API | Unassigned coordinator tries to decide (tests/institutional/exceptions.test.ts) | Backend rejects action | Implemented - passing |
+| SERVICE-EXC-004 | Auditability | Exception actions audited | Student / Coordinator | Service/API | Create, approve, apply exception (tests/institutional/exceptions.test.ts) | Event/audit records are created | Implemented - passing |
 
 ---
 
@@ -224,7 +224,7 @@ Use the following test type values:
 
 | Test ID | Workflow / Area | Requirement / Rule | Actor | Type | Scenario | Expected result | Status |
 |---|---|---|---|---|---|---|---|
-| UX-001 | UI language | Human-friendly language | Student / Coordinator / Admin | Manual | Review main screens | UI avoids technical/internal wording | Planned |
+| UX-001 | UI language | Human-friendly language | Student / Coordinator / Admin | Manual | Review key institutional pages in Phase 3D | UI avoids technical/internal wording | Implemented - passing |
 | UX-002 | Minimum-click UX | Common actions accessible quickly | Student | Manual | From dashboard, access next pending task | Action is reachable in fewest reasonable clicks | Planned |
 | UX-003 | Coordinator efficiency | Review actions easy to reach | Coordinator | Manual | Coordinator opens queue and decides item | Approve/reject/request change actions are visible and direct | Planned |
 | UX-004 | Visual alignment | Figma visual direction followed | Student / Coordinator / Admin | Manual | Compare key screens to Figma/frontend-concept | Layout, hierarchy, cards, badges and navigation feel aligned | Planned |
