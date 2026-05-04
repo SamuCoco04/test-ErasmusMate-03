@@ -7,16 +7,7 @@ export default defineConfig({
   use: {
     baseURL: process.env.PLAYWRIGHT_BASE_URL ?? 'http://127.0.0.1:3000',
     trace: 'on-first-retry'
-  },
-  // webServer is disabled by default (no app exists in Phase 1).
-  // Set PLAYWRIGHT_START_SERVER=1 once the Next.js app is scaffolded
-  // so Playwright can automatically start it with `npm run dev`.
-  webServer: process.env.PLAYWRIGHT_START_SERVER
-    ? {
-        command: 'npm run dev',
-        url: 'http://127.0.0.1:3000',
-        reuseExistingServer: true,
-        timeout: 120_000
-      }
-    : undefined
+  }
+  // Intentionally no `webServer` in Phase 1: there is no Next.js app scaffold yet.
+  // Run against an externally started server by setting PLAYWRIGHT_BASE_URL.
 });
