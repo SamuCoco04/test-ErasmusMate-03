@@ -1,5 +1,6 @@
 import { prisma } from '@/src/lib/prisma';
 import { DemoContext } from '@/src/modules/shared/demo-context';
+import { computeEffectiveDeadlineState, markDeadlineFulfilled } from './deadlines';
 
 export type SubmissionState = 'DRAFT'|'SUBMITTED'|'IN_REVIEW'|'APPROVED'|'REJECTED'|'REOPENED'|'RESUBMITTED';
 export type SubmissionAction = 'create_draft'|'submit'|'start_review'|'approve'|'reject'|'reopen'|'resubmit';
@@ -19,6 +20,14 @@ async function assertCoordinatorAssigned(submissionId:string, coordinatorId:stri
   if(!sub) throw new SubmissionError('NOT_FOUND','Submission not found');
   if(sub.mobilityRecord.coordinatorId!==coordinatorId) throw new SubmissionError('FORBIDDEN','Forbidden');
   return sub;
+}
+
+
+async function assertSubmissionWindowOpen(mobilityRecordId:string, procedureId:string){
+  const deadline = await prisma.deadline.findFirst({ where: { mobilityRecordId, relatedProcedureId: procedureId } });
+  if (!deadline) return;
+  const effective = computeEffectiveDeadlineState(deadline);
+  if (effective === 'OVERDUE') throw new SubmissionError('DEADLINE_BLOCKED', 'Submission is blocked because this requirement is overdue.');
 }
 
 async function writeAuditAndEvent(submissionId:string,mobilityRecordId:string, actorId:string, action:SubmissionAction, prior:string, next:string, rationale?:string){
@@ -66,8 +75,10 @@ export async function transitionSubmission(ctx:DemoContext, submissionId:string,
   if(!allowed[action].includes(state)) throw new SubmissionError('INVALID_TRANSITION','Invalid state transition');
   if((action==='reject'||action==='reopen') && !rationale?.trim()) throw new SubmissionError('VALIDATION','Rationale is required');
   const nextState = nextByAction[action];
+  if (action === 'submit' || action === 'resubmit') await assertSubmissionWindowOpen(sub.mobilityRecordId, sub.procedureId);
   const canWriteReviewerNotes = !isStudent && ['start_review','approve','reject','reopen'].includes(action);
   const updated = await prisma.documentSubmission.update({where:{id:submissionId},data:{state:nextState,submittedAt:action==='submit'||action==='resubmit'?new Date():sub.submittedAt,reviewedAt:['approve','reject','reopen'].includes(action)?new Date():sub.reviewedAt,reviewerNotes:canWriteReviewerNotes?(rationale??sub.reviewerNotes):sub.reviewerNotes,reopeningRationale:action==='reopen'?(rationale??null):sub.reopeningRationale}});
   await writeAuditAndEvent(sub.id,sub.mobilityRecordId,ctx.userId,action,state,nextState,rationale);
+  if (action === 'approve') await markDeadlineFulfilled(ctx.userId, sub.id);
   return updated;
 }
