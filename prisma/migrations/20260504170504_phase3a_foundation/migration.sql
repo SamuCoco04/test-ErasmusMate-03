@@ -1,0 +1,2 @@
+-- Phase 3A foundation migration placeholder restored to keep migration history consistent.
+-- The foundational schema is established by 20260504170044_phase3a_fix.
