@@ -480,3 +480,14 @@ A major phase is not complete unless relevant decisions are documented here with
 - **Consequences / trade-offs:** Summary is always live-derived; snapshot/historical summary strategy deferred.
 - **Status:** Accepted
 - **Evidence level:** Confirmed by implementation
+
+### DEC-019 — Serialize Vitest DB-backed execution for shared SQLite stability
+- **Date:** 2026-05-04
+- **Phase:** Phase 4A backend foundation stabilization
+- **Decision:** Configure Vitest to run test files serially (`fileParallelism: false`, single worker) so all Prisma/SQLite-backed suites share one deterministic seed lifecycle.
+- **Rationale:** Existing tests call shared `seed()` and mutate overlapping records; parallel workers caused intermittent foreign key failures in Learning Agreement seed/event writes.
+- **Alternatives considered:** Per-suite isolated SQLite files; broad fixture refactor to eliminate shared seeded records.
+- **Consequences / trade-offs:** Lower parallel test throughput but stable deterministic runs across Phase 3 and Phase 4A backend suites.
+- **Affected areas:** `vitest.config.ts`, institutional service/API tests using Prisma seed data.
+- **Status:** Accepted
+- **Evidence level:** Confirmed by implementation

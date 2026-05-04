@@ -13,5 +13,8 @@ export default defineConfig({
     environment: 'node',
     globals: false,
     setupFiles: ['tests/setup-env.ts'],
+    fileParallelism: false,
+    maxWorkers: 1,
+    minWorkers: 1,
   },
 });

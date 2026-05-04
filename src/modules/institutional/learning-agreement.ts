@@ -25,6 +25,14 @@ async function assertCoordinatorAgreement(agreementId:string, coordinatorId:stri
 }
 
 async function writeEvent(agreementId:string, actorId:string, actionType:string, fromState?:string|null, toState?:string|null, rowId?:string|null, note?:string|null){
+  const [agreement, actor, row] = await Promise.all([
+    prisma.learningAgreement.findUnique({ where: { id: agreementId }, select: { id: true } }),
+    prisma.user.findUnique({ where: { id: actorId }, select: { id: true } }),
+    rowId ? prisma.learningAgreementRow.findUnique({ where: { id: rowId }, select: { id: true, agreementId: true } }) : Promise.resolve(null),
+  ]);
+  if (!agreement) throw new LearningAgreementError('NOT_FOUND', 'Learning agreement not found');
+  if (!actor) throw new LearningAgreementError('FORBIDDEN', 'Forbidden');
+  if (rowId && (!row || row.agreementId !== agreementId)) throw new LearningAgreementError('NOT_FOUND', 'Row not found');
   await prisma.learningAgreementEvent.create({data:{id:`laevt-${crypto.randomUUID()}`,agreementId,actorId,actionType,fromState:fromState??null,toState:toState??null,rowId:rowId??null,noteOrRationale:note??null}});
 }
 
