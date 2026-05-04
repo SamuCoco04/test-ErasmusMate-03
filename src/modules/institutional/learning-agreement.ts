@@ -75,6 +75,7 @@ export async function updateAgreementRow(ctx:DemoContext, agreementId:string,row
   await prisma.learningAgreementRow.update({where:{id:row.id},data:{isLatest:false}});
   const newRow = await prisma.learningAgreementRow.create({data:{id:`lar-${crypto.randomUUID()}`,agreementId,rowKey:row.rowKey,revision:row.revision+1,isLatest:true,supersedesRowId:row.id,homeCourseCode:payload.homeCourseCode,homeCourseName:payload.homeCourseName,destinationCourseCode:payload.destinationCourseCode,destinationCourseName:payload.destinationCourseName,ects:payload.ects,semester:payload.semester,status:'IN_REVIEW',createdById:ctx.userId}});
   await writeEvent(agreementId,ctx.userId,'revise_row',row.status,'IN_REVIEW',newRow.id);
+  await recomputeAgreementState(ctx, agreementId);
   return newRow;
 }
 
@@ -139,7 +140,12 @@ export async function recomputeAgreementState(ctx:DemoContext, agreementId:strin
 export async function getLearningAgreementForStudent(ctx:DemoContext){ requireRole(ctx,STUDENT); return prisma.learningAgreement.findMany({where:{studentId:ctx.userId},orderBy:{updatedAt:'desc'}}); }
 export async function getLearningAgreementForCoordinator(ctx:DemoContext){ requireRole(ctx,COORDINATOR); return prisma.learningAgreement.findMany({where:{coordinatorId:ctx.userId},orderBy:{updatedAt:'desc'}}); }
 export async function getLearningAgreementReviewQueue(ctx:DemoContext){ requireRole(ctx,COORDINATOR); return prisma.learningAgreement.findMany({where:{coordinatorId:ctx.userId,state:{in:['SUBMITTED','IN_REVIEW','PARTIALLY_APPROVED','CHANGES_REQUESTED']}},include:{mobilityRecord:true},orderBy:{updatedAt:'desc'}}); }
-export async function getLearningAgreementDetail(ctx:DemoContext,agreementId:string){ if(ctx.role==='STUDENT') await assertStudentAgreement(agreementId,ctx.userId); else if(ctx.role==='COORDINATOR') await assertCoordinatorAgreement(agreementId,ctx.userId); return prisma.learningAgreement.findUnique({where:{id:agreementId},include:{rows:{orderBy:[{rowKey:'asc'},{revision:'desc'}]},events:{orderBy:{createdAt:'desc'}}}}); }
+export async function getLearningAgreementDetail(ctx:DemoContext,agreementId:string){
+  requireRole(ctx, [...STUDENT, ...COORDINATOR]);
+  if(ctx.role==='STUDENT') await assertStudentAgreement(agreementId,ctx.userId);
+  else await assertCoordinatorAgreement(agreementId,ctx.userId);
+  return prisma.learningAgreement.findUnique({where:{id:agreementId},include:{rows:{orderBy:[{rowKey:'asc'},{revision:'desc'}]},events:{orderBy:{createdAt:'desc'}}}});
+}
 
 export async function getAcademicSummaryForMobilityRecord(ctx:DemoContext,mobilityRecordId?:string){
   const mr = mobilityRecordId ? await prisma.mobilityRecord.findUnique({where:{id:mobilityRecordId}}) : await prisma.mobilityRecord.findFirst({where:ctx.role==='STUDENT'?{studentId:ctx.userId}:ctx.role==='COORDINATOR'?{coordinatorId:ctx.userId}:undefined});
