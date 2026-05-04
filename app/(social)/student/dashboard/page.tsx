@@ -1,6 +1,6 @@
 import { ButtonLink } from '@/src/components/Button';
 import { DashboardCard } from '@/src/components/DashboardCard';
-import { SuccessState } from '@/src/components/States';
+import { EmptyState } from '@/src/components/States';
 import { PageHeader } from '@/src/components/PageHeader';
 
 export default function SocialStudentDashboardPage() {
@@ -15,7 +15,7 @@ export default function SocialStudentDashboardPage() {
         <DashboardCard title="Discover students" description="Search, filters, and profile cards are planned for next phase." status="Pending setup" />
         <DashboardCard title="Messages and connections" description="Accepted-only messaging is not active yet." status="Pending setup" />
       </div>
-      <SuccessState description="Layout foundation is ready. Social features will be connected later." />
+      <EmptyState description="Social features will be connected in a later phase. This layout is a placeholder." />
       <ButtonLink href="/student/dashboard" variant="secondary">Back to official mobility area</ButtonLink>
     </div>
   );

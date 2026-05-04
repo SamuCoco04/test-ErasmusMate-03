@@ -4,10 +4,11 @@ import { cn } from '@/src/lib/cn';
 export function SidebarNav({ items }: { items: Array<{ label: string; href: string; active?: boolean }> }) {
   return (
     <nav className="space-y-2" aria-label="Sidebar">
-      {items.map((item) => (
+      {items.map((item, index) => (
         <Link
-          key={item.href}
+          key={`${index}-${item.href}`}
           href={item.href}
+          aria-current={item.active ? 'page' : undefined}
           className={cn(
             'block rounded-lg px-3 py-2 text-sm font-medium no-underline transition',
             item.active ? 'bg-blue-50 text-accent' : 'text-slate-700 hover:bg-slate-100'
