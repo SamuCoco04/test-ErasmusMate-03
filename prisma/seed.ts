@@ -45,10 +45,20 @@ export async function seed() {
 
   await prisma.exceptionRequest.upsert({ where: { id: 'exc-1' }, update: { mobilityRecordId: 'mobility-1', requestedById: 'student-1', title: 'Deadline extension request', reason: 'Visa appointment delayed by embassy.', state: 'PENDING' }, create: { id: 'exc-1', mobilityRecordId: 'mobility-1', requestedById: 'student-1', title: 'Deadline extension request', reason: 'Visa appointment delayed by embassy.', state: 'PENDING' } });
 
-  await prisma.auditRecord.createMany({ data: [
+  const auditSeedData = [
     { id: 'audit-1', mobilityRecordId: 'mobility-1', actorId: 'student-1', eventType: 'SUBMISSION_CREATED', details: 'Created draft for Passport copy' },
     { id: 'audit-2', mobilityRecordId: 'mobility-1', actorId: 'coordinator-1', eventType: 'SUBMISSION_APPROVED', details: 'Approved Arrival certificate' },
-  ] });
+  ];
+
+  await prisma.auditRecord.deleteMany({
+    where: {
+      id: {
+        in: auditSeedData.map((record) => record.id),
+      },
+    },
+  });
+
+  await prisma.auditRecord.createMany({ data: auditSeedData });
 }
 
 async function runSeedCli() {
