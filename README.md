@@ -45,3 +45,13 @@ npm run test
 npm run lint
 npm run build
 ```
+
+
+## Phase 4A route notes
+
+- Student Learning Agreement UI route is intentionally a placeholder in Phase 4A: `/student/learning-agreement`.
+- Coordinator Learning Agreement review UI route is intentionally a placeholder in Phase 4A: `/coordinator/learning-agreement-review`.
+- Role-guarded API behavior is expected:
+  - `GET /api/institutional/learning-agreement` is for `STUDENT`.
+  - `GET /api/institutional/learning-agreement/review-queue` is for `COORDINATOR`.
+  - Wrong roles return controlled `403 {"error":"Forbidden"}` responses.

@@ -11,6 +11,7 @@ export default function CoordinatorInstitutionalLayout({ children }: { children:
             items={[
               { label: 'Coordinator dashboard', href: '/coordinator/dashboard', active: true },
               { label: 'Review queue', href: '/coordinator/review-queue' },
+              { label: 'Learning Agreement review', href: '/coordinator/learning-agreement-review' },
               { label: 'Deadlines', href: '/coordinator/dashboard' }
             ]}
           />
