@@ -3,6 +3,7 @@ import { NextResponse } from 'next/server';
 import {
   DEMO_CONTEXT_COOKIE_NAME,
   getDemoContextFromRequest,
+  isDemoRole,
   normalizeDemoContext,
   serializeDemoContext,
 } from '@/src/modules/shared/demo-context';
@@ -25,9 +26,14 @@ export async function GET() {
   });
 }
 
+function toDemoContextInput(body: { role?: string; userId?: string } | null) {
+  if (!body || !isDemoRole(body.role)) return null;
+  return { role: body.role, userId: body.userId };
+}
+
 export async function POST(request: Request) {
   const body = (await request.json().catch(() => null)) as { role?: string; userId?: string } | null;
-  const context = normalizeDemoContext(body);
+  const context = normalizeDemoContext(toDemoContextInput(body));
   const response = NextResponse.json({
     demoOnly: true,
     context,
