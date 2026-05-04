@@ -5,6 +5,7 @@ const prisma = new PrismaClient();
 export async function seed() {
   await prisma.$transaction([
     prisma.learningAgreementEvent.deleteMany(),
+    prisma.socialMessage.deleteMany(),
     prisma.socialConnection.deleteMany(),
     prisma.socialProfile.deleteMany(),
     prisma.learningAgreementRow.deleteMany(),
@@ -54,6 +55,14 @@ export async function seed() {
   ] as const;
   for (const connection of socialConnections) {
     await prisma.socialConnection.upsert({ where: { id: connection.id }, update: connection, create: connection });
+  }
+
+  const socialMessages = [
+    { id: 'msg-seed-1', connectionId: 'conn-seed-2', senderProfileId: 'sp-student-1', recipientProfileId: 'sp-student-3', body: 'Hi Luca, are you also taking Operating Systems this term?', createdAt: new Date('2026-04-23T08:00:00.000Z') },
+    { id: 'msg-seed-2', connectionId: 'conn-seed-2', senderProfileId: 'sp-student-3', recipientProfileId: 'sp-student-1', body: 'Yes, I can share my notes and schedule.', createdAt: new Date('2026-04-23T08:10:00.000Z') },
+  ] as const;
+  for (const message of socialMessages) {
+    await prisma.socialMessage.upsert({ where: { id: message.id }, update: message, create: message });
   }
 await prisma.mobilityRecord.upsert({ where: { id: 'mobility-1' }, update: { studentId: 'student-1', coordinatorId: 'coordinator-1', homeInstitutionId: 'inst-home-1', hostInstitutionId: 'inst-host-1', mobilityStatus: 'ACTIVE', startDate: new Date('2026-09-01T00:00:00.000Z'), endDate: new Date('2027-01-31T00:00:00.000Z') }, create: { id: 'mobility-1', studentId: 'student-1', coordinatorId: 'coordinator-1', homeInstitutionId: 'inst-home-1', hostInstitutionId: 'inst-host-1', mobilityStatus: 'ACTIVE', startDate: new Date('2026-09-01T00:00:00.000Z'), endDate: new Date('2027-01-31T00:00:00.000Z') } });
 

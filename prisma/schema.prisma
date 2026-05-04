@@ -210,6 +210,9 @@ model SocialProfile {
   sentConnections     SocialConnection[] @relation("SocialConnectionRequester")
   receivedConnections SocialConnection[] @relation("SocialConnectionReceiver")
 
+  sentMessages     SocialMessage[] @relation("SocialMessageSender")
+  receivedMessages SocialMessage[] @relation("SocialMessageRecipient")
+
   @@index([visibility, moderationState])
   @@index([hostCity, studyArea])
 }
@@ -231,10 +234,32 @@ model SocialConnection {
 
   requesterProfile      SocialProfile @relation("SocialConnectionRequester", fields: [requesterProfileId], references: [id])
   receiverProfile       SocialProfile @relation("SocialConnectionReceiver", fields: [receiverProfileId], references: [id])
+  messages              SocialMessage[]
 
   @@index([requesterProfileId, state])
   @@index([receiverProfileId, state])
 }
+
+model SocialMessage {
+  id               String   @id
+  connectionId     String
+  senderProfileId  String
+  recipientProfileId String
+  body             String
+  readAt           DateTime?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  connection       SocialConnection @relation(fields: [connectionId], references: [id])
+  senderProfile    SocialProfile @relation("SocialMessageSender", fields: [senderProfileId], references: [id])
+  recipientProfile SocialProfile @relation("SocialMessageRecipient", fields: [recipientProfileId], references: [id])
+
+  @@index([connectionId])
+  @@index([senderProfileId])
+  @@index([recipientProfileId])
+  @@index([createdAt])
+}
+
 model LearningAgreement {
   id             String   @id
   mobilityRecordId String @unique

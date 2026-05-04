@@ -276,3 +276,5 @@ If Codex creates tests with different names or IDs, it must update this matrix t
 | SERVICE-LA-007 | Student Learning Agreement UI routing | Student LA route and navigation wiring | Student | Service/API | Verify `/student/learning-agreement` title, no grade field, and no broken `/student/institutional/learning-agreement` link usage (`tests/institutional/student-learning-agreement-ui.test.ts`) | Student route/navigation and form constraints are present in code | Implemented - passing |
 
 | SERVICE-CONN-002 | Connection request guard | Hidden, self, duplicate and blocked requests are rejected | Student | Service/API | Request self/hidden/moderation-hidden/duplicate/blocked pair (`tests/social/connections.test.ts`) | Backend rejects invalid requests | Implemented - passing |
+
+| Social messaging (Phase 5C) | STUDENT | Service/API | List threads, read history, send only on ACCEPTED connections; block non-participants/non-students/hidden recipients | Covered | tests/social/messaging.test.ts |

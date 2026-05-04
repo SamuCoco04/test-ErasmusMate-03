@@ -94,3 +94,12 @@ Pending:
 - Recommendations/tips/reviews/favorites in Phase 5D.
 - Moderation/map in Phase 6.
 - Production auth remains deferred.
+
+## Phase 5C: Social messaging between accepted connections
+
+Added backend-backed messaging routes for student-only accepted connections:
+- GET /api/social/messages
+- GET /api/social/messages/[connectionId]
+- POST /api/social/messages/[connectionId]
+
+Messaging is connection-based (no realtime/WebSockets/notifications yet).

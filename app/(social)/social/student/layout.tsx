@@ -9,9 +9,10 @@ export default function SocialStudentLayout({ children }: { children: React.Reac
         <aside className="rounded-2xl border border-slate-200 bg-white p-4 shadow-card">
           <SidebarNav
             items={[
-              { label: 'Social dashboard', href: '/social/student/dashboard', active: true },
-              { label: 'Discover students', href: '/social/student/dashboard' },
-              { label: 'Messages', href: '/social/student/dashboard' }
+              { label: 'Social dashboard', href: '/social/student/dashboard' },
+              { label: 'Discover students', href: '/social/student/discovery' },
+              { label: 'Connections', href: '/social/student/connections' },
+              { label: 'Messages', href: '/social/student/messages' }
             ]}
           />
         </aside>
