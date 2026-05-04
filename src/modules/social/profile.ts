@@ -1,8 +1,90 @@
 import { PrismaClient } from '@prisma/client';
 import { z } from 'zod';
 import { SocialForbiddenError } from './social-errors';
-const patchSchema = z.object({ displayName: z.string().min(2).max(80).optional(), homeCity: z.string().max(80).nullable().optional(), hostCity: z.string().max(80).nullable().optional(), hostCountry: z.string().max(80).nullable().optional(), homeInstitutionName: z.string().max(120).nullable().optional(), hostInstitutionName: z.string().max(120).nullable().optional(), studyArea: z.string().max(120).nullable().optional(), mobilityPhase: z.string().max(80).nullable().optional(), languages: z.array(z.string().min(1).max(40)).max(12).optional(), interests: z.array(z.string().min(1).max(40)).max(12).optional(), bio: z.string().max(500).nullable().optional(), visibility: z.enum(['VISIBLE', 'HIDDEN']).optional(), contactPreference: z.enum(['OPEN_TO_REQUESTS', 'CONNECTIONS_ONLY', 'HIDDEN']).optional() });
-function ensureStudent(role: string) { if (role !== 'STUDENT') throw new SocialForbiddenError(); }
-const mapProfile = (p: any) => ({ ...p, languages: JSON.parse(p.languagesJson || '[]'), interests: JSON.parse(p.interestsJson || '[]') });
-export async function getOwnSocialProfile(prisma: PrismaClient, actor: { role: string; userId: string }) { ensureStudent(actor.role); const p = await prisma.socialProfile.findUnique({ where: { userId: actor.userId } }); if (!p) return { missing: true, profile: { userId: actor.userId, displayName: '', homeCity: null, hostCity: null, hostCountry: null, homeInstitutionName: null, hostInstitutionName: null, studyArea: null, mobilityPhase: null, languages: [], interests: [], bio: null, visibility: 'VISIBLE', contactPreference: 'OPEN_TO_REQUESTS' } }; return { missing: false, profile: mapProfile(p) }; }
-export async function updateOwnSocialProfile(prisma: PrismaClient, actor: { role: string; userId: string }, input: unknown) { ensureStudent(actor.role); const payload = patchSchema.parse(input); const updateData: Record<string, unknown> = { ...payload }; if (payload.languages) updateData.languagesJson = JSON.stringify(payload.languages); if (payload.interests) updateData.interestsJson = JSON.stringify(payload.interests); delete updateData.languages; delete updateData.interests; const user = await prisma.user.findUnique({ where: { id: actor.userId } }); const saved = await prisma.socialProfile.upsert({ where: { userId: actor.userId }, update: updateData, create: { id: `sp-${actor.userId}`, userId: actor.userId, displayName: payload.displayName ?? user?.displayName ?? 'Student', homeCity: payload.homeCity ?? null, hostCity: payload.hostCity ?? null, hostCountry: payload.hostCountry ?? null, homeInstitutionName: payload.homeInstitutionName ?? null, hostInstitutionName: payload.hostInstitutionName ?? null, studyArea: payload.studyArea ?? null, mobilityPhase: payload.mobilityPhase ?? null, languagesJson: JSON.stringify(payload.languages ?? []), interestsJson: JSON.stringify(payload.interests ?? []), bio: payload.bio ?? null, visibility: payload.visibility ?? 'VISIBLE', contactPreference: payload.contactPreference ?? 'OPEN_TO_REQUESTS', moderationState: 'ACTIVE' } }); return mapProfile(saved); }
+import type { SocialProfileRow, SocialProfileDTO } from './types';
+
+const patchSchema = z.object({
+	displayName: z.string().min(2).max(80).optional(),
+	homeCity: z.string().max(80).nullable().optional(),
+	hostCity: z.string().max(80).nullable().optional(),
+	hostCountry: z.string().max(80).nullable().optional(),
+	homeInstitutionName: z.string().max(120).nullable().optional(),
+	hostInstitutionName: z.string().max(120).nullable().optional(),
+	studyArea: z.string().max(120).nullable().optional(),
+	mobilityPhase: z.string().max(80).nullable().optional(),
+	languages: z.array(z.string().min(1).max(40)).max(12).optional(),
+	interests: z.array(z.string().min(1).max(40)).max(12).optional(),
+	bio: z.string().max(500).nullable().optional(),
+	visibility: z.enum(['VISIBLE', 'HIDDEN']).optional(),
+	contactPreference: z.enum(['OPEN_TO_REQUESTS', 'CONNECTIONS_ONLY', 'HIDDEN']).optional(),
+});
+
+function ensureStudent(role: string) {
+	if (role !== 'STUDENT') throw new SocialForbiddenError();
+}
+
+const mapProfile = (p: SocialProfileRow): SocialProfileDTO => ({
+	...p,
+	languages: JSON.parse(p.languagesJson || '[]') as string[],
+	interests: JSON.parse(p.interestsJson || '[]') as string[],
+});
+
+export async function getOwnSocialProfile(prisma: PrismaClient, actor: { role: string; userId: string }) {
+	ensureStudent(actor.role);
+	const p = await prisma.socialProfile.findUnique({ where: { userId: actor.userId } });
+	if (!p)
+		return {
+			missing: true,
+			profile: {
+				userId: actor.userId,
+				displayName: '',
+				homeCity: null,
+				hostCity: null,
+				hostCountry: null,
+				homeInstitutionName: null,
+				hostInstitutionName: null,
+				studyArea: null,
+				mobilityPhase: null,
+				languages: [],
+				interests: [],
+				bio: null,
+				visibility: 'VISIBLE',
+				contactPreference: 'OPEN_TO_REQUESTS',
+			},
+		};
+	return { missing: false, profile: mapProfile(p as SocialProfileRow) };
+}
+
+export async function updateOwnSocialProfile(prisma: PrismaClient, actor: { role: string; userId: string }, input: unknown) {
+	ensureStudent(actor.role);
+	const payload = patchSchema.parse(input);
+	const updateData: Record<string, unknown> = { ...payload };
+	if (payload.languages) updateData.languagesJson = JSON.stringify(payload.languages);
+	if (payload.interests) updateData.interestsJson = JSON.stringify(payload.interests);
+	Reflect.deleteProperty(updateData, 'languages');
+	Reflect.deleteProperty(updateData, 'interests');
+	const user = await prisma.user.findUnique({ where: { id: actor.userId } });
+	const saved = await prisma.socialProfile.upsert({
+		where: { userId: actor.userId },
+		update: updateData,
+		create: {
+			id: `sp-${actor.userId}`,
+			userId: actor.userId,
+			displayName: payload.displayName ?? user?.displayName ?? 'Student',
+			homeCity: payload.homeCity ?? null,
+			hostCity: payload.hostCity ?? null,
+			hostCountry: payload.hostCountry ?? null,
+			homeInstitutionName: payload.homeInstitutionName ?? null,
+			hostInstitutionName: payload.hostInstitutionName ?? null,
+			studyArea: payload.studyArea ?? null,
+			mobilityPhase: payload.mobilityPhase ?? null,
+			languagesJson: JSON.stringify(payload.languages ?? []),
+			interestsJson: JSON.stringify(payload.interests ?? []),
+			bio: payload.bio ?? null,
+			visibility: payload.visibility ?? 'VISIBLE',
+			contactPreference: payload.contactPreference ?? 'OPEN_TO_REQUESTS',
+			moderationState: 'ACTIVE',
+		},
+	});
+	return mapProfile(saved as SocialProfileRow);
+}
