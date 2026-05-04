@@ -5,6 +5,7 @@ const prisma = new PrismaClient();
 export async function seed() {
   await prisma.$transaction([
     prisma.learningAgreementEvent.deleteMany(),
+    prisma.socialConnection.deleteMany(),
     prisma.socialProfile.deleteMany(),
     prisma.learningAgreementRow.deleteMany(),
     prisma.learningAgreement.deleteMany(),
@@ -43,6 +44,16 @@ export async function seed() {
   ] as const;
   for (const profile of socialProfiles) {
     await prisma.socialProfile.upsert({ where: { userId: profile.userId }, update: profile, create: profile });
+  }
+
+  const socialConnections = [
+    { id: 'conn-seed-1', pairKey: 'sp-student-1__sp-student-2', requesterProfileId: 'sp-student-1', receiverProfileId: 'sp-student-2', state: 'PENDING', requestedAt: new Date('2026-05-01T08:00:00.000Z'), lastActionByProfileId: 'sp-student-1' },
+    { id: 'conn-seed-2', pairKey: 'sp-student-1__sp-student-3', requesterProfileId: 'sp-student-3', receiverProfileId: 'sp-student-1', state: 'ACCEPTED', requestedAt: new Date('2026-04-21T08:00:00.000Z'), respondedAt: new Date('2026-04-22T08:00:00.000Z'), lastActionByProfileId: 'sp-student-1' },
+    { id: 'conn-seed-3', pairKey: 'sp-student-2__sp-student-6', requesterProfileId: 'sp-student-2', receiverProfileId: 'sp-student-6', state: 'REJECTED', requestedAt: new Date('2026-04-12T08:00:00.000Z'), respondedAt: new Date('2026-04-13T08:00:00.000Z'), lastActionByProfileId: 'sp-student-6' },
+    { id: 'conn-seed-4', pairKey: 'sp-student-1__sp-student-6', requesterProfileId: 'sp-student-6', receiverProfileId: 'sp-student-1', state: 'BLOCKED', requestedAt: new Date('2026-04-10T08:00:00.000Z'), blockedAt: new Date('2026-04-11T08:00:00.000Z'), lastActionByProfileId: 'sp-student-1' },
+  ] as const;
+  for (const connection of socialConnections) {
+    await prisma.socialConnection.upsert({ where: { id: connection.id }, update: connection, create: connection });
   }
 await prisma.mobilityRecord.upsert({ where: { id: 'mobility-1' }, update: { studentId: 'student-1', coordinatorId: 'coordinator-1', homeInstitutionId: 'inst-home-1', hostInstitutionId: 'inst-host-1', mobilityStatus: 'ACTIVE', startDate: new Date('2026-09-01T00:00:00.000Z'), endDate: new Date('2027-01-31T00:00:00.000Z') }, create: { id: 'mobility-1', studentId: 'student-1', coordinatorId: 'coordinator-1', homeInstitutionId: 'inst-home-1', hostInstitutionId: 'inst-host-1', mobilityStatus: 'ACTIVE', startDate: new Date('2026-09-01T00:00:00.000Z'), endDate: new Date('2027-01-31T00:00:00.000Z') } });
 
