@@ -503,3 +503,37 @@ A major phase is not complete unless relevant decisions are documented here with
 - **Affected areas:** `prisma/seed.ts`, learning-agreement service/event flows, Vitest DB-backed test stability.
 - **Status:** Accepted
 - **Evidence level:** Confirmed by implementation
+
+
+### DEC-017 — Phase 4B student table-first Learning Agreement editor
+- **Date:** 2026-05-04
+- **Phase:** Phase 4B — Student Learning Agreement UI
+- **Decision:** Implement `/student/learning-agreement` as a table-first page with a server-fetched initial agreement and a client editor that calls Phase 4A API routes and refreshes with `router.refresh()`.
+- **Rationale:** Keeps transport thin, preserves backend rule ownership, and provides a usable low-click student workflow now.
+- **Alternatives considered:** Full server actions pipeline; coordinator-grade combined UI in same phase.
+- **Consequences / trade-offs:** Fast and reliable student UX; coordinator review UI remains deferred to Phase 4C.
+- **Affected areas:** student institutional route, Learning Agreement UI, dashboard navigation.
+- **Status:** Accepted
+- **Evidence level:** Confirmed by implementation
+
+### DEC-018 — Student does not edit grade in Phase 4B
+- **Date:** 2026-05-04
+- **Phase:** Phase 4B — Student Learning Agreement UI
+- **Decision:** Student add/edit form excludes grade field and relies on backend guard if unexpected payloads include grade.
+- **Rationale:** Matches Learning Agreement rule that grade is coordinator-controlled only.
+- **Alternatives considered:** Show disabled grade control in student UI.
+- **Consequences / trade-offs:** Clear role boundary; grade UX for coordinator remains for Phase 4C.
+- **Affected areas:** student LA form, permissions messaging.
+- **Status:** Accepted
+- **Evidence level:** Confirmed by implementation
+
+### DEC-019 — Explicit deferrals for Phase 4C and 4D remain
+- **Date:** 2026-05-04
+- **Phase:** Phase 4B — Student Learning Agreement UI
+- **Decision:** Keep full coordinator Learning Agreement review UI deferred to Phase 4C and polished Academic Summary page deferred to Phase 4D.
+- **Rationale:** Protects phase scope and delivery focus on student workflow completeness.
+- **Alternatives considered:** Partial coordinator review implementation during Phase 4B.
+- **Consequences / trade-offs:** Cleaner scope; coordinator/student parity completes in later phases.
+- **Affected areas:** roadmap communication, README, traceability statuses.
+- **Status:** Accepted
+- **Evidence level:** Confirmed by implementation

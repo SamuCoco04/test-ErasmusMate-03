@@ -126,8 +126,8 @@ Use the following test type values:
 
 | Test ID | Workflow / Area | Requirement / Rule | Actor | Type | Scenario | Expected result | Status |
 |---|---|---|---|---|---|---|---|
-| E2E-LA-001 | Learning Agreement | Student can create agreement | Student | E2E | Student opens My Learning Agreement | Draft agreement exists or is created | Planned |
-| E2E-LA-002 | Learning Agreement rows | Student can add course equivalence row | Student | E2E | Student adds home/destination course equivalence | Row is saved with required fields | Planned |
+| E2E-LA-001 | Learning Agreement | Student can create agreement | Student | E2E | Student opens My Learning Agreement | Draft agreement exists or is created | Planned (Phase 4B UI ready; E2E pending execution) |
+| E2E-LA-002 | Learning Agreement rows | Student can add course equivalence row | Student | E2E | Student adds home/destination course equivalence | Row is saved with required fields | Planned (Phase 4B UI ready; E2E pending execution) |
 | E2E-LA-003 | Learning Agreement validation | Empty agreement cannot be submitted | Student | E2E | Student submits agreement with zero rows | Submission is blocked with clear message | Planned |
 | E2E-LA-004 | Learning Agreement validation | Incomplete rows block submission | Student | E2E | Student submits row missing required data | Submission is blocked and row issue is visible | Planned |
 | E2E-LA-005 | Learning Agreement submit | Student can submit valid agreement | Student | E2E | Student submits valid course table | Agreement moves to review state and appears to coordinator | Planned |
@@ -264,3 +264,6 @@ When implementing a phase, Codex must:
 5. document deferred tests with a reason
 
 If Codex creates tests with different names or IDs, it must update this matrix to match the implementation.
+
+
+| SERVICE-LA-007 | Student Learning Agreement UI routing | Student LA route and navigation wiring | Student | Service/API | Verify `/student/learning-agreement` title, no grade field, and no broken `/student/institutional/learning-agreement` link usage (`tests/institutional/student-learning-agreement-ui.test.ts`) | Student route/navigation and form constraints are present in code | Implemented - passing |
