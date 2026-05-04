@@ -131,9 +131,9 @@ Use the following test type values:
 | E2E-LA-003 | Learning Agreement validation | Empty agreement cannot be submitted | Student | E2E | Student submits agreement with zero rows | Submission is blocked with clear message | Planned |
 | E2E-LA-004 | Learning Agreement validation | Incomplete rows block submission | Student | E2E | Student submits row missing required data | Submission is blocked and row issue is visible | Planned |
 | E2E-LA-005 | Learning Agreement submit | Student can submit valid agreement | Student | E2E | Student submits valid course table | Agreement moves to review state and appears to coordinator | Planned |
-| E2E-LA-006 | Row review | Coordinator can approve row | Coordinator | E2E | Coordinator approves row | Row becomes approved | Planned |
+| E2E-LA-006 | Row review | Coordinator can approve row | Coordinator | E2E | Coordinator approves row | Row becomes approved | Planned (Phase 4C UI ready; E2E pending execution) |
 | E2E-LA-007 | Row review | Coordinator can deny row with rationale | Coordinator | E2E | Coordinator denies row with rationale | Row becomes denied and rationale is visible to student | Planned |
-| E2E-LA-008 | Row review | Deny requires rationale | Coordinator | E2E | Coordinator denies row without rationale | Action is blocked | Planned |
+| E2E-LA-008 | Row review | Deny requires rationale | Coordinator | E2E | Coordinator denies row without rationale | Action is blocked | Planned (Phase 4C UI ready; E2E pending execution) |
 | E2E-LA-009 | Partial approval | Mixed decisions produce partial approval | Student / Coordinator | E2E | Some rows approved and some denied | Agreement displays partial approval state | Planned |
 | E2E-LA-010 | Denied-row resubmission | Denied rows must be revised before resubmission | Student | E2E | Student tries to resubmit unchanged denied rows | Resubmission is blocked | Planned |
 | E2E-LA-011 | Denied-row revision | Student can revise denied row and resubmit | Student | E2E | Student edits denied row and resubmits | Agreement returns to review | Planned |
@@ -142,7 +142,7 @@ Use the following test type values:
 | E2E-LA-014 | Grade ownership | Student cannot edit grade | Student | E2E | Student attempts grade entry/edit | Grade is hidden or read-only for student | Planned |
 | E2E-LA-015 | Grade coordinator control | Coordinator can enter/update grade where allowed | Coordinator | E2E | Coordinator updates grade in allowed screen | Grade is saved and does not govern approval | Planned |
 | SERVICE-LA-001 | Learning Agreement validation | Duplicate equivalences blocked | Student | Service/API | Create duplicate home/destination equivalence (`tests/institutional/learning-agreement.test.ts`) | Backend rejects duplicate or conflict | Implemented - passing |
-| SERVICE-LA-002 | Row state rules | Invalid row decision blocked | Coordinator | Service/API | Decide non-latest or already decided row (`tests/institutional/learning-agreement.test.ts`) | Backend rejects action | Implemented - passing |
+| SERVICE-LA-002 | Row state rules | Invalid row decision blocked | Coordinator | Service/API | Decide non-latest or already decided row (`tests/institutional/learning-agreement.test.ts`; `tests/institutional/learning-agreement-api.test.ts`) | Backend rejects action | Implemented - passing |
 | SERVICE-LA-003 | Aggregate state | State computed from latest rows | Student / Coordinator | Service/API | Multiple row decisions across revisions (`tests/institutional/learning-agreement.test.ts`) | Agreement aggregate state is correct | Implemented - passing |
 | SERVICE-LA-004 | Safe revision | Approved row not silently mutated | Student | Service/API | Edit approved row (`tests/institutional/learning-agreement.test.ts`) | Backend creates new revision and keeps old row immutable | Implemented - passing |
 | SERVICE-LA-005 | Grade permissions | Student cannot mutate grade | Student | Service/API | Student sends payload with grade value (`tests/institutional/learning-agreement.test.ts`) | Backend rejects or ignores unauthorized grade mutation | Implemented - passing |

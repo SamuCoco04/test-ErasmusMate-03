@@ -35,3 +35,18 @@ export function getDeadlineStatusLabel(state: string) {
 export function getExceptionStatusLabel(state: string) {
   return exceptionStatusLabels[state as keyof typeof exceptionStatusLabels] ?? state;
 }
+
+export const learningAgreementStateLabels = {
+  DRAFT: 'Draft',
+  SUBMITTED: 'Sent for review',
+  IN_REVIEW: 'Under review',
+  PARTIALLY_APPROVED: 'Partially approved',
+  CHANGES_REQUESTED: 'Changes requested',
+  ACCEPTED: 'Accepted',
+} as const;
+
+export const learningAgreementRowStatusLabels = {
+  IN_REVIEW: 'In review',
+  APPROVED: 'Approved',
+  DENIED: 'Needs changes',
+} as const;
