@@ -452,3 +452,31 @@ A major phase is not complete unless relevant decisions are documented here with
 - **Consequences / trade-offs:** Honest MVP boundaries; deferred capabilities remain pending later phases.
 - **Status:** Accepted
 - **Evidence level:** Confirmed by implementation
+
+
+### DEC-033 — Phase 4A Learning Agreement table-first foundation
+- **Date:** 2026-05-04
+- **Phase:** Phase 4A
+- **Decision:** Implement Learning Agreement with minimal proposal + row + event models and table-first workflow states.
+- **Rationale:** Delivers backend-correct equivalence workflow before UI-heavy phases.
+- **Consequences / trade-offs:** Strong state/rule base now; polished student/coordinator UI intentionally deferred.
+- **Status:** Accepted
+- **Evidence level:** Confirmed by implementation
+
+### DEC-034 — Immutable approved-row edit and denied-row resubmission guard
+- **Date:** 2026-05-04
+- **Phase:** Phase 4A
+- **Decision:** Editing latest APPROVED or DENIED rows creates new `IN_REVIEW` revisions and preserves historical rows; resubmission is blocked while latest denied rows remain unresolved.
+- **Rationale:** Preserves auditability and enforces institutional correction flow server-side.
+- **Consequences / trade-offs:** More row versions to manage; safer traceability and review semantics.
+- **Status:** Accepted
+- **Evidence level:** Confirmed by implementation
+
+### DEC-035 — Grade non-governing strategy and derived Academic Summary
+- **Date:** 2026-05-04
+- **Phase:** Phase 4A
+- **Decision:** Grade remains nullable/non-governing for approval and is blocked for student mutations; Academic Summary is derived from latest approved rows without snapshot table in this phase.
+- **Rationale:** Matches current institutional rule set while keeping data model minimal and deterministic.
+- **Consequences / trade-offs:** Summary is always live-derived; snapshot/historical summary strategy deferred.
+- **Status:** Accepted
+- **Evidence level:** Confirmed by implementation

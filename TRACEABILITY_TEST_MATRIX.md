@@ -141,12 +141,12 @@ Use the following test type values:
 | E2E-LA-013 | Academic Summary | Approved latest rows appear in summary | Student | E2E | Student opens Academic Summary | Summary shows latest approved rows only | Planned |
 | E2E-LA-014 | Grade ownership | Student cannot edit grade | Student | E2E | Student attempts grade entry/edit | Grade is hidden or read-only for student | Planned |
 | E2E-LA-015 | Grade coordinator control | Coordinator can enter/update grade where allowed | Coordinator | E2E | Coordinator updates grade in allowed screen | Grade is saved and does not govern approval | Planned |
-| SERVICE-LA-001 | Learning Agreement validation | Duplicate equivalences blocked | Student | Service/API | Create duplicate home/destination equivalence | Backend rejects duplicate or conflict | Planned |
-| SERVICE-LA-002 | Row state rules | Invalid row decision blocked | Coordinator | Service/API | Decide non-latest or already decided row (`tests/institutional/learning-agreement.test.ts`) | Backend rejects action | Planned |
-| SERVICE-LA-003 | Aggregate state | State computed from latest rows | Student / Coordinator | Service/API | Multiple row decisions across revisions | Agreement aggregate state is correct | Planned |
-| SERVICE-LA-004 | Safe revision | Approved row not silently mutated | Student | Service/API | Edit approved row | Backend creates new revision and keeps old row immutable | Planned |
-| SERVICE-LA-005 | Grade permissions | Student cannot mutate grade | Student | Service/API | Student sends payload with grade value | Backend rejects or ignores unauthorized grade mutation | Planned |
-| SERVICE-LA-006 | Auditability | Learning Agreement actions audited | Student / Coordinator | Service/API | Create, submit, decide, resubmit, revise row | Event/audit records are created | Planned |
+| SERVICE-LA-001 | Learning Agreement validation | Duplicate equivalences blocked | Student | Service/API | Create duplicate home/destination equivalence (`tests/institutional/learning-agreement.test.ts`) | Backend rejects duplicate or conflict | Implemented - passing |
+| SERVICE-LA-002 | Row state rules | Invalid row decision blocked | Coordinator | Service/API | Decide non-latest or already decided row (`tests/institutional/learning-agreement.test.ts`) | Backend rejects action | Implemented - passing |
+| SERVICE-LA-003 | Aggregate state | State computed from latest rows | Student / Coordinator | Service/API | Multiple row decisions across revisions (`tests/institutional/learning-agreement.test.ts`) | Agreement aggregate state is correct | Implemented - passing |
+| SERVICE-LA-004 | Safe revision | Approved row not silently mutated | Student | Service/API | Edit approved row (`tests/institutional/learning-agreement.test.ts`) | Backend creates new revision and keeps old row immutable | Implemented - passing |
+| SERVICE-LA-005 | Grade permissions | Student cannot mutate grade | Student | Service/API | Student sends payload with grade value (`tests/institutional/learning-agreement.test.ts`) | Backend rejects or ignores unauthorized grade mutation | Implemented - passing |
+| SERVICE-LA-006 | Auditability | Learning Agreement actions audited | Student / Coordinator | Service/API | Create, submit, decide, resubmit, revise row (`tests/institutional/learning-agreement.test.ts`) | Event records are created | Implemented - passing |
 
 ---
 
