@@ -2,65 +2,46 @@
 
 ErasmusMate is a full-stack MVP for Erasmus mobility management.
 
-## Current scope (Phase 3B)
+## Current scope (Phase 3D)
 
-Implemented:
-- Institutional Prisma data foundation and deterministic seed data.
-- Backend submission workflow with transitions and coordinator review actions.
-- Institutional routes:
-  - `GET /api/institutional/dashboard`
-  - `GET /api/institutional/mobility-records/current`
-  - `GET /api/institutional/procedures`
-  - `GET/POST /api/institutional/submissions`
-  - `GET /api/institutional/submissions/[submissionId]`
-  - `PATCH /api/institutional/submissions/[submissionId]/transition`
-  - `GET /api/institutional/review-queue`
-  - `GET /api/institutional/deadlines`
-  - `GET /api/institutional/exceptions`
-- Institutional pages:
-  - `/student/dashboard`
-  - `/student/submissions`
-  - `/coordinator/dashboard`
-  - `/coordinator/review-queue`
-  - `/admin/dashboard`
+Completed institutional scope:
+- Student dashboard, submissions, deadlines, and exceptions pages.
+- Coordinator dashboard, review queue, deadlines, and exceptions pages.
+- Admin institutional overview dashboard.
+- Backend submissions workflow with role/ownership guards, deadline blocking, transitions, and audit/event records.
+- Backend exceptions workflow with review/apply transitions, deadline override application, and audit records.
 
-Pending (Phase 3C / Phase 4):
-- File upload/storage integration for submissions.
-- Deadline blocking and exception decision/apply workflows.
-- Learning Agreement workflow.
-- Social workflows, moderation, and real map integration.
-- Production authentication.
+Current institutional routes:
+- `/student/dashboard`
+- `/student/submissions`
+- `/student/deadlines`
+- `/student/exceptions`
+- `/coordinator/dashboard`
+- `/coordinator/review-queue`
+- `/coordinator/deadlines`
+- `/coordinator/exceptions`
+- `/admin/dashboard`
+
+Pending areas:
+- Learning Agreement / Academic Summary in Phase 4.
+- Social support MVP in Phase 5.
+- Moderation and real map integration in Phase 6.
+- Production authentication deferred.
+- File upload/storage deferred.
 
 ## Demo mode
 
 Demo context is cookie-backed (`erasmusmate_demo_context`) and server-readable.
 
-Roles:
-- Student → `student-1`
-- Coordinator → `coordinator-1`
-- Admin → `admin-1`
-
-## Local run
+## Validation command sequence
 
 ```bash
 npm install
-cp .env.example .env
 npx prisma generate
 npx prisma migrate dev
 npm run db:seed
-npm run dev
-```
-
-## Validation commands
-
-```bash
+npm run db:seed
 npm run test
 npm run lint
 npm run build
-npm run start
-npm run test:e2e:smoke
 ```
-
-## Phase 3C notes
-- Added deadline governance and exception request workflow routes: /student/deadlines, /student/exceptions, /coordinator/deadlines, /coordinator/exceptions.
-- Pending: Learning Agreement (Phase 4), social (Phase 5), moderation/map (Phase 6), production auth.

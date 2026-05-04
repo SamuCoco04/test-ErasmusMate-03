@@ -433,3 +433,22 @@ A major phase is not complete unless relevant decisions are documented here with
 - 2026-05-04 — Phase 3C: Exception states use PENDING/IN_REVIEW/APPROVED/REJECTED/APPLIED/CLOSED with rationale on decisions. Status: accepted.
 - 2026-05-04 — Phase 3C: Applying approved exception writes audit for exception transition and deadline override. Status: accepted.
 - 2026-05-04 — Phase 3C: Full deadline CRUD, policy templates, file upload remain deferred. Status: deferred.
+
+
+### DEC-020 — Phase 3D institutional hardening pass
+- **Date:** 2026-05-04
+- **Phase:** Phase 3D
+- **Decision:** Prioritize regression hardening, consistent status labels, audit consistency checks, and small UX wording improvements over new workflows.
+- **Rationale:** Close institutional core safely before Phase 4 scope expansion.
+- **Consequences / trade-offs:** Better consistency and confidence; no large UX redesign in this phase.
+- **Status:** Accepted
+- **Evidence level:** Confirmed by implementation
+
+### DEC-021 — Deferred scope confirmation for Phase 3D
+- **Date:** 2026-05-04
+- **Phase:** Phase 3D
+- **Decision:** Keep Learning Agreement, Academic Summary, social workflows, moderation, real map integration, production auth, and file upload/storage deferred.
+- **Rationale:** Prevent scope creep and keep Phase 3D focused on institutional hardening.
+- **Consequences / trade-offs:** Honest MVP boundaries; deferred capabilities remain pending later phases.
+- **Status:** Accepted
+- **Evidence level:** Confirmed by implementation
