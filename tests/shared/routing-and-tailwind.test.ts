@@ -17,3 +17,11 @@ describe('Routing and style configuration guards', () => {
     expect(tailwindConfig.includes('./src/**/*.{js,ts,jsx,tsx,mdx}')).toBe(true);
   });
 });
+
+
+describe('Social route files', () => {
+  it('adds profile and discovery pages under social URL segment', () => {
+    expect(existsSync('app/(social)/social/student/profile/page.tsx')).toBe(true);
+    expect(existsSync('app/(social)/social/student/discovery/page.tsx')).toBe(true);
+  });
+});

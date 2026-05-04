@@ -62,3 +62,21 @@ npm run build
 - Student Learning Agreement table editor (`/student/learning-agreement`)
 - Coordinator Learning Agreement review (`/coordinator/learning-agreement-review`)
 - Student Academic Summary page (`/student/academic-summary`)
+
+## Phase 5A social foundation (implemented)
+
+Implemented:
+- Backend-backed social profiles with role guard (student only).
+- Social discovery endpoint with deterministic filtering and safe public fields.
+- Student social pages:
+  - `/social/student/dashboard`
+  - `/social/student/profile`
+  - `/social/student/discovery`
+- Social APIs:
+  - `GET/PATCH /api/social/profile`
+  - `GET /api/social/discovery`
+  - `GET /api/social/discovery/[profileId]`
+
+Still not implemented:
+- Connections, accepted-only messaging, recommendations/reviews/tips, favorites.
+- Reporting/moderation actions and map-based social discovery.
