@@ -2,7 +2,7 @@
 
 ErasmusMate is a full-stack MVP for Erasmus mobility management.
 
-## Current scope (Phase 4D)
+## Current scope (Phase 5B)
 
 Completed institutional scope:
 - Phase 3 dashboards, submissions, deadlines, and exceptions backend/UI shells.
@@ -80,3 +80,17 @@ Implemented:
 Still not implemented:
 - Connections, accepted-only messaging, recommendations/reviews/tips, favorites.
 - Reporting/moderation actions and map-based social discovery.
+
+
+## Phase 5B social connections (implemented)
+
+Implemented:
+- Connection lifecycle with pending, accepted, rejected, cancelled, and blocked states.
+- New student route: `/social/student/connections`.
+- New APIs: `GET/POST /api/social/connections`, `POST /api/social/connections/[connectionId]/transition`.
+
+Pending:
+- Messaging in Phase 5C.
+- Recommendations/tips/reviews/favorites in Phase 5D.
+- Moderation/map in Phase 6.
+- Production auth remains deferred.

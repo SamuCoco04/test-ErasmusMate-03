@@ -619,3 +619,20 @@ A major phase is not complete unless relevant decisions are documented here with
 - **Consequences / trade-offs:** Clear UX boundaries; interaction workflows deferred to Phase 5B+.
 - **Status:** Accepted
 - **Evidence level:** Confirmed by implementation
+
+
+## Phase 5B — social connection lifecycle
+- Decision: Use `SocialConnection.pairKey` as sorted unordered profile pair key with unique constraint.
+- Rationale: SQLite-safe duplicate prevention for active pair interactions.
+- Consequence: One canonical row per pair at a time; history is represented by state transitions.
+- Status: Accepted.
+
+- Decision: State model includes `PENDING`, `ACCEPTED`, `REJECTED`, `CANCELLED`, `BLOCKED`.
+- Rationale: Covers request lifecycle and safety blocking without introducing messaging yet.
+- Consequence: Messaging remains deferred and not implied in UI actions.
+- Status: Accepted.
+
+- Decision: Keep social area secondary and separate from institutional workflows.
+- Rationale: Preserve institutional primacy and avoid scope leakage.
+- Consequence: Social routes remain under `/social/student/*` and dashboard links back to institutional pages.
+- Status: Accepted.

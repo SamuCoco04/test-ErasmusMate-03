@@ -1,10 +1,9 @@
 import { PrismaClient } from '@prisma/client';
 import { SocialForbiddenError, SocialNotFoundError } from './social-errors';
 import type { SocialProfileRow, SocialDiscoveryItem } from './types';
+import { getConnectionStateForProfile } from './connections';
 
-function ensureStudent(role: string) {
-	if (role !== 'STUDENT') throw new SocialForbiddenError();
-}
+function ensureStudent(role: string) { if (role !== 'STUDENT') throw new SocialForbiddenError(); }
 
 const mapPublic = (p: SocialProfileRow): SocialDiscoveryItem => ({
 	id: p.id,
@@ -38,10 +37,12 @@ export async function listDiscoveryProfiles(prisma: PrismaClient, actor: { role:
 	const language = filters.get('language')?.toLowerCase();
 	const interest = filters.get('interest')?.toLowerCase();
 
-	return rows
+  const items = rows
 		.filter((r) => !language || (JSON.parse(r.languagesJson || '[]') as string[]).some((l) => l.toLowerCase() === language))
 		.filter((r) => !interest || (JSON.parse(r.interestsJson || '[]') as string[]).some((i) => i.toLowerCase() === interest))
 		.map(mapPublic);
+
+  return Promise.all(items.map(async (item) => ({ ...item, connectionStatus: await getConnectionStateForProfile(prisma, actor, item.id) })));
 }
 
 export async function getDiscoveryProfileDetail(prisma: PrismaClient, actor: { role: string; userId: string }, profileId: string) {
@@ -50,5 +51,5 @@ export async function getDiscoveryProfileDetail(prisma: PrismaClient, actor: { r
 		where: { id: profileId, userId: { not: actor.userId }, visibility: 'VISIBLE', moderationState: 'ACTIVE' },
 	});
 	if (!p) throw new SocialNotFoundError();
-	return mapPublic(p as SocialProfileRow);
+	return { ...mapPublic(p as SocialProfileRow), connectionStatus: await getConnectionStateForProfile(prisma, actor, p.id) };
 }

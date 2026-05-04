@@ -186,6 +186,7 @@ model AuditRecord {
 
 
 model SocialProfile {
+
   id                  String   @id
   userId              String   @unique
   displayName         String
@@ -206,11 +207,34 @@ model SocialProfile {
   updatedAt           DateTime @updatedAt
 
   user User @relation(fields: [userId], references: [id])
+  sentConnections     SocialConnection[] @relation("SocialConnectionRequester")
+  receivedConnections SocialConnection[] @relation("SocialConnectionReceiver")
 
   @@index([visibility, moderationState])
   @@index([hostCity, studyArea])
 }
 
+
+
+model SocialConnection {
+  id                    String   @id
+  pairKey               String   @unique
+  requesterProfileId    String
+  receiverProfileId     String
+  state                 String
+  requestedAt           DateTime
+  respondedAt           DateTime?
+  blockedAt             DateTime?
+  lastActionByProfileId String?
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+
+  requesterProfile      SocialProfile @relation("SocialConnectionRequester", fields: [requesterProfileId], references: [id])
+  receiverProfile       SocialProfile @relation("SocialConnectionReceiver", fields: [receiverProfileId], references: [id])
+
+  @@index([requesterProfileId, state])
+  @@index([receiverProfileId, state])
+}
 model LearningAgreement {
   id             String   @id
   mobilityRecordId String @unique

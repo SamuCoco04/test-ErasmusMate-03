@@ -183,7 +183,7 @@ Use the following test type values:
 | E2E-MSG-001 | Messaging | Accepted connections can message | Student | E2E | Accepted pair opens thread and sends message | Message appears in thread and persists | Planned |
 | E2E-MSG-002 | Messaging guard | Pending connection cannot message | Student | E2E | Pending pair attempts message | Messaging is blocked | Planned |
 | E2E-MSG-003 | Messaging guard | Blocked users cannot message | Student | E2E | Blocked pair attempts message | Backend/UI blocks message | Planned |
-| SERVICE-CONN-001 | Connection state | Invalid connection transitions blocked | Student | Service/API | Attempt invalid accept/cancel/block transition (`tests/social/connections.test.ts`) | Backend rejects action | Planned |
+| SERVICE-CONN-001 | Connection state | Invalid connection transitions blocked | Student | Service/API | Attempt invalid accept/cancel/block transition (`tests/social/connections.test.ts`) | Backend rejects action | Implemented - passing |
 | SERVICE-MSG-001 | Messaging permission | Accepted-only rule enforced server-side | Student | Service/API | Send message without accepted connection (`tests/social/messaging.test.ts`) | Backend rejects message | Planned |
 | SERVICE-MSG-002 | Messaging persistence | Messages persist | Student | Service/API | Send message and fetch thread | Message is present with correct author/time | Planned |
 
@@ -274,3 +274,5 @@ If Codex creates tests with different names or IDs, it must update this matrix t
 
 
 | SERVICE-LA-007 | Student Learning Agreement UI routing | Student LA route and navigation wiring | Student | Service/API | Verify `/student/learning-agreement` title, no grade field, and no broken `/student/institutional/learning-agreement` link usage (`tests/institutional/student-learning-agreement-ui.test.ts`) | Student route/navigation and form constraints are present in code | Implemented - passing |
+
+| SERVICE-CONN-002 | Connection request guard | Hidden, self, duplicate and blocked requests are rejected | Student | Service/API | Request self/hidden/moderation-hidden/duplicate/blocked pair (`tests/social/connections.test.ts`) | Backend rejects invalid requests | Implemented - passing |

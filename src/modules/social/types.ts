@@ -1,6 +1,7 @@
-import type { SocialProfile as PrismaSocialProfile } from '@prisma/client';
+import type { SocialConnection as PrismaSocialConnection, SocialProfile as PrismaSocialProfile } from '@prisma/client';
 
 export type SocialProfileRow = PrismaSocialProfile;
+export type SocialConnectionRow = PrismaSocialConnection;
 
 export interface SocialProfileDTO {
   id?: string;
@@ -20,6 +21,8 @@ export interface SocialProfileDTO {
   contactPreference?: string;
 }
 
+export type DiscoveryConnectionStatus = 'NOT_CONNECTED' | 'REQUEST_SENT' | 'REQUEST_RECEIVED' | 'CONNECTED' | 'BLOCKED' | 'UNAVAILABLE';
+
 export interface SocialDiscoveryItem {
   id: string;
   displayName: string;
@@ -34,4 +37,5 @@ export interface SocialDiscoveryItem {
   interests: string[];
   bio?: string | null;
   contactPreference?: string;
+  connectionStatus?: DiscoveryConnectionStatus;
 }
