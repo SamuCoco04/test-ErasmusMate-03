@@ -37,7 +37,8 @@ export interface SocialDiscoveryItem {
   interests: string[];
   bio?: string | null;
   contactPreference?: string;
-  connectionStatus?: DiscoveryConnectionStatus;
+  contactPreferenceLabel?: string;
+  connectionStatus: DiscoveryConnectionStatus;
 }
 
 export type ConnectionCategory = 'incomingPending' | 'outgoingPending' | 'accepted' | 'unavailable';
