@@ -2,26 +2,28 @@ import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
+async function resetDatabase() {
+  await prisma.$executeRawUnsafe('PRAGMA foreign_keys = OFF');
+  try {
+    const tables = await prisma.$queryRaw<Array<{ name: string }>>`
+      SELECT name
+      FROM sqlite_master
+      WHERE type = 'table'
+        AND name NOT LIKE 'sqlite_%'
+        AND name != '_prisma_migrations'
+    `;
+
+    for (const table of tables) {
+      const quotedTableName = `"${table.name.replace(/"/g, '""')}"`;
+      await prisma.$executeRawUnsafe(`DELETE FROM ${quotedTableName}`);
+    }
+  } finally {
+    await prisma.$executeRawUnsafe('PRAGMA foreign_keys = ON');
+  }
+}
+
 export async function seed() {
-  await prisma.learningAgreementEvent.deleteMany();
-  await prisma.notification.deleteMany();
-  await prisma.documentSubmissionEvent.deleteMany();
-  await prisma.documentAttachment.deleteMany();
-  await prisma.socialReport.deleteMany();
-  await prisma.socialMessage.deleteMany();
-  await prisma.cityRecommendation.deleteMany();
-  await prisma.socialConnection.deleteMany();
-  await prisma.exceptionRequest.deleteMany();
-  await prisma.documentSubmission.deleteMany();
-  await prisma.learningAgreementRow.deleteMany();
-  await prisma.learningAgreement.deleteMany();
-  await prisma.auditRecord.deleteMany();
-  await prisma.mobilityRecord.deleteMany();
-  await prisma.deadline.deleteMany();
-  await prisma.procedureDefinition.deleteMany();
-  await prisma.socialProfile.deleteMany();
-  await prisma.user.deleteMany();
-  await prisma.institution.deleteMany();
+  await resetDatabase();
 
   await prisma.institution.upsert({ where: { id: 'inst-home-1' }, update: { name: 'Universidad de Sevilla', code: 'US', country: 'Spain' }, create: { id: 'inst-home-1', name: 'Universidad de Sevilla', code: 'US', country: 'Spain' } });
   await prisma.institution.upsert({ where: { id: 'inst-host-1' }, update: { name: 'KU Leuven', code: 'KUL', country: 'Belgium' }, create: { id: 'inst-host-1', name: 'KU Leuven', code: 'KUL', country: 'Belgium' } });
