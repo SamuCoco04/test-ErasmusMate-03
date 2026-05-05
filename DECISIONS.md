@@ -715,3 +715,14 @@ A major phase is not complete unless relevant decisions are documented here with
   - Consequences / trade-offs: Tests and fixtures must explicitly include active attachments before transitions.
   - Status: accepted.
   - Evidence level: implemented in submissions transition logic and updated submission tests.
+
+### DEC-017 — Real multipart upload as canonical submission attachment flow
+- **Date:** 2026-05-05
+- **Phase:** Institutional document upload hardening
+- **Decision:** Keep `/api/institutional/submissions/[submissionId]/attachments` and replacement routes as multipart/form-data endpoints backed by real `File` parsing, persisted metadata, and sanitized API responses without storage internals.
+- **Rationale:** Ensures student uploads use normal browser file inputs with backend-owned metadata persistence and preserves security boundaries.
+- **Alternatives considered:** JSON-only metadata upload; exposing storage paths for debugging.
+- **Consequences / trade-offs:** Slightly more API test complexity; materially better realism and safer response contract.
+- **Affected areas:** attachment API routes, student submissions UI labels, institutional attachment API tests.
+- **Status:** Accepted
+- **Evidence level:** Confirmed by implementation
