@@ -117,6 +117,7 @@ await prisma.mobilityRecord.upsert({ where: { id: 'mobility-1' }, update: { stud
     { id: 'att-1', submissionId: 'sub-2', uploadedById: 'student-1', fileName: 'insurance-proof.pdf', mimeType: 'application/pdf', sizeBytes: 248000, storageKey: 'demo/sub-2/insurance-proof-v1.pdf', version: 1, status: 'ACTIVE' },
     { id: 'att-2', submissionId: 'sub-5', uploadedById: 'student-1', fileName: 'passport-copy-v1.pdf', mimeType: 'application/pdf', sizeBytes: 142000, storageKey: 'demo/sub-5/passport-copy-v1.pdf', version: 1, status: 'REPLACED' },
     { id: 'att-3', submissionId: 'sub-5', uploadedById: 'student-1', fileName: 'passport-copy-v2.pdf', mimeType: 'application/pdf', sizeBytes: 151000, storageKey: 'demo/sub-5/passport-copy-v2.pdf', version: 2, status: 'ACTIVE' },
+    { id: 'att-4', submissionId: 'sub-4', uploadedById: 'student-1', fileName: 'transcript-request-v1.pdf', mimeType: 'application/pdf', sizeBytes: 88000, storageKey: 'demo/sub-4/transcript-request-v1.pdf', version: 1, status: 'ACTIVE' },
   ] as const;
 
   for (const attachment of documentAttachments) {

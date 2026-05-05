@@ -3,7 +3,7 @@ import { AttachmentError, removeAttachment } from '@/src/modules/institutional/a
 
 const statusFor = (code: string) => code === 'FORBIDDEN' ? 403 : code === 'NOT_FOUND' ? 404 : code === 'INVALID_STATE' ? 409 : 400;
 
-export async function DELETE(_: Request, { params }: { params: Promise<{ submissionId: string; attachmentId: string }> }) {
+async function handle(_: Request, { params }: { params: Promise<{ submissionId: string; attachmentId: string }> }) {
   try {
     const ctx = await getDemoContextFromRequest();
     const { submissionId, attachmentId } = await params;
@@ -13,4 +13,12 @@ export async function DELETE(_: Request, { params }: { params: Promise<{ submiss
     if (error instanceof AttachmentError) return Response.json({ error: error.message }, { status: statusFor(error.code) });
     return Response.json({ error: 'Internal server error' }, { status: 500 });
   }
+}
+
+export async function DELETE(request: Request, context: { params: Promise<{ submissionId: string; attachmentId: string }> }) {
+  return handle(request, context);
+}
+
+export async function POST(request: Request, context: { params: Promise<{ submissionId: string; attachmentId: string }> }) {
+  return handle(request, context);
 }
