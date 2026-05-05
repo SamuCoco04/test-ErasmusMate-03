@@ -1,3 +1,4 @@
+import type { Prisma } from '@prisma/client';
 import { PrismaClient } from '@prisma/client';
 import { SocialDuplicateError, SocialForbiddenError, SocialInvalidTransitionError, SocialNotFoundError, SocialValidationError } from './social-errors';
 import type { ConnectionCategory, ConnectionListsResponse, DiscoveryConnectionStatus, SafeConnectionItem } from './types';
@@ -20,7 +21,14 @@ function getCategory(connection: { state: string; requesterProfileId: string; re
   return 'unavailable';
 }
 
-function toSafeConnectionItem(connection: any, myProfileId: string): SafeConnectionItem {
+type SocialConnectionWithProfiles = Prisma.SocialConnectionGetPayload<{
+  include: {
+    requesterProfile: true;
+    receiverProfile: true;
+  };
+}>;
+
+function toSafeConnectionItem(connection: SocialConnectionWithProfiles, myProfileId: string): SafeConnectionItem {
   const other = connection.requesterProfileId === myProfileId ? connection.receiverProfile : connection.requesterProfile;
   const category = getCategory(connection, myProfileId);
   return {
