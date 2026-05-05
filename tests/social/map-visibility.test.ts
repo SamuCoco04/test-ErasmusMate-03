@@ -20,12 +20,65 @@ describe('Social: city recommendations and map contracts', () => {
     await expect(createRecommendation(prisma, { role: 'ADMIN', userId: 'admin-1' }, { title: 'x', description: 'x', category: 'GENERAL_TIP', city: 'Leuven', country: 'Belgium', addressLabel: 'x' })).rejects.toThrow('Forbidden');
   });
 
-  it('map endpoint returns recommendation places and no student profile fields', async () => {
+  it('map endpoint returns recommendation places with coordinates and no profile fields', async () => {
     const items = await getRecommendationMapItems(prisma, { role: 'STUDENT', userId: 'student-1' }, new URLSearchParams('category=STUDY'));
     expect(items.every((x) => x.category === 'STUDY')).toBe(true);
+    expect(items.every((x) => typeof x.approximateLatitude === 'number' && typeof x.approximateLongitude === 'number')).toBe(true);
     const item = items[0] as Record<string, unknown>;
+    expect(item).toHaveProperty('recommendationId');
     expect(item).not.toHaveProperty('displayName');
     expect(item).not.toHaveProperty('userId');
+    expect(item).not.toHaveProperty('profileId');
+    expect(item).not.toHaveProperty('liveLocation');
+    expect(item).not.toHaveProperty('personalLocation');
+    expect(item).not.toHaveProperty('moderationState');
+  });
+
+  it('hidden or moderation-hidden recommendations are excluded', async () => {
+    await prisma.cityRecommendation.create({
+      data: {
+        id: 'rec-hidden',
+        createdByProfileId: 'sp-student-2',
+        title: 'Hidden tip',
+        description: 'Should never appear',
+        category: 'GENERAL_TIP',
+        city: 'Leuven',
+        country: 'Belgium',
+        addressLabel: 'Hidden place',
+        approximateLatitude: 50.87,
+        approximateLongitude: 4.71,
+        visibility: 'HIDDEN',
+        moderationState: 'ACTIVE',
+      },
+    });
+
+    await prisma.cityRecommendation.create({
+      data: {
+        id: 'rec-moderated',
+        createdByProfileId: 'sp-student-2',
+        title: 'Moderated tip',
+        description: 'Should never appear',
+        category: 'GENERAL_TIP',
+        city: 'Leuven',
+        country: 'Belgium',
+        addressLabel: 'Moderated place',
+        approximateLatitude: 50.87,
+        approximateLongitude: 4.72,
+        visibility: 'VISIBLE',
+        moderationState: 'HIDDEN_BY_MODERATION',
+      },
+    });
+
+    const items = await getRecommendationMapItems(prisma, { role: 'STUDENT', userId: 'student-1' }, new URLSearchParams());
+    const ids = items.map((item) => item.recommendationId);
+    expect(ids).not.toContain('rec-hidden');
+    expect(ids).not.toContain('rec-moderated');
+  });
+
+  it('city and category filters affect map results', async () => {
+    const leuvenFood = await getRecommendationMapItems(prisma, { role: 'STUDENT', userId: 'student-1' }, new URLSearchParams('city=Leuven&category=FOOD'));
+    expect(leuvenFood.length).toBeGreaterThan(0);
+    expect(leuvenFood.every((item) => item.city === 'Leuven' && item.category === 'FOOD')).toBe(true);
   });
 
   it('report recommendation creates moderation record', async () => {

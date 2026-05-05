@@ -52,6 +52,9 @@ describe('Social UI hardening contracts', () => {
     expect(dashboardPage).toContain('Map');
     expect(dashboardPage).toContain('/social/student/map');
     expect(mapPage).toContain('recommendations map');
+    expect(mapPage).toContain('Leaflet + OpenStreetMap');
+    expect(mapPage).toContain('SocialRecommendationsMap');
+    expect(mapPage).toContain('recommendationId');
     expect(mapPage).not.toContain('live location sharing');
     expect(mapPage).not.toContain('precise GPS');
   });

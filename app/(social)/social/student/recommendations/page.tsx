@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 type Rec = { id: string; title: string; description: string; category: string; city: string; country: string; addressLabel: string };
 
@@ -8,23 +8,25 @@ export default function RecommendationsPage() {
   const [city, setCity] = useState('Leuven');
   const [category, setCategory] = useState('');
 
-  async function load() {
+  const load = useCallback(async (cityValue: string, categoryValue: string) => {
     const q = new URLSearchParams();
-    if (city) q.set('city', city);
-    if (category) q.set('category', category);
+    if (cityValue) q.set('city', cityValue);
+    if (categoryValue) q.set('category', categoryValue);
     const res = await fetch(`/api/social/recommendations?${q.toString()}`);
     const body = (await res.json()) as { items: Rec[] };
     setItems(body.items ?? []);
-  }
+  }, []);
 
-  useEffect(() => { void load(); }, []);
+  useEffect(() => {
+    void load(city, category);
+  }, [load, city, category]);
 
   return <div className='space-y-4'>
     <h1 className='text-2xl font-semibold'>Recommendations</h1>
     <div className='flex gap-2'>
       <input value={city} onChange={(e) => setCity(e.target.value)} placeholder='City' className='rounded border px-3 py-2' />
       <input value={category} onChange={(e) => setCategory(e.target.value)} placeholder='Category' className='rounded border px-3 py-2' />
-      <button onClick={() => void load()} className='rounded bg-slate-900 px-3 py-2 text-white'>Filter</button>
+      <button onClick={() => void load(city, category)} className='rounded bg-slate-900 px-3 py-2 text-white'>Filter</button>
     </div>
     <div className='space-y-2'>
       {items.map((item) => <article key={item.id} className='rounded border bg-white p-3'>
