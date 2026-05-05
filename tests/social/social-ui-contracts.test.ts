@@ -5,6 +5,7 @@ const connectionsPage = readFileSync('app/(social)/social/student/connections/pa
 const discoveryPage = readFileSync('app/(social)/social/student/discovery/page.tsx', 'utf8');
 const messagesPage = readFileSync('app/(social)/social/student/messages/page.tsx', 'utf8');
 const mapPage = readFileSync('app/(social)/social/student/map/page.tsx', 'utf8');
+const recommendationsPage = readFileSync('app/(social)/social/student/recommendations/page.tsx', 'utf8');
 const dashboardPage = readFileSync('app/(social)/social/student/dashboard/page.tsx', 'utf8');
 const layoutPage = readFileSync('app/(social)/social/student/layout.tsx', 'utf8');
 
@@ -57,5 +58,11 @@ describe('Social UI hardening contracts', () => {
     expect(mapPage).toContain('recommendationId');
     expect(mapPage).not.toContain('live location sharing');
     expect(mapPage).not.toContain('precise GPS');
+    expect(mapPage).toContain('Create recommendation');
+    expect(mapPage).toContain('Click the map to place your recommendation marker.');
+    expect(mapPage).toContain('onMapClick');
+    expect(mapPage).toContain('Only recommendation place locations are shown. Student live or personal location is never displayed.');
+    expect(recommendationsPage).toContain('Create recommendation');
+    expect(recommendationsPage).toContain('/api/social/recommendations');
   });
 });

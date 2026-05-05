@@ -694,3 +694,10 @@ A major phase is not complete unless relevant decisions are documented here with
 - Consequences: Map API payload is now normalized to recommendation-only fields including `recommendationId`; no student location/profile internals are exposed by map endpoints.
 - Status: Accepted.
 - Evidence level: Implemented in social map page/component, recommendation map service, and social map tests.
+
+## 2026-05-05 — Phase 5G.2 student-created recommendations with map placement
+- Decision: Allow STUDENT users to create city recommendations from both recommendations page and map page, with required place coordinates and map-click placement.
+- Rationale: Completes social recommendation workflow end-to-end while keeping the map focused on recommendation places (not people).
+- Consequences: Added strict coordinate/required-field validation and safe response projection; map API now returns `descriptionExcerpt` only; creation forms include explicit privacy safety copy.
+- Status: Accepted.
+- Evidence level: Implemented in services, route handlers, UI forms, and tests.
