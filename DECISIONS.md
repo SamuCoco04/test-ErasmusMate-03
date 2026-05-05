@@ -763,3 +763,5 @@ A major phase is not complete unless relevant decisions are documented here with
 - **Affected areas:** `src/components/institutional/student-submissions-client.tsx`, student submissions UX contract tests, submissions traceability rows.
 - **Status:** Accepted
 - **Evidence level:** Confirmed by implementation
+
+- Phase 6C: Implemented institutional deadline calendar filters/grouping, ICS export endpoint, and idempotent reminder generation using existing notifications. Kept demo-role scoping and avoided external scheduler dependencies.
