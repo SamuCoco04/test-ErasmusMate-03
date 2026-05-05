@@ -13,7 +13,9 @@ export default async function StudentSubmissionsPage() {
   if (ctx.role === 'STUDENT') {
     for (const item of items) attachmentsBySubmission.set(item.id, await listAttachments(ctx, item.id));
   }
-  const procedures = await prisma.procedureDefinition.findMany({ orderBy: { sortOrder: 'asc' } });
+  const procedures = await prisma.procedureDefinition.findMany({
+  orderBy: { id: 'asc' },
+});
   return <div className='space-y-6'>
     <PageHeader sectionLabel='Student tasks' title='Submission requests' subtitle='Upload real files and send requests for coordinator review.' />
     <div className='rounded-xl border bg-white p-4'>
