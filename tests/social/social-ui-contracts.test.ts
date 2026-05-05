@@ -20,10 +20,16 @@ describe('Social UI hardening contracts', () => {
     expect(connectionsPage).toContain('c.allowedActions.unblock ?');
   });
 
-  it('discovery page uses safe contact labels and guarded send request action', () => {
-    expect(discoveryPage).toContain('Available to request');
-    expect(discoveryPage).toContain('Connections only');
-    expect(discoveryPage).toContain("p.connectionStatus === 'AVAILABLE_TO_REQUEST' && p.contactPreference === 'OPEN_TO_REQUESTS'");
+  it('does not reference removed /student/social route', () => {
+    const appFiles = [connectionsPage, discoveryPage, messagesPage, readFileSync('app/(social)/social/student/layout.tsx', 'utf8')];
+    appFiles.forEach((fileText) => expect(fileText).not.toContain('/student/social'));
+  });
+
+  it('discovery page shows single status and separates contact preference from actions', () => {
+    expect(discoveryPage).toContain("const canRequest = p.connectionStatus === 'AVAILABLE_TO_REQUEST';");
+    expect(discoveryPage).toContain("const canMessage = p.connectionStatus === 'CONNECTED';");
+    expect(discoveryPage).toContain('Status: {stateLabel[p.connectionStatus]}');
+    expect(discoveryPage).toContain('Contact preference:');
     expect(discoveryPage).not.toContain('moderationState');
     expect(discoveryPage).not.toContain('pairKey');
   });

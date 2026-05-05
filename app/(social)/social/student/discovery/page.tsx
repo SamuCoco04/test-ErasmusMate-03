@@ -2,17 +2,12 @@
 import { useCallback, useEffect, useState } from 'react';
 import type { SocialDiscoveryItem } from '@/src/modules/social/types';
 
-const contactLabel: Record<string, string> = {
-  OPEN_TO_REQUESTS: 'Available to request',
-  CONNECTIONS_ONLY: 'Connections only',
-  HIDDEN: 'Unavailable'
-};
 const stateLabel: Record<string, string> = {
   AVAILABLE_TO_REQUEST: 'Available to request',
   REQUEST_SENT: 'Request sent',
   REQUEST_RECEIVED: 'Request received',
   CONNECTED: 'Connected',
-  BLOCKED: 'Blocked with this student',
+  BLOCKED: 'Blocked',
   UNAVAILABLE: 'Unavailable'
 };
 
@@ -57,12 +52,14 @@ export default function SocialDiscoveryPage() {
     {feedback ? <p className='text-sm text-slate-600'>{feedback}</p> : null}
     {items.length === 0 ? <div className='rounded-xl border bg-white p-4 text-sm text-slate-600'>{hasFilters ? 'No students match your filters yet.' : 'No visible student profiles are available right now.'}</div> : null}
     <div className='grid gap-3 md:grid-cols-2'>{items.map((p) => {
-      const canRequest = p.connectionStatus === 'AVAILABLE_TO_REQUEST' && p.contactPreference === 'OPEN_TO_REQUESTS';
+      const canRequest = p.connectionStatus === 'AVAILABLE_TO_REQUEST';
+      const canMessage = p.connectionStatus === 'CONNECTED';
       return (<article key={p.id} className='rounded-xl border bg-white p-4'>
         <h2 className='font-semibold'>{p.displayName}</h2><p className='text-sm'>{p.hostCity}{p.hostCountry ? `, ${p.hostCountry}` : ''}</p><p className='text-sm'>{p.studyArea}</p><p className='text-sm'>{p.bio || 'No bio yet'}</p>
-        <p className='text-xs text-slate-500'>{contactLabel[p.contactPreference ?? ''] ?? 'Unavailable'}</p>
-        <p className='mb-2 text-xs text-slate-500'>{stateLabel[p.connectionStatus ?? 'UNAVAILABLE']}</p>
+        <p className='mb-2 text-xs text-slate-500'>Status: {stateLabel[p.connectionStatus]}</p>
+        {p.contactPreferenceLabel ? <p className='text-xs text-slate-500'>Contact preference: {p.contactPreferenceLabel.toLowerCase()}</p> : null}
         {canRequest ? <button className='rounded bg-slate-900 px-3 py-1 text-white' onClick={() => sendRequest(p.id)}>Send request</button> : null}
+        {canMessage ? <a className='rounded bg-slate-900 px-3 py-1 text-white' href='/social/student/messages'>Message</a> : null}
         {p.connectionStatus === 'REQUEST_RECEIVED' ? <p className='text-sm'>Open Connections to accept or reject.</p> : null}
         <button className='mt-2 rounded border px-3 py-1 text-sm' onClick={() => reportProfile(p.id)}>Report profile</button>
       </article>);
