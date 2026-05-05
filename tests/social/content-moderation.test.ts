@@ -20,6 +20,11 @@ describe('Social: content, reporting, and moderation contract', () => {
     await expect(createSocialReport(prisma, { role: 'STUDENT', userId: 'student-2' }, { targetMessageId: 'msg-seed-2', reason: 'No access' })).rejects.toThrow('Forbidden');
   });
 
+
+  it('duplicate pending reports from same reporter and target are rejected', async () => {
+    await createSocialReport(prisma, { role: 'STUDENT', userId: 'student-2' }, { targetProfileId: 'sp-student-3', reason: 'Inappropriate profile' });
+    await expect(createSocialReport(prisma, { role: 'STUDENT', userId: 'student-2' }, { targetProfileId: 'sp-student-3', reason: 'Duplicate' })).rejects.toThrow('pending report');
+  });
   it('coordinator cannot access admin moderation routes', async () => {
     await expect(listSocialReports(prisma, { role: 'COORDINATOR', userId: 'coordinator-1' })).rejects.toThrow('Forbidden');
   });

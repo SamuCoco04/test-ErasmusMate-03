@@ -658,3 +658,10 @@ A major phase is not complete unless relevant decisions are documented here with
 - **Evidence level:** Confirmed by implementation
 
 - 2026-05-05 | Added SocialReport backend workflow with admin review transitions (dismiss/hide profile) and student reporting guards; kept demo-context auth model unchanged. | Ensures moderation is backend-enforced while staying MVP-simple. | Added API/services/tests/seed updates and admin moderation page; hidden profiles are excluded from discovery and new connections. | Accepted | Implemented in Phase 5E.
+
+## 2026-05-05 — Phase 5F social lifecycle hardening
+- Decision: Reuse existing connection pair rows for re-request after CANCELLED/REJECTED and set UNBLOCK transition to CANCELLED state for a clean restart.
+- Rationale: Keeps one stable pair record, prevents duplicate active rows, and clearly restores request flow without auto-reconnecting.
+- Consequences: Users must send a new request after unblock; messaging stays blocked until reconnection is accepted.
+- Status: Accepted.
+- Evidence level: Implemented in service + tests.

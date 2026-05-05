@@ -48,6 +48,7 @@ function toSafeConnectionItem(connection: SocialConnectionWithProfiles, myProfil
       cancel: category === 'outgoingPending',
       message: category === 'accepted',
       block: category === 'accepted' || category === 'incomingPending',
+      unblock: connection.state === 'BLOCKED',
     },
   };
 }
@@ -77,6 +78,7 @@ export async function transitionConnection(prisma: PrismaClient, actor: {role:st
   if (action === 'reject') { if (c.state !== 'PENDING' || c.receiverProfileId !== me.id) throw new SocialInvalidTransitionError(); return prisma.socialConnection.update({ where: { id: connectionId }, data: { state: 'REJECTED', respondedAt: new Date(), lastActionByProfileId: me.id } }); }
   if (action === 'cancel') { if (c.state !== 'PENDING' || c.requesterProfileId !== me.id) throw new SocialInvalidTransitionError(); return prisma.socialConnection.update({ where: { id: connectionId }, data: { state: 'CANCELLED', respondedAt: new Date(), lastActionByProfileId: me.id } }); }
   if (action === 'block') { return prisma.socialConnection.update({ where: { id: connectionId }, data: { state: 'BLOCKED', blockedAt: new Date(), lastActionByProfileId: me.id } }); }
+  if (action === 'unblock') { if (c.state !== 'BLOCKED') throw new SocialInvalidTransitionError(); return prisma.socialConnection.update({ where: { id: connectionId }, data: { state: 'CANCELLED', blockedAt: null, respondedAt: new Date(), lastActionByProfileId: me.id } }); }
   throw new SocialValidationError('Unknown action');
 }
 
@@ -98,10 +100,10 @@ export async function getConnectionStateForProfile(prisma: PrismaClient, actor: 
   const me = await requireMyProfile(prisma, actor.userId);
   if (me.id === profileId) return 'UNAVAILABLE';
   const found = await prisma.socialConnection.findUnique({ where: { pairKey: pairKey(me.id, profileId) } });
-  if (!found) return 'NOT_CONNECTED';
+  if (!found) return 'AVAILABLE_TO_REQUEST';
   if (found.state === 'BLOCKED') return 'BLOCKED';
   if (found.state === 'ACCEPTED') return 'CONNECTED';
   if (found.state === 'PENDING' && found.requesterProfileId === me.id) return 'REQUEST_SENT';
   if (found.state === 'PENDING' && found.receiverProfileId === me.id) return 'REQUEST_RECEIVED';
-  return 'NOT_CONNECTED';
+  return 'AVAILABLE_TO_REQUEST';
 }
