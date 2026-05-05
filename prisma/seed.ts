@@ -12,13 +12,12 @@ export async function seed() {
   await prisma.cityRecommendation.deleteMany();
   await prisma.socialConnection.deleteMany();
   await prisma.exceptionRequest.deleteMany();
-  await prisma.deadline.deleteMany();
   await prisma.documentSubmission.deleteMany();
   await prisma.learningAgreementRow.deleteMany();
   await prisma.learningAgreement.deleteMany();
   await prisma.auditRecord.deleteMany();
   await prisma.mobilityRecord.deleteMany();
-  await prisma.documentRequirement.deleteMany();
+  await prisma.deadline.deleteMany();
   await prisma.procedureDefinition.deleteMany();
   await prisma.socialProfile.deleteMany();
   await prisma.user.deleteMany();
