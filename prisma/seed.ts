@@ -5,6 +5,7 @@ const prisma = new PrismaClient();
 export async function seed() {
   await prisma.$transaction([
     prisma.learningAgreementEvent.deleteMany(),
+    prisma.notification.deleteMany(),
     prisma.socialReport.deleteMany(),
     prisma.cityRecommendation.deleteMany(),
     prisma.socialMessage.deleteMany(),
