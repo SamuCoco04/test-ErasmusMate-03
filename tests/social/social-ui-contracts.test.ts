@@ -4,6 +4,9 @@ import { readFileSync } from 'node:fs';
 const connectionsPage = readFileSync('app/(social)/social/student/connections/page.tsx', 'utf8');
 const discoveryPage = readFileSync('app/(social)/social/student/discovery/page.tsx', 'utf8');
 const messagesPage = readFileSync('app/(social)/social/student/messages/page.tsx', 'utf8');
+const mapPage = readFileSync('app/(social)/social/student/map/page.tsx', 'utf8');
+const dashboardPage = readFileSync('app/(social)/social/student/dashboard/page.tsx', 'utf8');
+const layoutPage = readFileSync('app/(social)/social/student/layout.tsx', 'utf8');
 
 describe('Social UI hardening contracts', () => {
   it('connections page has clear sections and supports blocking and unblocking from clear sections', () => {
@@ -21,7 +24,7 @@ describe('Social UI hardening contracts', () => {
   });
 
   it('does not reference removed /student/social route', () => {
-    const appFiles = [connectionsPage, discoveryPage, messagesPage, readFileSync('app/(social)/social/student/layout.tsx', 'utf8')];
+    const appFiles = [connectionsPage, discoveryPage, messagesPage, layoutPage];
     appFiles.forEach((fileText) => expect(fileText).not.toContain('/student/social'));
   });
 
@@ -40,5 +43,15 @@ describe('Social UI hardening contracts', () => {
     expect(messagesPage).toContain('latestMessage?.body');
     expect(messagesPage).toContain('Please write a message before sending.');
     expect(messagesPage).toContain('disabled={!body.trim()}');
+  });
+
+  it('map discovery route and links are present with safe copy', () => {
+    expect(layoutPage).toContain('Map discovery');
+    expect(layoutPage).toContain('/social/student/map');
+    expect(dashboardPage).toContain('Map discovery');
+    expect(dashboardPage).toContain('/social/student/map');
+    expect(mapPage).toContain('City-level location only');
+    expect(mapPage).not.toContain('live location sharing');
+    expect(mapPage).not.toContain('precise GPS');
   });
 });

@@ -678,3 +678,5 @@ A major phase is not complete unless relevant decisions are documented here with
 - Consequences: UI can show "Only available to existing connections" consistently; moderation details remain hidden from student payloads.
 - Status: Accepted.
 - Evidence level: Implemented in discovery API mapping and discovery UI contract.
+
+- 2026-05-05: Implemented Phase 5G city-level social map discovery with explicit mapVisibility and approximate city-center coordinates only; no precise/live location fields are stored or exposed.
