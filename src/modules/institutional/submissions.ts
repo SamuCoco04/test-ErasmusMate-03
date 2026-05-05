@@ -1,6 +1,7 @@
 import { prisma } from '@/src/lib/prisma';
 import { DemoContext } from '@/src/modules/shared/demo-context';
 import { computeEffectiveDeadlineState, markDeadlineFulfilled } from './deadlines';
+import { createNotification } from '@/src/modules/notifications/notifications';
 
 export type SubmissionState = 'DRAFT'|'SUBMITTED'|'IN_REVIEW'|'APPROVED'|'REJECTED'|'REOPENED'|'RESUBMITTED';
 export type SubmissionAction = 'create_draft'|'submit'|'start_review'|'approve'|'reject'|'reopen'|'resubmit';
@@ -80,5 +81,14 @@ export async function transitionSubmission(ctx:DemoContext, submissionId:string,
   const updated = await prisma.documentSubmission.update({where:{id:submissionId},data:{state:nextState,submittedAt:action==='submit'||action==='resubmit'?new Date():sub.submittedAt,reviewedAt:['approve','reject','reopen'].includes(action)?new Date():sub.reviewedAt,reviewerNotes:canWriteReviewerNotes?(rationale??sub.reviewerNotes):sub.reviewerNotes,reopeningRationale:action==='reopen'?(rationale??null):sub.reopeningRationale}});
   await writeAuditAndEvent(sub.id,sub.mobilityRecordId,ctx.userId,action,state,nextState,rationale);
   if (action === 'approve') await markDeadlineFulfilled(ctx.userId, sub.id);
+  const mr = await prisma.mobilityRecord.findUnique({ where: { id: sub.mobilityRecordId } });
+  if (mr) {
+    if (['submit', 'resubmit'].includes(action)) {
+      await createNotification({ recipientUserId: mr.coordinatorId, actorUserId: ctx.userId, area: 'INSTITUTIONAL', type: 'SUBMISSION_REVIEW_NEEDED', title: 'Submission needs review', body: 'A student submission is ready for coordinator review.', entityType: 'SUBMISSION', entityId: sub.id });
+    }
+    if (['approve','reject','reopen','start_review'].includes(action)) {
+      await createNotification({ recipientUserId: mr.studentId, actorUserId: ctx.userId, area: 'INSTITUTIONAL', type: `SUBMISSION_${action.toUpperCase()}`, title: 'Submission updated', body: `Your submission is now ${nextState}.`, entityType: 'SUBMISSION', entityId: sub.id });
+    }
+  }
   return updated;
 }

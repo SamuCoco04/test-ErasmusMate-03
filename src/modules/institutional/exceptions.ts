@@ -1,6 +1,7 @@
 import { prisma } from '@/src/lib/prisma';
 import { DemoContext } from '@/src/modules/shared/demo-context';
 import { applyDeadlineOverride } from './deadlines';
+import { createNotification } from '@/src/modules/notifications/notifications';
 
 export type ExceptionAction = 'start_review'|'approve'|'reject'|'apply'|'close';
 
@@ -21,6 +22,8 @@ export async function createExceptionRequest(ctx: DemoContext, input: { title: s
   if (!deadline || deadline.mobilityRecord.studentId !== ctx.userId) throw new ExceptionError('FORBIDDEN', 'Forbidden');
   const created = await prisma.exceptionRequest.create({ data: { id: `exc-${crypto.randomUUID()}`, mobilityRecordId: deadline.mobilityRecordId, requestedById: ctx.userId, deadlineId: input.deadlineId, title: input.title, reason: input.reason, state: 'PENDING' } });
   await prisma.auditRecord.create({ data: { id: `audit-${crypto.randomUUID()}`, mobilityRecordId: created.mobilityRecordId, actorId: ctx.userId, eventType: 'EXCEPTION_CREATED', details: JSON.stringify({ targetType: 'ExceptionRequest', targetId: created.id, priorState: 'NONE', newState: 'PENDING' }) } });
+  const mr = await prisma.mobilityRecord.findUnique({ where: { id: created.mobilityRecordId } });
+  if (mr) await createNotification({ recipientUserId: mr.coordinatorId, actorUserId: ctx.userId, area: 'INSTITUTIONAL', type: 'EXCEPTION_REQUESTED', title: 'Exception request submitted', body: 'A student requested an exception review.', entityType: 'EXCEPTION', entityId: created.id });
   return created;
 }
 
@@ -40,5 +43,7 @@ export async function transitionException(ctx: DemoContext, exceptionId: string,
     await applyDeadlineOverride(ctx.userId, exc.deadlineId, new Date(payload.overrideDueDate), payload.rationale ?? 'Extension approved');
   }
   await prisma.auditRecord.create({ data: { id: `audit-${crypto.randomUUID()}`, mobilityRecordId: exc.mobilityRecordId, actorId: ctx.userId, eventType: `EXCEPTION_${action.toUpperCase()}`, details: JSON.stringify({ targetType: 'ExceptionRequest', targetId: exc.id, priorState: exc.state, newState: next[action], rationale: payload.rationale ?? null }) } });
+  const mr = await prisma.mobilityRecord.findUnique({ where: { id: exc.mobilityRecordId } });
+  if (mr && ['approve','apply','reject'].includes(action)) await createNotification({ recipientUserId: mr.studentId, actorUserId: ctx.userId, area: 'INSTITUTIONAL', type: `EXCEPTION_${action.toUpperCase()}`, title: 'Exception request updated', body: `Your exception request is now ${next[action]}.`, entityType: 'EXCEPTION', entityId: exc.id });
   return updated;
 }
