@@ -43,6 +43,15 @@ describe('Social: connection lifecycle contract', () => {
     expect(await getConnectionStateForProfile(prisma, { role: 'STUDENT', userId: 'student-1' }, 'sp-student-6')).toBe('AVAILABLE_TO_REQUEST');
   });
 
+  it('blocked pairs prevent new requests', async () => {
+    await expect(requestConnection(prisma, { role: 'STUDENT', userId: 'student-1' }, 'sp-student-6')).rejects.toThrow();
+  });
+
+  it('accepted pair allows messaging', async () => {
+    const sent = await sendMessage(prisma, { role: 'STUDENT', userId: 'student-1' }, 'conn-seed-2', { body: 'hello there' });
+    expect(sent.body).toBe('hello there');
+  });
+
   it('participants only and non-students cannot transition', async () => {
     await expect(transitionConnection(prisma, { role: 'STUDENT', userId: 'student-4' }, 'conn-seed-2', 'block')).rejects.toThrow('Forbidden');
     await expect(requestConnection(prisma, { role: 'ADMIN', userId: 'admin-1' }, 'sp-student-2')).rejects.toThrow('Forbidden');
