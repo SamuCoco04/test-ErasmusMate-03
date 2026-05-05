@@ -65,5 +65,15 @@ export async function reportRecommendation(prisma: PrismaClient, actor: ActorCon
   const recommendation = await prisma.cityRecommendation.findUnique({ where: { id: recommendationId } });
   if (!recommendation || recommendation.visibility !== 'VISIBLE' || recommendation.moderationState !== 'ACTIVE') throw new SocialValidationError('Recommendation is unavailable');
   if (recommendation.createdByProfileId === reporter.id) throw new SocialValidationError('You cannot report your own recommendation');
-  return prisma.socialReport.create({ data: { id: `sreport-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`, reporterProfileId: reporter.id, targetRecommendationId: recommendation.id, reason: reason.trim(), details: details?.trim() || null, status: 'PENDING' } });
+  return prisma.socialReport.create({
+    data: {
+      id: `sreport-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+      reporterProfileId: reporter.id,
+      targetProfileId: recommendation.createdByProfileId,
+      targetRecommendationId: recommendation.id,
+      reason: reason.trim(),
+      details: details?.trim() || null,
+      status: 'PENDING',
+    },
+  });
 }

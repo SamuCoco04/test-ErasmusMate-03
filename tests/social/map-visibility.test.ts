@@ -31,6 +31,7 @@ describe('Social: city recommendations and map contracts', () => {
   it('report recommendation creates moderation record', async () => {
     const report = await reportRecommendation(prisma, { role: 'STUDENT', userId: 'student-1' }, 'rec-2', 'Spam');
     expect(report.targetRecommendationId).toBe('rec-2');
+    expect(report.targetProfileId).toBeTruthy();
   });
 
   it('seed remains idempotent', async () => {
