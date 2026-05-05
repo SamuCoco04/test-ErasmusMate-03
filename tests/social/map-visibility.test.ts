@@ -1,45 +1,37 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 import { prisma } from '@/src/lib/prisma';
 import { seed } from '@/prisma/seed';
-import { listMapProfiles } from '@/src/modules/social/map';
+import { createRecommendation, getRecommendationMapItems, listRecommendations, reportRecommendation } from '@/src/modules/social/recommendations';
 
-describe('Social: map visibility filtering contract', () => {
+describe('Social: city recommendations and map contracts', () => {
   beforeEach(async () => { await seed(); });
 
-  it('student can retrieve map-visible profiles and connected status is safe', async () => {
-    const items = await listMapProfiles(prisma, { role: 'STUDENT', userId: 'student-1' }, new URLSearchParams());
+  it('student can list visible recommendations with safe payload only', async () => {
+    const items = await listRecommendations(prisma, { role: 'STUDENT', userId: 'student-1' }, new URLSearchParams('city=Leuven'));
     expect(items.length).toBeGreaterThan(0);
-    expect(items.find((x) => x.profileId === 'sp-student-3')?.connectionStatus).toBe('CONNECTED');
-  });
-
-  it('excludes own, hidden, moderation-hidden and map hidden profiles', async () => {
-    const items = await listMapProfiles(prisma, { role: 'STUDENT', userId: 'student-1' }, new URLSearchParams());
-    expect(items.find((x) => x.profileId === 'sp-student-1')).toBeFalsy();
-    expect(items.find((x) => x.profileId === 'sp-student-4')).toBeFalsy();
-    expect(items.find((x) => x.profileId === 'sp-student-5')).toBeFalsy();
-  });
-
-  it('payload exposes only safe public map fields', async () => {
-    const items = await listMapProfiles(prisma, { role: 'STUDENT', userId: 'student-1' }, new URLSearchParams());
     const item = items[0] as Record<string, unknown>;
-    expect(item).not.toHaveProperty('userId');
-    expect(item).not.toHaveProperty('email');
     expect(item).not.toHaveProperty('moderationState');
-    expect(item).not.toHaveProperty('pairKey');
+    expect(item).not.toHaveProperty('createdByProfileId');
   });
 
-  it('forbids coordinator and admin access', async () => {
-    await expect(listMapProfiles(prisma, { role: 'COORDINATOR', userId: 'coordinator-1' }, new URLSearchParams())).rejects.toThrow('Forbidden');
-    await expect(listMapProfiles(prisma, { role: 'ADMIN', userId: 'admin-1' }, new URLSearchParams())).rejects.toThrow('Forbidden');
+  it('student can create recommendation and admin/coordinator cannot', async () => {
+    const created = await createRecommendation(prisma, { role: 'STUDENT', userId: 'student-1' }, { title: 'Bike route to campus', description: 'Cycle path is safer via ring road.', category: 'TRANSPORT', city: 'Leuven', country: 'Belgium', addressLabel: 'Ring Leuven', approximateLatitude: 50.88, approximateLongitude: 4.7 });
+    expect(created.category).toBe('TRANSPORT');
+    await expect(createRecommendation(prisma, { role: 'ADMIN', userId: 'admin-1' }, { title: 'x', description: 'x', category: 'GENERAL_TIP', city: 'Leuven', country: 'Belgium', addressLabel: 'x' })).rejects.toThrow('Forbidden');
   });
 
-  it('blocked profiles are not actionable and filters work', async () => {
-    const all = await listMapProfiles(prisma, { role: 'STUDENT', userId: 'student-1' }, new URLSearchParams());
-    expect(all.find((x) => x.profileId === 'sp-student-6')?.connectionStatus).toBe('BLOCKED');
-    const byCity = await listMapProfiles(prisma, { role: 'STUDENT', userId: 'student-1' }, new URLSearchParams('hostCity=Ghent'));
-    expect(byCity).toHaveLength(1);
-    const byArea = await listMapProfiles(prisma, { role: 'STUDENT', userId: 'student-1' }, new URLSearchParams('studyArea=Computer Science'));
-    expect(byArea.every((x) => x.studyArea === 'Computer Science')).toBe(true);
+  it('map endpoint returns recommendation places and no student profile fields', async () => {
+    const items = await getRecommendationMapItems(prisma, { role: 'STUDENT', userId: 'student-1' }, new URLSearchParams('category=STUDY'));
+    expect(items.every((x) => x.category === 'STUDY')).toBe(true);
+    const item = items[0] as Record<string, unknown>;
+    expect(item).not.toHaveProperty('displayName');
+    expect(item).not.toHaveProperty('userId');
+  });
+
+  it('report recommendation creates moderation record', async () => {
+    const report = await reportRecommendation(prisma, { role: 'STUDENT', userId: 'student-1' }, 'rec-2', 'Spam');
+    expect(report.targetRecommendationId).toBe('rec-2');
+    expect(report.targetProfileId).toBeTruthy();
   });
 
   it('seed remains idempotent', async () => {

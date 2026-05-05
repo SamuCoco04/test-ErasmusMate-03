@@ -46,11 +46,12 @@ describe('Social UI hardening contracts', () => {
   });
 
   it('map discovery route and links are present with safe copy', () => {
-    expect(layoutPage).toContain('Map discovery');
+    expect(layoutPage).toContain('Recommendations');
+    expect(layoutPage).toContain('Map');
     expect(layoutPage).toContain('/social/student/map');
-    expect(dashboardPage).toContain('Map discovery');
+    expect(dashboardPage).toContain('Map');
     expect(dashboardPage).toContain('/social/student/map');
-    expect(mapPage).toContain('City-level location only');
+    expect(mapPage).toContain('recommendations map');
     expect(mapPage).not.toContain('live location sharing');
     expect(mapPage).not.toContain('precise GPS');
   });

@@ -6,6 +6,7 @@ export async function seed() {
   await prisma.$transaction([
     prisma.learningAgreementEvent.deleteMany(),
     prisma.socialReport.deleteMany(),
+    prisma.cityRecommendation.deleteMany(),
     prisma.socialMessage.deleteMany(),
     prisma.socialConnection.deleteMany(),
     prisma.socialProfile.deleteMany(),
@@ -48,6 +49,16 @@ export async function seed() {
     await prisma.socialProfile.upsert({ where: { userId: profile.userId }, update: profile, create: profile });
   }
 
+  const cityRecommendations = [
+    { id:'rec-1', createdByProfileId:'sp-student-2', title:'KU Leuven Agora Study Space', description:'Quiet morning hours and reliable desks near group rooms.', category:'STUDY', city:'Leuven', country:'Belgium', addressLabel:'AGORA Learning Centre', approximateLatitude:50.8779, approximateLongitude:4.7012, visibility:'VISIBLE', moderationState:'ACTIVE' },
+    { id:'rec-2', createdByProfileId:'sp-student-3', title:'Cheap lunch near station', description:'Budget student menu before 14:00 with vegetarian option.', category:'FOOD', city:'Leuven', country:'Belgium', addressLabel:'Martelarenplein area', approximateLatitude:50.8822, approximateLongitude:4.7154, visibility:'VISIBLE', moderationState:'ACTIVE' },
+    { id:'rec-3', createdByProfileId:'sp-student-6', title:'City registration checklist', description:'Bring rental contract and passport copy for faster city hall processing.', category:'BUREAUCRACY', city:'Leuven', country:'Belgium', addressLabel:'Leuven City Hall', approximateLatitude:50.879, approximateLongitude:4.7003, visibility:'VISIBLE', moderationState:'ACTIVE' },
+    { id:'rec-4', createdByProfileId:'sp-student-1', title:'Night bus safety tip', description:'Use night bus N2 after library closing; stops near major student residences.', category:'SAFETY', city:'Leuven', country:'Belgium', addressLabel:'Leuven Station Bus Hub', approximateLatitude:50.882, approximateLongitude:4.7152, visibility:'VISIBLE', moderationState:'ACTIVE' },
+  ] as const;
+  for (const rec of cityRecommendations) {
+    await prisma.cityRecommendation.upsert({ where: { id: rec.id }, update: rec, create: rec });
+  }
+
   const socialConnections = [
     { id: 'conn-seed-1', pairKey: 'sp-student-1__sp-student-2', requesterProfileId: 'sp-student-1', receiverProfileId: 'sp-student-2', state: 'PENDING', requestedAt: new Date('2026-05-01T08:00:00.000Z'), lastActionByProfileId: 'sp-student-1' },
     { id: 'conn-seed-2', pairKey: 'sp-student-1__sp-student-3', requesterProfileId: 'sp-student-3', receiverProfileId: 'sp-student-1', state: 'ACCEPTED', requestedAt: new Date('2026-04-21T08:00:00.000Z'), respondedAt: new Date('2026-04-22T08:00:00.000Z'), lastActionByProfileId: 'sp-student-1' },
@@ -68,9 +79,9 @@ export async function seed() {
 
 
   const socialReports = [
-    { id: 'sreport-seed-1', reporterProfileId: 'sp-student-1', targetProfileId: 'sp-student-2', targetMessageId: null, reason: 'Spam invitations', details: 'Repeated unwanted connection attempts after refusal.', status: 'PENDING', decisionRationale: null, reviewedById: null, reviewedAt: null },
-    { id: 'sreport-seed-2', reporterProfileId: 'sp-student-3', targetProfileId: 'sp-student-5', targetMessageId: null, reason: 'Harassment in profile bio', details: 'Offensive terms in biography text.', status: 'ACTIONED', decisionRationale: 'Profile hidden pending manual follow-up.', reviewedById: 'admin-1', reviewedAt: new Date('2026-04-25T09:00:00.000Z') },
-    { id: 'sreport-seed-3', reporterProfileId: 'sp-student-1', targetProfileId: null, targetMessageId: 'msg-seed-2', reason: 'Uncivil language', details: 'Tone was aggressive.', status: 'DISMISSED', decisionRationale: 'Message reviewed and within acceptable limits.', reviewedById: 'admin-1', reviewedAt: new Date('2026-04-26T09:00:00.000Z') },
+    { id: 'sreport-seed-1', reporterProfileId: 'sp-student-1', targetProfileId: 'sp-student-2', targetMessageId: null, targetRecommendationId: null, reason: 'Spam invitations', details: 'Repeated unwanted connection attempts after refusal.', status: 'PENDING', decisionRationale: null, reviewedById: null, reviewedAt: null },
+    { id: 'sreport-seed-2', reporterProfileId: 'sp-student-3', targetProfileId: 'sp-student-5', targetMessageId: null, targetRecommendationId: null, reason: 'Harassment in profile bio', details: 'Offensive terms in biography text.', status: 'ACTIONED', decisionRationale: 'Profile hidden pending manual follow-up.', reviewedById: 'admin-1', reviewedAt: new Date('2026-04-25T09:00:00.000Z') },
+    { id: 'sreport-seed-3', reporterProfileId: 'sp-student-1', targetProfileId: null, targetMessageId: 'msg-seed-2', targetRecommendationId: null, reason: 'Uncivil language', details: 'Tone was aggressive.', status: 'DISMISSED', decisionRationale: 'Message reviewed and within acceptable limits.', reviewedById: 'admin-1', reviewedAt: new Date('2026-04-26T09:00:00.000Z') },
   ] as const;
   for (const report of socialReports) {
     await prisma.socialReport.upsert({ where: { id: report.id }, update: report, create: report });
