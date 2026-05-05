@@ -17,12 +17,11 @@ describe('Phase 6C deadline UI contracts', () => {
     expect(coordinatorPage).toContain('Exception related');
     expect(coordinatorPage).toContain('Export calendar');
   });
-});
 
-
-it('student and coordinator pages include empty-state copy and original due date', () => {
-  expect(studentPage).toContain('No deadlines match the current filter.');
-  expect(studentPage).toContain('Original due date');
-  expect(coordinatorPage).toContain('No assigned deadlines for this filter.');
-  expect(coordinatorPage).toContain('Risk:');
+  it('student and coordinator pages include empty-state copy and original due date', () => {
+    expect(studentPage).toContain('No deadlines match the current filter.');
+    expect(studentPage).toContain('Original due date');
+    expect(coordinatorPage).toContain('No assigned deadlines for this filter.');
+    expect(coordinatorPage).toContain('Risk:');
+  });
 });

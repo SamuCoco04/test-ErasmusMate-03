@@ -42,11 +42,11 @@ function ensureRole(ctx: DemoContext, allowed: Array<DemoContext['role']>) { if 
 
 type RawDeadline = Awaited<ReturnType<typeof prisma.deadline.findFirst>> & { relatedProcedure?: { title: string } | null; exceptionRequests?: Array<{ state: string }>; mobilityRecord?: { student?: { displayName: string } | null } | null };
 
-function toReminderLabel(d: { effectiveState: DeadlineState; overrideDueDate: Date | null }, now = new Date(), dueSoonWindowDays = 7): DeadlineReadModel['reminderLabel'] {
+function toReminderLabel(d: { effectiveState: DeadlineState; overrideDueDate: Date | null; effectiveDueDate: Date }, now = new Date(), dueSoonWindowDays = 7): DeadlineReadModel['reminderLabel'] {
   if (d.effectiveState === 'FULFILLED') return 'Completed';
   if (d.effectiveState === 'OVERDUE') return 'Overdue';
   if (d.overrideDueDate) return 'Extended';
-  return classifyDeadlineReminderRule({ effectiveDueDate: (d as any).effectiveDueDate, effectiveState: d.effectiveState }, now, dueSoonWindowDays) === 'DEADLINE_DUE_SOON' ? 'Due soon' : 'Upcoming';
+  return classifyDeadlineReminderRule({ effectiveDueDate: d.effectiveDueDate, effectiveState: d.effectiveState }, now, dueSoonWindowDays) === 'DEADLINE_DUE_SOON' ? 'Due soon' : 'Upcoming';
 }
 
 function toReadModel(d: RawDeadline & { id: string; mobilityRecordId: string; title: string; dueDate: Date; overrideDueDate: Date | null; state: string; fulfilledAt: Date | null }, now = new Date()): DeadlineReadModel {
@@ -58,7 +58,7 @@ function toReadModel(d: RawDeadline & { id: string; mobilityRecordId: string; ti
     dueDate: d.dueDate, overrideDueDate: d.overrideDueDate, effectiveDueDate,
     state: d.state, effectiveState, fulfilledAt: d.fulfilledAt,
     relatedProcedureTitle: d.relatedProcedure?.title ?? null, hasActiveExceptionRequest: activeExceptionStates.length > 0, activeExceptionStates,
-    reminderLabel: toReminderLabel({ effectiveState, overrideDueDate: d.overrideDueDate, effectiveDueDate } as any, now),
+    reminderLabel: toReminderLabel({ effectiveState, overrideDueDate: d.overrideDueDate, effectiveDueDate }, now),
   };
 }
 
