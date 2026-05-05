@@ -1,6 +1,7 @@
 import { prisma } from '@/src/lib/prisma';
 import { DemoContext } from '@/src/modules/shared/demo-context';
 import { createNotification } from '@/src/modules/notifications/notifications';
+import { readInstitutionalUpload } from './file-storage';
 
 const ALLOWED_MIME = new Set(['application/pdf', 'image/png', 'image/jpeg']);
 const MAX_SIZE_BYTES = 10 * 1024 * 1024;
@@ -25,7 +26,7 @@ function validateInput(input: AttachmentInput, allowedMimeTypes: string[], maxSi
   if (input.sizeBytes > maxSizeBytes || input.sizeBytes > MAX_SIZE_BYTES) throw new AttachmentError('VALIDATION', 'File is too large');
 }
 
-function sanitize(attachment: { id: string; submissionId: string; fileName: string; mimeType: string; sizeBytes: number; version: number; status: string; createdAt: Date; updatedAt: Date }) {
+function sanitize(attachment: { id: string; submissionId: string; fileName: string; mimeType: string; sizeBytes: number; version: number; status: string; storageKey: string; createdAt: Date; updatedAt: Date }) {
   return {
     id: attachment.id,
     submissionId: attachment.submissionId,
@@ -34,6 +35,7 @@ function sanitize(attachment: { id: string; submissionId: string; fileName: stri
     sizeBytes: attachment.sizeBytes,
     version: attachment.version,
     status: attachment.status,
+    hasStoredContent: !attachment.storageKey.startsWith('demo/'),
     createdAt: attachment.createdAt,
     updatedAt: attachment.updatedAt,
   };
@@ -85,4 +87,16 @@ export async function removeAttachment(ctx: DemoContext, submissionId: string, a
   const removed = await prisma.documentAttachment.update({ where: { id: previous.id }, data: { status: 'REMOVED' } });
   await prisma.auditRecord.create({ data: { id: `audit-${crypto.randomUUID()}`, mobilityRecordId: submission.mobilityRecordId, actorId: ctx.userId, eventType: 'SUBMISSION_ATTACHMENT_REMOVED', details: JSON.stringify({ submissionId, attachmentId: previous.id }) } });
   return sanitize(removed);
+}
+
+export async function openAttachment(ctx: DemoContext, submissionId: string, attachmentId: string) {
+  if (!['STUDENT', 'COORDINATOR', 'ADMIN'].includes(ctx.role)) throw new AttachmentError('FORBIDDEN', 'Forbidden');
+  const attachment = await prisma.documentAttachment.findFirst({ where: { id: attachmentId, submissionId }, include: { submission: { include: { mobilityRecord: true } } } });
+  if (!attachment) throw new AttachmentError('NOT_FOUND', 'Attachment not found');
+  if (ctx.role === 'STUDENT' && attachment.submission.mobilityRecord.studentId !== ctx.userId) throw new AttachmentError('FORBIDDEN', 'Forbidden');
+  if (ctx.role === 'COORDINATOR' && attachment.submission.mobilityRecord.coordinatorId !== ctx.userId) throw new AttachmentError('FORBIDDEN', 'Forbidden');
+  if (attachment.storageKey.startsWith('demo/')) throw new AttachmentError('NOT_FOUND', 'Demo metadata only');
+  const file = await readInstitutionalUpload(attachment.storageKey).catch(() => null);
+  if (!file) throw new AttachmentError('NOT_FOUND', 'Document not available');
+  return { file, fileName: attachment.fileName, mimeType: attachment.mimeType, sizeBytes: attachment.sizeBytes };
 }
