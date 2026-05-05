@@ -726,3 +726,16 @@ A major phase is not complete unless relevant decisions are documented here with
 - **Affected areas:** attachment API routes, student submissions UI labels, institutional attachment API tests.
 - **Status:** Accepted
 - **Evidence level:** Confirmed by implementation
+
+## 2026-05-05 — Coordinator review queue actions + secure attachment open
+- Decision: Keep submission transition authority exclusively in existing `/api/institutional/submissions/[submissionId]/transition` and add action controls in coordinator UI by status.
+- Rationale: Prevents duplicate state logic in UI and preserves backend validation/guards (including rationale requirements).
+- Consequences: Coordinator queue now performs actionable review transitions; rationale is captured when required.
+- Status: Accepted.
+- Evidence level: Implemented in coordinator review queue page/client and existing transition API.
+
+- Decision: Introduce secure attachment-open endpoint using role/ownership checks and private storage-key reads without path exposure.
+- Rationale: Makes real uploaded files openable while preserving access boundaries and hiding storage internals.
+- Consequences: Student/coordinator/admin can open authorized attachments inline; seed-only metadata attachments stay non-openable as demo-only.
+- Status: Accepted.
+- Evidence level: Implemented in attachments module, open route, and institutional attachment-open tests.

@@ -21,7 +21,7 @@ export default async function StudentSubmissionsPage() {
     <div className='rounded-xl border bg-white p-4'>
       <p className='mb-3 text-sm text-slate-600'>Choose a procedure, upload a file, and submit when ready.</p>
       <StudentSubmissionsClient
-        initialSubmissions={items.map((s) => ({ id: s.id, procedureTitle: s.procedure.title, state: s.state, reviewerNotes: s.reviewerNotes, attachments: (attachmentsBySubmission.get(s.id) ?? []).map((a) => ({ id: a.id, fileName: a.fileName, status: a.status })), hasActiveAttachment: (attachmentsBySubmission.get(s.id) ?? []).some((a) => a.status === 'ACTIVE') }))}
+        initialSubmissions={items.map((s) => ({ id: s.id, procedureTitle: s.procedure.title, state: s.state, reviewerNotes: s.reviewerNotes, attachments: (attachmentsBySubmission.get(s.id) ?? []).map((a) => ({ id: a.id, fileName: a.fileName, status: a.status, hasStoredContent: a.hasStoredContent })), hasActiveAttachment: (attachmentsBySubmission.get(s.id) ?? []).some((a) => a.status === 'ACTIVE') }))}
         procedureOptions={procedures.map((p) => ({ id: p.id, title: p.title }))}
       />
       <div className='mt-3'><Link href='/student/dashboard' className='text-sm text-blue-700 underline'>Back to dashboard</Link></div>
