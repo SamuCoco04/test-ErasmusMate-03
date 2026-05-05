@@ -765,3 +765,13 @@ A major phase is not complete unless relevant decisions are documented here with
 - **Evidence level:** Confirmed by implementation
 
 - Phase 6C: Implemented institutional deadline calendar filters/grouping, ICS export endpoint, and idempotent reminder generation using existing notifications. Kept demo-role scoping and avoided external scheduler dependencies.
+
+### DEC-022 — Phase 6D admin-owned institutional procedure configuration
+- **Date:** 2026-05-05
+- **Phase:** Phase 6D — Admin Configuration of Institutional Processes
+- **Decision:** Restrict procedure-definition mutations to ADMIN only, treat ProcedureDefinition as the single source for requested-document rules, and expose only active procedures to non-admin API consumers.
+- **Rationale:** Keeps institutional governance explicit, avoids duplicate models, and prevents coordinator/student configuration drift.
+- **Consequences / trade-offs:** Coordinator pages become read-only for procedure definitions; document requirements UI reuses procedure configuration semantics.
+- **Affected areas:** `/api/institutional/procedures`, admin procedures/document requirements pages, institutional API/UI contract tests.
+- **Status:** Accepted
+- **Evidence level:** Confirmed by implementation and tests

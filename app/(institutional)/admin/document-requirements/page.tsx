@@ -1,1 +1,1 @@
-export { default } from '@/app/(institutional)/coordinator/document-requirements/page';
+export { default } from '@/app/(institutional)/admin/procedures/page';
