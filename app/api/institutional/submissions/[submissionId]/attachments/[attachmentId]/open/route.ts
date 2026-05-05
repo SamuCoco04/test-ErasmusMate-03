@@ -16,6 +16,8 @@ export async function GET(_: Request, { params }: { params: Promise<{ submission
         'Content-Type': opened.mimeType,
         'Content-Disposition': `inline; filename="${safeName(opened.fileName)}"`,
         'Content-Length': String(opened.file.byteLength),
+        'Cache-Control': 'private, no-store',
+        'Pragma': 'no-cache',
       },
     });
   } catch (error) {

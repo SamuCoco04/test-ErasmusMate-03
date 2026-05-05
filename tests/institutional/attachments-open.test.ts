@@ -35,6 +35,6 @@ describe('Institutional attachment opening', () => {
   });
 
   it('open attachment response never exposes storage key internals', async () => {
-    await expect(openAttachment({ role: 'STUDENT', userId: 'student-1' }, 'sub-4', 'att-2')).rejects.not.toThrow(/demo\//i);
+    await expect(openAttachment({ role: 'STUDENT', userId: 'student-1' }, 'sub-4', 'att-4')).rejects.not.toThrow(/demo\//i);
   });
 });

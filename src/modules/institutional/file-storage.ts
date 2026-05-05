@@ -13,6 +13,12 @@ export async function saveInstitutionalUpload(buffer: Buffer, originalName: stri
 }
 
 export async function readInstitutionalUpload(storageKey: string) {
-  const fullPath = path.join(ROOT, storageKey);
+  if (path.isAbsolute(storageKey) || storageKey.includes('..')) {
+    throw new Error('Invalid storage key');
+  }
+  const fullPath = path.resolve(ROOT, storageKey);
+  if (!fullPath.startsWith(ROOT + path.sep) && fullPath !== ROOT) {
+    throw new Error('Invalid storage key');
+  }
   return readFile(fullPath);
 }

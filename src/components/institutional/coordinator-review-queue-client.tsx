@@ -32,7 +32,7 @@ export function CoordinatorReviewQueueClient({ initialItems }: { initialItems: S
   return <div className='space-y-4'>
     {error && <div className='rounded border border-red-300 bg-red-50 p-2 text-sm text-red-700'>{error}</div>}
     {initialItems.map((s) => {
-      const canStart = ['SUBMITTED', 'RESUBMITTED', 'REOPENED'].includes(s.state);
+      const canStart = ['SUBMITTED', 'RESUBMITTED'].includes(s.state);
       const inReview = s.state === 'IN_REVIEW';
       return <div key={s.id} className='rounded border p-3 text-sm'>
         <div className='font-medium'>{s.title}</div>
