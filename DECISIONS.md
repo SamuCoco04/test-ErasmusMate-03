@@ -739,3 +739,16 @@ A major phase is not complete unless relevant decisions are documented here with
 - Consequences: Student/coordinator/admin can open authorized attachments inline; seed-only metadata attachments stay non-openable as demo-only.
 - Status: Accepted.
 - Evidence level: Implemented in attachments module, open route, and institutional attachment-open tests.
+
+## 2026-05-05 — Phase 6C coordinator review queue UX improvements
+- Decision: Add coordinator-side queue filters (status chips, text search) and hide `APPROVED` records by default with an explicit "Show approved" toggle.
+- Rationale: Keeps coordinator focus on pending/reviewable work while still allowing access to approved history on demand.
+- Consequences: Queue is less noisy by default; backend transition authority remains unchanged because all actions still call the existing transition endpoint.
+- Status: Accepted.
+- Evidence level: Implemented in review queue client and UI contract tests.
+
+- Decision: Render attachment rows with explicit action semantics (`Open document` only when stored binary exists; `Demo metadata only` for seed/demo records).
+- Rationale: Prevents dead-end actions for metadata-only attachments and communicates demo limitations clearly.
+- Consequences: Better operator trust and fewer failed open attempts; no guard weakening in backend APIs.
+- Status: Accepted.
+- Evidence level: Implemented in UI and contract tests.
