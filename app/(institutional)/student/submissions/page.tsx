@@ -13,13 +13,13 @@ export default async function StudentSubmissionsPage() {
   if (ctx.role === 'STUDENT') {
     for (const item of items) attachmentsBySubmission.set(item.id, await listAttachments(ctx, item.id));
   }
-  const procedures = await prisma.procedureDefinition.findMany({ orderBy: { sortOrder: 'asc' } });
+  const procedures = await prisma.procedureDefinition.findMany({ where: { isActive: true }, orderBy: { sortOrder: 'asc' } });
   return <div className='space-y-6'>
     <PageHeader sectionLabel='Student tasks' title='Submission requests' subtitle='Upload files is still pending. In this phase you can manage request states and reviews.' />
     <div className='rounded-xl border bg-white p-4'>
       <p className='mb-3 text-sm text-slate-600'>You can send draft requests for review and resend requests that need correction.</p>
       <StudentSubmissionsClient
-        initialSubmissions={items.map((s) => ({ id: s.id, procedureTitle: s.procedure.title, state: s.state, reviewerNotes: s.reviewerNotes, attachments: (attachmentsBySubmission.get(s.id) ?? []).map((a) => ({ id: a.id, fileName: a.fileName, status: a.status })) }))}
+        initialSubmissions={items.map((s) => ({ id: s.id, procedureTitle: s.procedure.title, state: s.state, reviewerNotes: s.reviewerNotes, attachments: (attachmentsBySubmission.get(s.id) ?? []).map((a) => ({ id: a.id, fileName: a.fileName, status: a.status })), hasActiveAttachment: (attachmentsBySubmission.get(s.id) ?? []).some((a) => a.status === 'ACTIVE') }))}
         procedureOptions={procedures.map((p) => ({ id: p.id, title: p.title }))}
       />
       <div className='mt-3'><Link href='/student/dashboard' className='text-sm text-blue-700 underline'>Back to dashboard</Link></div>

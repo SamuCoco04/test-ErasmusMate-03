@@ -312,3 +312,10 @@ If Codex creates tests with different names or IDs, it must update this matrix t
 | SW-SOC-5G2-005 | Map create affordance contract | Student | UI contract | Map page includes create section, map-click guidance, and safety copy (`tests/social/social-ui-contracts.test.ts`) | UI exposes map placement recommendation creation safely | Implemented - passing |
 
 | WF-INS-SUB-ATTACH | Official document attachment metadata lifecycle | Student/Coordinator/Admin | Vitest | Add/list/replace/remove attachments with role and state guards | Metadata persists; unauthorized and locked-state operations blocked | Implemented |
+
+| WF | Requirement / Rule | Actor | Test Type | Scenario | Expected Result | Status |
+|---|---|---|---|---|---|---|
+| Institutional submissions | submit/resubmit requires >=1 ACTIVE attachment | Student | Service/API (Vitest) | Submit draft without active attachment | Transition blocked with validation error | Updated in phase 6B hotfix |
+| Institutional submissions | resubmit state semantics | Student | Service/API (Vitest) | Resubmit REJECTED/REOPENED/NEEDS_CORRECTION with active attachment | State becomes RESUBMITTED | Updated in phase 6B hotfix |
+| Institutional submissions | reviewer notes integrity on student resubmit | Student/Coordinator | Service/API (Vitest) | Student provides rationale on resubmit after reviewer notes exist | Reviewer notes remain unchanged | Updated in phase 6B hotfix |
+| Requested documents configuration | coordinator/admin can configure requested docs | Coordinator/Admin | UI/API | Create requested document definition in coordinator page | Definition persists and appears in list; students can select active definitions when creating drafts | Implemented phase 6B hotfix |
