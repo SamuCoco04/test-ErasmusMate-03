@@ -8,7 +8,16 @@ export async function POST(request: Request) {
   try {
     const actor = await getDemoContextFromRequest();
     const body = (await request.json().catch(() => ({}))) as { targetProfileId?: string; targetMessageId?: string; reason?: string; details?: string };
-    const report = await createSocialReport(prisma, actor, body);
+    const reason = body.reason?.trim();
+    if (!reason) {
+      return NextResponse.json({ error: 'Reason is required' }, { status: 400 });
+    }
+    const report = await createSocialReport(prisma, actor, {
+      targetProfileId: body.targetProfileId,
+      targetMessageId: body.targetMessageId,
+      reason,
+      details: body.details,
+    });
     return NextResponse.json(report, { status: 201 });
   } catch (error) {
     if (error instanceof SocialForbiddenError) return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
