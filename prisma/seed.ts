@@ -106,7 +106,7 @@ await prisma.mobilityRecord.upsert({ where: { id: 'mobility-1' }, update: { stud
     { id: 'sub-2', mobilityRecordId: 'mobility-1', procedureId: 'proc-2', state: 'SUBMITTED', submittedAt: new Date('2026-05-01T09:00:00.000Z') },
     { id: 'sub-3', mobilityRecordId: 'mobility-1', procedureId: 'proc-3', state: 'IN_REVIEW', submittedAt: new Date('2026-04-10T09:00:00.000Z'), reviewedAt: new Date('2026-04-12T09:00:00.000Z') },
     { id: 'sub-4', mobilityRecordId: 'mobility-1', procedureId: 'proc-4', state: 'REJECTED', submittedAt: new Date('2026-04-09T09:00:00.000Z'), reviewedAt: new Date('2026-04-11T09:00:00.000Z'), reviewerNotes: 'Needs corrected file format' },
-    { id: 'sub-5', mobilityRecordId: 'mobility-1', procedureId: 'proc-1', state: 'APPROVED', submittedAt: new Date('2026-04-01T09:00:00.000Z'), reviewedAt: new Date('2026-04-03T09:00:00.000Z') },
+    { id: 'sub-5', mobilityRecordId: 'mobility-1', procedureId: 'proc-1', state: 'APPROVED', submittedAt: new Date('2026-04-01T09:00:00.000Z'), reviewedAt: new Date('2026-04-03T09:00:00.000Z'), reviewerNotes: null,}, 
   ] as const;
 
   for (const submission of documentSubmissions) {

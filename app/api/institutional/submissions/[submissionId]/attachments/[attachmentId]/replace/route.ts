@@ -6,7 +6,7 @@ const statusFor = (code: string) => code === 'FORBIDDEN' ? 403 : code === 'NOT_F
 
 async function handle(request: Request, { params }: { params: Promise<{ submissionId: string; attachmentId: string }> }) {
   try {
-    const ctx = await getDemoContextFromRequest();
+    const ctx = await getDemoContextFromRequest(request);
     const { submissionId, attachmentId } = await params;
     const form = await request.formData();
     const file = form.get('file');

@@ -45,10 +45,28 @@ export function parseDemoContextCookie(rawCookie: string | undefined): DemoConte
   }
 }
 
-export async function getDemoContextFromRequest(): Promise<DemoContext> {
-  const cookieStore = await cookies();
-  const rawCookie = cookieStore.get(DEMO_CONTEXT_COOKIE_NAME)?.value;
-  return parseDemoContextCookie(rawCookie);
+export async function getDemoContextFromRequest(request?: Request): Promise<DemoContext> {
+  const cookieHeader = request?.headers.get('cookie');
+
+  if (cookieHeader) {
+    const rawCookie = cookieHeader
+      .split(';')
+      .map((chunk) => chunk.trim())
+      .find((chunk) => chunk.startsWith(`${DEMO_CONTEXT_COOKIE_NAME}=`))
+      ?.slice(DEMO_CONTEXT_COOKIE_NAME.length + 1);
+
+    if (rawCookie) {
+      return parseDemoContextCookie(decodeURIComponent(rawCookie));
+    }
+  }
+
+  try {
+    const cookieStore = await cookies();
+    const rawCookie = cookieStore.get(DEMO_CONTEXT_COOKIE_NAME)?.value;
+    return parseDemoContextCookie(rawCookie);
+  } catch {
+    return DEFAULT_DEMO_CONTEXT;
+  }
 }
 
 export function serializeDemoContext(context: DemoContext): string {
