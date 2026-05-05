@@ -18,6 +18,7 @@ export async function seed() {
   await prisma.learningAgreement.deleteMany();
   await prisma.auditRecord.deleteMany();
   await prisma.mobilityRecord.deleteMany();
+  await prisma.documentRequirement.deleteMany();
   await prisma.procedureDefinition.deleteMany();
   await prisma.socialProfile.deleteMany();
   await prisma.user.deleteMany();
