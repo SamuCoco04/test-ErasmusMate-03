@@ -5,6 +5,7 @@ const prisma = new PrismaClient();
 export async function seed() {
   await prisma.$transaction([
     prisma.learningAgreementEvent.deleteMany(),
+    prisma.socialReport.deleteMany(),
     prisma.socialMessage.deleteMany(),
     prisma.socialConnection.deleteMany(),
     prisma.socialProfile.deleteMany(),
@@ -64,6 +65,17 @@ export async function seed() {
   for (const message of socialMessages) {
     await prisma.socialMessage.upsert({ where: { id: message.id }, update: message, create: message });
   }
+
+
+  const socialReports = [
+    { id: 'sreport-seed-1', reporterProfileId: 'sp-student-1', targetProfileId: 'sp-student-2', targetMessageId: null, reason: 'Spam invitations', details: 'Repeated unwanted connection attempts after refusal.', status: 'PENDING', decisionRationale: null, reviewedById: null, reviewedAt: null },
+    { id: 'sreport-seed-2', reporterProfileId: 'sp-student-3', targetProfileId: 'sp-student-5', targetMessageId: null, reason: 'Harassment in profile bio', details: 'Offensive terms in biography text.', status: 'ACTIONED', decisionRationale: 'Profile hidden pending manual follow-up.', reviewedById: 'admin-1', reviewedAt: new Date('2026-04-25T09:00:00.000Z') },
+    { id: 'sreport-seed-3', reporterProfileId: 'sp-student-1', targetProfileId: null, targetMessageId: 'msg-seed-2', reason: 'Uncivil language', details: 'Tone was aggressive.', status: 'DISMISSED', decisionRationale: 'Message reviewed and within acceptable limits.', reviewedById: 'admin-1', reviewedAt: new Date('2026-04-26T09:00:00.000Z') },
+  ] as const;
+  for (const report of socialReports) {
+    await prisma.socialReport.upsert({ where: { id: report.id }, update: report, create: report });
+  }
+
 await prisma.mobilityRecord.upsert({ where: { id: 'mobility-1' }, update: { studentId: 'student-1', coordinatorId: 'coordinator-1', homeInstitutionId: 'inst-home-1', hostInstitutionId: 'inst-host-1', mobilityStatus: 'ACTIVE', startDate: new Date('2026-09-01T00:00:00.000Z'), endDate: new Date('2027-01-31T00:00:00.000Z') }, create: { id: 'mobility-1', studentId: 'student-1', coordinatorId: 'coordinator-1', homeInstitutionId: 'inst-home-1', hostInstitutionId: 'inst-host-1', mobilityStatus: 'ACTIVE', startDate: new Date('2026-09-01T00:00:00.000Z'), endDate: new Date('2027-01-31T00:00:00.000Z') } });
 
   const procedures = [

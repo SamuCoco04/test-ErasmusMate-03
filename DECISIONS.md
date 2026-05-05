@@ -656,3 +656,5 @@ A major phase is not complete unless relevant decisions are documented here with
 - **Consequences / trade-offs:** Cleaner UI mapping and stronger API boundary; frontend must rely on allowed actions instead of raw state internals.
 - **Status:** Accepted
 - **Evidence level:** Confirmed by implementation
+
+- 2026-05-05 | Added SocialReport backend workflow with admin review transitions (dismiss/hide profile) and student reporting guards; kept demo-context auth model unchanged. | Ensures moderation is backend-enforced while staying MVP-simple. | Added API/services/tests/seed updates and admin moderation page; hidden profiles are excluded from discovery and new connections. | Accepted | Implemented in Phase 5E.

@@ -29,6 +29,11 @@ export default function MessagesPage() {
   useEffect(() => { void loadThreads(); }, [loadThreads]);
   useEffect(() => { if (selected) void loadMessages(selected); }, [selected, loadMessages]);
 
+
+  const reportMessage = async (targetMessageId: string) => {
+    await fetch('/api/social/reports', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ targetMessageId, reason: 'Inappropriate message' }) });
+  };
+
   const send = async () => {
     if (!selected) return;
     if (!body.trim()) {
@@ -64,6 +69,7 @@ export default function MessagesPage() {
           <div className='text-xs text-slate-500'>{new Date(message.createdAt).toLocaleString()}</div>
           <div className='text-xs text-slate-500'>{message.senderProfileId === 'sp-student-1' ? 'You' : selectedThread?.otherProfile.displayName}</div>
           <div>{message.body}</div>
+          <button className='mt-1 rounded border px-2 py-1 text-xs' onClick={() => reportMessage(message.id)}>Report</button>
         </div>)}
       </div>
       <div className='mt-4 flex gap-2'>

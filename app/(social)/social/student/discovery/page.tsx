@@ -36,6 +36,11 @@ export default function SocialDiscoveryPage() {
     await fetchProfiles(hostCity, studyArea);
   };
 
+
+  const reportProfile = async (targetProfileId: string) => {
+    await fetch('/api/social/reports', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ targetProfileId, reason: 'Inappropriate profile content' }) });
+  };
+
   const hasFilters = Boolean(hostCity || studyArea);
 
   return <div className='space-y-4'>
@@ -55,6 +60,7 @@ export default function SocialDiscoveryPage() {
         <p className='mb-2 text-xs text-slate-500'>{stateLabel[p.connectionStatus ?? 'UNAVAILABLE']}</p>
         {canRequest ? <button className='rounded bg-slate-900 px-3 py-1 text-white' onClick={() => sendRequest(p.id)}>Send request</button> : null}
         {p.connectionStatus === 'REQUEST_RECEIVED' ? <p className='text-sm'>Open Connections to accept or reject.</p> : null}
+        <button className='mt-2 rounded border px-3 py-1 text-sm' onClick={() => reportProfile(p.id)}>Report profile</button>
       </article>);
     })}</div>
   </div>;

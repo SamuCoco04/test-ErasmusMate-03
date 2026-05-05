@@ -42,6 +42,7 @@ model User {
   reviewedLearningAgreementRows LearningAgreementRow[] @relation("LearningAgreementRowReviewer")
   learningAgreementEvents      LearningAgreementEvent[]
   socialProfile               SocialProfile?
+  reviewedSocialReports       SocialReport[] @relation("SocialReportReviewer")
 
   @@index([role])
   @@index([institutionId])
@@ -208,6 +209,8 @@ model SocialProfile {
 
   user User @relation(fields: [userId], references: [id])
   sentConnections     SocialConnection[] @relation("SocialConnectionRequester")
+  submittedReports    SocialReport[] @relation("SocialReportReporter")
+  targetReports       SocialReport[] @relation("SocialReportTarget")
   receivedConnections SocialConnection[] @relation("SocialConnectionReceiver")
 
   sentMessages     SocialMessage[] @relation("SocialMessageSender")
@@ -253,6 +256,7 @@ model SocialMessage {
   connection       SocialConnection @relation(fields: [connectionId], references: [id])
   senderProfile    SocialProfile @relation("SocialMessageSender", fields: [senderProfileId], references: [id])
   recipientProfile SocialProfile @relation("SocialMessageRecipient", fields: [recipientProfileId], references: [id])
+  reports          SocialReport[]
 
   @@index([connectionId])
   @@index([senderProfileId])
@@ -328,4 +332,27 @@ model LearningAgreementEvent {
   actor           User              @relation(fields: [actorId], references: [id])
 
   @@index([agreementId, createdAt])
+}
+
+model SocialReport {
+  id                String   @id
+  reporterProfileId String
+  targetProfileId   String?
+  targetMessageId   String?
+  reason            String
+  details           String?
+  status            String
+  decisionRationale String?
+  reviewedById      String?
+  reviewedAt        DateTime?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  reporterProfile   SocialProfile @relation("SocialReportReporter", fields: [reporterProfileId], references: [id])
+  targetProfile     SocialProfile? @relation("SocialReportTarget", fields: [targetProfileId], references: [id])
+  targetMessage     SocialMessage? @relation(fields: [targetMessageId], references: [id])
+  reviewedBy        User? @relation("SocialReportReviewer", fields: [reviewedById], references: [id])
+
+  @@index([status, createdAt])
+  @@index([reporterProfileId, status])
 }
