@@ -6,7 +6,7 @@ const coordinatorPage = readFileSync('app/(institutional)/coordinator/deadlines/
 
 describe('Phase 6C deadline UI contracts', () => {
   it('student page contains deadline filters and export action', () => {
-    expect(studentPage).toContain("['all','upcoming','overdue','fulfilled','overridden']");
+    expect(studentPage).toContain("['all','upcoming','due-soon','overdue','fulfilled','overridden']");
     expect(studentPage).toContain('Export calendar');
     expect(studentPage).toContain('Effective due date');
   });
@@ -17,4 +17,12 @@ describe('Phase 6C deadline UI contracts', () => {
     expect(coordinatorPage).toContain('Exception related');
     expect(coordinatorPage).toContain('Export calendar');
   });
+});
+
+
+it('student and coordinator pages include empty-state copy and original due date', () => {
+  expect(studentPage).toContain('No deadlines match the current filter.');
+  expect(studentPage).toContain('Original due date');
+  expect(coordinatorPage).toContain('No assigned deadlines for this filter.');
+  expect(coordinatorPage).toContain('Risk:');
 });
