@@ -48,7 +48,12 @@ export async function listMapProfiles(prisma: PrismaClient, actor: { role: strin
           mobilityPhase: row.mobilityPhase,
           approximateLatitude: row.approximateLatitude,
           approximateLongitude: row.approximateLongitude,
-          connectionStatus: row.contactPreference === 'CONNECTIONS_ONLY' ? 'CONNECTIONS_ONLY' : 'OPEN_TO_REQUESTS',
+          connectionStatus:
+            row.contactPreference === 'CONNECTIONS_ONLY'
+              ? 'CONNECTIONS_ONLY'
+              : row.contactPreference === 'HIDDEN'
+                ? 'BLOCKED'
+                : 'OPEN_TO_REQUESTS',
         };
       }
 
