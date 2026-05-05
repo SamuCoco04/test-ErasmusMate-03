@@ -31,7 +31,18 @@ export async function listRecommendations(prisma: PrismaClient, actor: ActorCont
   });
 }
 
-export async function createRecommendation(prisma: PrismaClient, actor: ActorContext, payload: { title?: string; description?: string; category?: string; city?: string; country?: string; addressLabel?: string; approximateLatitude?: number; approximateLongitude?: number; }) {
+interface CreateRecommendationPayload {
+  title?: string;
+  description?: string;
+  category?: string;
+  city?: string;
+  country?: string;
+  addressLabel?: string;
+  approximateLatitude?: number;
+  approximateLongitude?: number;
+}
+
+export async function createRecommendation(prisma: PrismaClient, actor: ActorContext, payload: CreateRecommendationPayload) {
   ensureStudent(actor.role);
   const profile = await requireProfile(prisma, actor.userId);
   const title = payload.title?.trim();
@@ -40,9 +51,48 @@ export async function createRecommendation(prisma: PrismaClient, actor: ActorCon
   const city = payload.city?.trim();
   const country = payload.country?.trim();
   const addressLabel = payload.addressLabel?.trim();
-  if (!title || !description || !category || !city || !country || !addressLabel) throw new SocialValidationError('Missing required fields');
+  const latitude = payload.approximateLatitude;
+  const longitude = payload.approximateLongitude;
+
+  if (!title) throw new SocialValidationError('Title is required');
+  if (!description) throw new SocialValidationError('Description is required');
+  if (!category) throw new SocialValidationError('Category is required');
+  if (!city) throw new SocialValidationError('City is required');
+  if (!country) throw new SocialValidationError('Country is required');
+  if (!addressLabel) throw new SocialValidationError('Address label is required');
+  if (latitude === undefined || longitude === undefined) throw new SocialValidationError('Coordinates are required');
+  if (typeof latitude !== 'number' || latitude < -90 || latitude > 90) throw new SocialValidationError('Latitude must be between -90 and 90');
+  if (typeof longitude !== 'number' || longitude < -180 || longitude > 180) throw new SocialValidationError('Longitude must be between -180 and 180');
   if (!allowedCategories.includes(category)) throw new SocialValidationError('Invalid category');
-  return prisma.cityRecommendation.create({ data: { id: `srec-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`, createdByProfileId: profile.id, title, description, category, city, country, addressLabel, approximateLatitude: payload.approximateLatitude ?? null, approximateLongitude: payload.approximateLongitude ?? null, visibility: 'VISIBLE', moderationState: 'ACTIVE' } });
+
+  return prisma.cityRecommendation.create({
+    data: {
+      id: `srec-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+      createdByProfileId: profile.id,
+      title,
+      description,
+      category,
+      city,
+      country,
+      addressLabel,
+      approximateLatitude: latitude,
+      approximateLongitude: longitude,
+      visibility: 'VISIBLE',
+      moderationState: 'ACTIVE',
+    },
+    select: {
+      id: true,
+      title: true,
+      description: true,
+      category: true,
+      city: true,
+      country: true,
+      addressLabel: true,
+      approximateLatitude: true,
+      approximateLongitude: true,
+      createdAt: true,
+    },
+  });
 }
 
 export async function getRecommendationMapItems(prisma: PrismaClient, actor: ActorContext, filters: URLSearchParams) {
@@ -51,6 +101,8 @@ export async function getRecommendationMapItems(prisma: PrismaClient, actor: Act
   const items = await prisma.cityRecommendation.findMany({
     where: {
       visibility: 'VISIBLE', moderationState: 'ACTIVE',
+      approximateLatitude: { not: null },
+      approximateLongitude: { not: null },
       ...(filters.get('city') ? { city: filters.get('city')! } : {}),
       ...(filters.get('category') ? { category: filters.get('category')! } : {}),
     },
@@ -67,7 +119,7 @@ export async function getRecommendationMapItems(prisma: PrismaClient, actor: Act
     addressLabel: item.addressLabel,
     approximateLatitude: item.approximateLatitude,
     approximateLongitude: item.approximateLongitude,
-    description: item.description,
+    descriptionExcerpt: item.description.slice(0, 160),
   }));
 }
 
