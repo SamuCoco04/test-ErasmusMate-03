@@ -50,7 +50,6 @@ model User {
 
   @@index([role])
   @@index([institutionId])
-  @@index([isActive])
 }
 
 model MobilityRecord {
@@ -99,7 +98,6 @@ model ProcedureDefinition {
   deadlines Deadline[]
 
   @@index([institutionId])
-  @@index([isActive])
 }
 
 model DocumentSubmission {

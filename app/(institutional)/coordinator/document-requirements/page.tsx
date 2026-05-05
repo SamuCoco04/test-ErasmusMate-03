@@ -2,14 +2,14 @@
 
 import { useEffect, useState } from 'react';
 
-type Requirement = { id: string; title: string; description: string; acceptedMimeTypesJson: string; maxSizeBytes: number; isRequired: boolean; isActive: boolean };
+type Requirement = { id: string; title: string; description: string; isRequired: boolean; sortOrder: number };
 
 export default function CoordinatorDocumentRequirementsPage() {
   const [items, setItems] = useState<Requirement[]>([]);
   const [error, setError] = useState<string | null>(null);
 
   const load = async () => {
-    const res = await fetch('/api/institutional/procedures');
+    const res = await fetch('/api/institutional/document-requirements');
     const payload = (await res.json()) as { data?: Requirement[]; error?: string };
     if (!res.ok) return setError(payload.error ?? 'Failed to load requested documents');
     setItems(payload.data ?? []);
@@ -27,11 +27,9 @@ export default function CoordinatorDocumentRequirementsPage() {
       const body = {
         title: String(fd.get('title') ?? ''),
         description: String(fd.get('description') ?? ''),
-        acceptedMimeTypesJson: String(fd.get('acceptedMimeTypesJson') ?? '[]'),
-        maxSizeBytes: Number(fd.get('maxSizeBytes') ?? 5242880),
         isRequired: fd.get('isRequired') === 'on',
       };
-      const res = await fetch('/api/institutional/procedures', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body) });
+      const res = await fetch('/api/institutional/document-requirements', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body) });
       if (!res.ok) {
         const payload = (await res.json()) as { error?: string };
         setError(payload.error ?? 'Failed to create requested document');
@@ -42,13 +40,11 @@ export default function CoordinatorDocumentRequirementsPage() {
     }}>
       <input className='rounded border px-2 py-1' name='title' placeholder='Title (e.g., Arrival certificate)' required />
       <input className='rounded border px-2 py-1' name='description' placeholder='Description' />
-      <input className='rounded border px-2 py-1' name='acceptedMimeTypesJson' defaultValue='["application/pdf"]' />
-      <input className='rounded border px-2 py-1' name='maxSizeBytes' type='number' defaultValue={5242880} min={1} />
       <label><input type='checkbox' name='isRequired' defaultChecked /> Required</label>
       <button className='w-fit rounded bg-blue-600 px-3 py-1 text-white'>Create requested document</button>
     </form>
     <div className='space-y-2'>
-      {items.map((item) => <div key={item.id} className='rounded border p-3 text-sm'><div className='font-medium'>{item.title}</div><div>{item.description}</div><div className='text-xs text-gray-600'>Accepted MIME: {item.acceptedMimeTypesJson} · Max size: {item.maxSizeBytes} bytes · {item.isRequired ? 'Required' : 'Optional'} · {item.isActive ? 'Active' : 'Inactive'}</div></div>)}
+      {items.map((item) => <div key={item.id} className='rounded border p-3 text-sm'><div className='font-medium'>{item.title}</div><div>{item.description}</div><div className='text-xs text-gray-600'>{item.isRequired ? 'Required' : 'Optional'}</div></div>)}
     </div>
   </div>;
 }
