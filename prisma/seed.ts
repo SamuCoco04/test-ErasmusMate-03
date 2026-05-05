@@ -3,27 +3,25 @@ import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 
 export async function seed() {
-  await prisma.$transaction([
-    prisma.learningAgreementEvent.deleteMany(),
-    prisma.notification.deleteMany(),
-    prisma.documentSubmissionEvent.deleteMany(),
-    prisma.documentAttachment.deleteMany(),
-    prisma.documentSubmission.deleteMany(),
-    prisma.exceptionRequest.deleteMany(),
-    prisma.deadline.deleteMany(),
-    prisma.procedureDefinition.deleteMany(),
-    prisma.learningAgreementRow.deleteMany(),
-    prisma.learningAgreement.deleteMany(),
-    prisma.socialReport.deleteMany(),
-    prisma.cityRecommendation.deleteMany(),
-    prisma.socialMessage.deleteMany(),
-    prisma.socialConnection.deleteMany(),
-    prisma.socialProfile.deleteMany(),
-    prisma.auditRecord.deleteMany(),
-    prisma.mobilityRecord.deleteMany(),
-    prisma.user.deleteMany(),
-    prisma.institution.deleteMany(),
-  ]);
+  await prisma.learningAgreementEvent.deleteMany();
+  await prisma.notification.deleteMany();
+  await prisma.documentSubmissionEvent.deleteMany();
+  await prisma.documentAttachment.deleteMany();
+  await prisma.socialReport.deleteMany();
+  await prisma.socialMessage.deleteMany();
+  await prisma.cityRecommendation.deleteMany();
+  await prisma.socialConnection.deleteMany();
+  await prisma.exceptionRequest.deleteMany();
+  await prisma.deadline.deleteMany();
+  await prisma.documentSubmission.deleteMany();
+  await prisma.learningAgreementRow.deleteMany();
+  await prisma.learningAgreement.deleteMany();
+  await prisma.auditRecord.deleteMany();
+  await prisma.mobilityRecord.deleteMany();
+  await prisma.procedureDefinition.deleteMany();
+  await prisma.socialProfile.deleteMany();
+  await prisma.user.deleteMany();
+  await prisma.institution.deleteMany();
 
   await prisma.institution.upsert({ where: { id: 'inst-home-1' }, update: { name: 'Universidad de Sevilla', code: 'US', country: 'Spain' }, create: { id: 'inst-home-1', name: 'Universidad de Sevilla', code: 'US', country: 'Spain' } });
   await prisma.institution.upsert({ where: { id: 'inst-host-1' }, update: { name: 'KU Leuven', code: 'KUL', country: 'Belgium' }, create: { id: 'inst-host-1', name: 'KU Leuven', code: 'KUL', country: 'Belgium' } });

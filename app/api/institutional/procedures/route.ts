@@ -3,14 +3,10 @@ import { prisma } from '@/src/lib/prisma';
 
 export async function GET() {
   const ctx = await getDemoContextFromRequest();
-  if (ctx.role === 'STUDENT') {
-    const data = await prisma.procedureDefinition.findMany({ where: { isActive: true }, orderBy: { sortOrder: 'asc' } });
-    return Response.json({ data });
-  }
-  if (ctx.role !== 'COORDINATOR' && ctx.role !== 'ADMIN') {
+  if (ctx.role !== 'STUDENT' && ctx.role !== 'COORDINATOR' && ctx.role !== 'ADMIN') {
     return Response.json({ error: 'Forbidden' }, { status: 403 });
   }
-  const data = await prisma.procedureDefinition.findMany({ orderBy: [{ isActive: 'desc' }, { sortOrder: 'asc' }] });
+  const data = await prisma.procedureDefinition.findMany({ orderBy: { sortOrder: 'asc' } });
   return Response.json({ data });
 }
 
@@ -31,11 +27,7 @@ export async function POST(req: Request) {
       title,
       description: typeof body.description === 'string' ? body.description : '',
       isRequired: body.isRequired !== false,
-      acceptedMimeTypesJson: typeof body.acceptedMimeTypesJson === 'string' ? body.acceptedMimeTypesJson : '[]',
-      maxSizeBytes: typeof body.maxSizeBytes === 'number' ? body.maxSizeBytes : 5_242_880,
-      isActive: body.isActive !== false,
       sortOrder: count + 1,
-      createdById: ctx.userId,
     },
   });
 
