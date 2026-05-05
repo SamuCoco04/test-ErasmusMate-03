@@ -47,15 +47,15 @@ describe('Institutional attachment workflow', () => {
   });
 
   it('replace marks previous as replaced', async () => {
-    const replaced = await replaceAttachment({ role: 'STUDENT', userId: 'student-1' }, 'sub-5', 'att-3', { fileName: 'passport-copy-v3.pdf', mimeType: 'application/pdf', sizeBytes: 161000, storageKey: 'demo/sub-5/passport-copy-v3.pdf' });
+    const replaced = await replaceAttachment({ role: 'STUDENT', userId: 'student-1' }, 'sub-4', 'att-4', { fileName: 'transcript-request-v2.pdf', mimeType: 'application/pdf', sizeBytes: 161000, storageKey: 'demo/sub-4/transcript-request-v2.pdf' });
     expect(replaced.status).toBe('ACTIVE');
-    const prior = await prisma.documentAttachment.findUniqueOrThrow({ where: { id: 'att-3' } });
+    const prior = await prisma.documentAttachment.findUniqueOrThrow({ where: { id: 'att-4' } });
     expect(prior.status).toBe('REPLACED');
   });
 
   it('seed remains idempotent', async () => {
     await seed();
     const count = await prisma.documentAttachment.count();
-    expect(count).toBe(3);
+    expect(count).toBe(4);
   });
 });

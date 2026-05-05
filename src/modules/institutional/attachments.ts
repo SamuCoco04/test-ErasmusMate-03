@@ -4,7 +4,7 @@ import { createNotification } from '@/src/modules/notifications/notifications';
 
 const ALLOWED_MIME = new Set(['application/pdf', 'image/png', 'image/jpeg']);
 const MAX_SIZE_BYTES = 10 * 1024 * 1024;
-const EDITABLE_STATES = new Set(['DRAFT', 'REJECTED', 'REOPENED']);
+const EDITABLE_STATES = new Set(['DRAFT', 'REJECTED', 'REOPENED', 'NEEDS_CORRECTION']);
 
 export class AttachmentError extends Error { constructor(public code: string, message: string) { super(message); } }
 
@@ -26,7 +26,17 @@ function validateInput(input: AttachmentInput) {
 }
 
 function sanitize(attachment: { id: string; submissionId: string; fileName: string; mimeType: string; sizeBytes: number; version: number; status: string; createdAt: Date; updatedAt: Date }) {
-  return attachment;
+  return {
+    id: attachment.id,
+    submissionId: attachment.submissionId,
+    fileName: attachment.fileName,
+    mimeType: attachment.mimeType,
+    sizeBytes: attachment.sizeBytes,
+    version: attachment.version,
+    status: attachment.status,
+    createdAt: attachment.createdAt,
+    updatedAt: attachment.updatedAt,
+  };
 }
 
 export async function listAttachments(ctx: DemoContext, submissionId: string) {

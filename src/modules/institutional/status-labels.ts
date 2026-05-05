@@ -5,7 +5,7 @@ export const submissionStatusLabels = {
   APPROVED: 'Approved',
   REJECTED: 'Needs correction',
   REOPENED: 'Needs correction',
-  RESUBMITTED: 'Resubmitted',
+  NEEDS_CORRECTION: 'Needs correction',
 } as const;
 
 export const deadlineStatusLabels = {
