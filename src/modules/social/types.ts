@@ -40,21 +40,33 @@ export interface SocialDiscoveryItem {
   connectionStatus?: DiscoveryConnectionStatus;
 }
 
-export interface ConnectionListItem {
-  id: string;
+export type ConnectionCategory = 'incomingPending' | 'outgoingPending' | 'accepted' | 'unavailable';
+
+export interface SafeConnectionItem {
+  connectionId: string;
   state: string;
-  requestedAt: Date;
-  respondedAt?: Date | null;
-  blockedAt?: Date | null;
-  requesterProfile: SocialProfileRow;
-  receiverProfile: SocialProfileRow;
+  category: ConnectionCategory;
+  otherProfile: {
+    id: string;
+    displayName: string;
+    hostCity: string | null;
+    hostCountry: string | null;
+    studyArea: string | null;
+  };
+  allowedActions: {
+    accept: boolean;
+    reject: boolean;
+    cancel: boolean;
+    message: boolean;
+    block: boolean;
+  };
 }
 
 export interface ConnectionListsResponse {
-  incomingPending: ConnectionListItem[];
-  outgoingPending: ConnectionListItem[];
-  accepted: ConnectionListItem[];
-  unavailable: ConnectionListItem[];
+  incomingPending: SafeConnectionItem[];
+  outgoingPending: SafeConnectionItem[];
+  accepted: SafeConnectionItem[];
+  unavailable: SafeConnectionItem[];
 }
 
 export interface ConnectionTransitionPayload {

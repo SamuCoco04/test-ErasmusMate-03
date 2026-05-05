@@ -1,10 +1,6 @@
 'use client';
 import { useEffect, useMemo, useState } from 'react';
-import type { ConnectionListsResponse, ConnectionListItem, ConnectionTransitionPayload } from '@/src/modules/social/types';
-
-function getOtherStudent(connection: ConnectionListItem, myProfileId: string) {
-  return connection.requesterProfileId === myProfileId ? connection.receiverProfile : connection.requesterProfile;
-}
+import type { ConnectionListsResponse, SafeConnectionItem, ConnectionTransitionPayload } from '@/src/modules/social/types';
 
 function locationText(city: string | null, country: string | null) {
   if (city && country) return `${city}, ${country}`;
@@ -13,24 +9,21 @@ function locationText(city: string | null, country: string | null) {
 
 export default function ConnectionsPage() {
   const [data, setData] = useState<ConnectionListsResponse>({ incomingPending: [], outgoingPending: [], accepted: [], unavailable: [] });
-  const [myProfileId, setMyProfileId] = useState<string>('');
 
   const load = async () => {
-    const [connectionsRes, profileRes] = await Promise.all([fetch('/api/social/connections'), fetch('/api/social/profile')]);
+    const connectionsRes = await fetch('/api/social/connections');
     const connectionsJson = (await connectionsRes.json()) as ConnectionListsResponse;
-    const profileJson = (await profileRes.json()) as { id: string };
     setData(connectionsJson);
-    setMyProfileId(profileJson.id);
   };
 
   useEffect(() => { void load(); }, []);
 
-  const act = async (id: string, action: ConnectionTransitionPayload['action']) => {
+  const act = async (item: SafeConnectionItem, action: ConnectionTransitionPayload['action']) => {
     if (action === 'block') {
-      const confirmed = window.confirm('Block this student? They will no longer be able to message you through this connection.');
+      const confirmed = window.confirm(`Block ${item.otherProfile.displayName}? They will no longer be able to message you through this connection.`);
       if (!confirmed) return;
     }
-    await fetch(`/api/social/connections/${id}/transition`, {
+    await fetch(`/api/social/connections/${item.connectionId}/transition`, {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
       body: JSON.stringify({ action })
@@ -40,18 +33,15 @@ export default function ConnectionsPage() {
 
   const blocked = useMemo(() => data.unavailable.filter((item) => item.state === 'BLOCKED'), [data.unavailable]);
 
-  const renderRow = (connection: ConnectionListItem, status: string, actions: React.ReactNode) => {
-    const other = getOtherStudent(connection, myProfileId);
-    return (
-      <article key={connection.id} className='my-2 rounded-xl border bg-white p-3'>
-        <h3 className='font-semibold'>{other.displayName}</h3>
-        <p className='text-sm text-slate-600'>{locationText(other.hostCity, other.hostCountry)}</p>
-        <p className='text-sm text-slate-600'>{other.studyArea ?? 'Study area not shared'}</p>
-        <p className='text-xs text-slate-500'>Status: {status}</p>
-        <div className='mt-2 flex gap-2'>{actions}</div>
-      </article>
-    );
-  };
+  const renderRow = (item: SafeConnectionItem, status: string, actions: React.ReactNode) => (
+    <article key={item.connectionId} className='my-2 rounded-xl border bg-white p-3'>
+      <h3 className='font-semibold'>{item.otherProfile.displayName}</h3>
+      <p className='text-sm text-slate-600'>{locationText(item.otherProfile.hostCity, item.otherProfile.hostCountry)}</p>
+      <p className='text-sm text-slate-600'>{item.otherProfile.studyArea ?? 'Study area not shared'}</p>
+      <p className='text-xs text-slate-500'>Status: {status}</p>
+      <div className='mt-2 flex gap-2'>{actions}</div>
+    </article>
+  );
 
   return <div className='space-y-6'>
     <h1 className='text-2xl font-semibold'>Connections</h1>
@@ -59,29 +49,29 @@ export default function ConnectionsPage() {
 
     <section>
       <h2 className='font-semibold'>Requests received</h2>
-      {data.incomingPending.length === 0 ? <p className='text-sm text-slate-500'>No incoming requests.</p> : data.incomingPending.map((c) => renderRow(c, 'Pending received', <>
-        <button className='rounded bg-slate-900 px-2 py-1 text-white' onClick={() => act(c.id, 'accept')}>Accept</button>
-        <button className='rounded border px-2 py-1' onClick={() => act(c.id, 'reject')}>Reject</button>
-        <button className='rounded border px-2 py-1' onClick={() => act(c.id, 'block')}>Block</button>
+      {data.incomingPending.length === 0 ? <p className='text-sm text-slate-500'>No received requests</p> : data.incomingPending.map((c) => renderRow(c, 'Pending received', <>
+        {c.allowedActions.accept ? <button className='rounded bg-slate-900 px-2 py-1 text-white' onClick={() => act(c, 'accept')}>Accept</button> : null}
+        {c.allowedActions.reject ? <button className='rounded border px-2 py-1' onClick={() => act(c, 'reject')}>Reject</button> : null}
+        {c.allowedActions.block ? <button className='rounded border px-2 py-1' onClick={() => act(c, 'block')}>{`Block ${c.otherProfile.displayName}`}</button> : null}
       </>))}
     </section>
 
     <section>
       <h2 className='font-semibold'>Requests sent</h2>
-      {data.outgoingPending.length === 0 ? <p className='text-sm text-slate-500'>No sent requests.</p> : data.outgoingPending.map((c) => renderRow(c, 'Pending sent', <button className='rounded border px-2 py-1' onClick={() => act(c.id, 'cancel')}>Cancel request</button>))}
+      {data.outgoingPending.length === 0 ? <p className='text-sm text-slate-500'>No sent requests</p> : data.outgoingPending.map((c) => renderRow(c, 'Pending sent', c.allowedActions.cancel ? <button className='rounded border px-2 py-1' onClick={() => act(c, 'cancel')}>Cancel request</button> : null))}
     </section>
 
     <section>
       <h2 className='font-semibold'>Connected students</h2>
-      {data.accepted.length === 0 ? <p className='text-sm text-slate-500'>No accepted connections yet.</p> : data.accepted.map((c) => renderRow(c, 'Connected', <>
-        <a className='rounded bg-slate-900 px-2 py-1 text-white' href='/social/student/messages'>Message</a>
-        <button className='rounded border px-2 py-1' onClick={() => act(c.id, 'block')}>Block</button>
+      {data.accepted.length === 0 ? <p className='text-sm text-slate-500'>No connected students</p> : data.accepted.map((c) => renderRow(c, 'Connected', <>
+        {c.allowedActions.message ? <a className='rounded bg-slate-900 px-2 py-1 text-white' href='/social/student/messages'>Message</a> : null}
+        {c.allowedActions.block ? <button className='rounded border px-2 py-1' onClick={() => act(c, 'block')}>{`Block ${c.otherProfile.displayName}`}</button> : null}
       </>))}
     </section>
 
     <section>
       <h2 className='font-semibold'>Blocked connections</h2>
-      {blocked.length === 0 ? <p className='text-sm text-slate-500'>No blocked connections.</p> : blocked.map((c) => renderRow(c, 'Blocked', <span className='rounded border px-2 py-1 text-sm text-slate-600'>Blocked</span>))}
+      {blocked.length === 0 ? <p className='text-sm text-slate-500'>No blocked connections</p> : blocked.map((c) => renderRow(c, 'Blocked', <span className='rounded border px-2 py-1 text-sm text-slate-600'>Blocked</span>))}
     </section>
   </div>;
 }
