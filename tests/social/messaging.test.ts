@@ -10,6 +10,7 @@ describe('Social: accepted-only messaging contract', () => {
     const threads = await listMessageThreads(prisma, { role: 'STUDENT', userId: 'student-1' });
     expect(threads.length).toBe(1);
     expect(threads[0]?.connectionId).toBe('conn-seed-2');
+    expect(threads[0]?.otherProfile.displayName).toBe('Luca Rossi');
   });
 
   it('student reads message history for accepted connection', async () => {

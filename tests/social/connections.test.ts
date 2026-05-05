@@ -29,7 +29,11 @@ describe('Social: connection lifecycle contract', () => {
   });
   it('accepted appears in lists and blocked pair cannot request', async () => {
     const mine = await getMyConnections(prisma as any, { role: 'STUDENT', userId: 'student-1' });
-    expect(mine.accepted.some((x:any)=>x.id==='conn-seed-2')).toBe(true);
+    expect(mine.accepted.some((x:any)=>x.connectionId==='conn-seed-2')).toBe(true);
+    expect(mine.accepted[0]?.otherProfile.displayName).toBe('Luca Rossi');
+    expect(mine.accepted[0]).not.toHaveProperty('pairKey');
+    expect(mine.accepted[0]).not.toHaveProperty('requesterProfileId');
+    expect(mine.accepted[0]).not.toHaveProperty('receiverProfileId');
     await expect(requestConnection(prisma as any, { role: 'STUDENT', userId: 'student-1' }, 'sp-student-6')).rejects.toThrow();
   });
 

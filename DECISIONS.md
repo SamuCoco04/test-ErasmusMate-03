@@ -647,3 +647,12 @@ A major phase is not complete unless relevant decisions are documented here with
 - **Consequences / trade-offs:** Improved clarity and safer social actions; real-time chat and moderation dashboard remain deferred.
 - **Status:** Accepted
 - **Evidence level:** Confirmed by implementation
+
+### DEC-040 — Phase 5D follow-up uses perspective-safe connection DTOs
+- **Date:** 2026-05-04
+- **Phase:** Phase 5D — Social UX and safety hardening (follow-up)
+- **Decision:** `/api/social/connections` now returns only perspective-safe connection rows with `otherProfile` and `allowedActions`, and hides pair/internal fields.
+- **Rationale:** Prevents ambiguous labels like `Luca Rossi & Alex Moreno` and keeps unsafe/internal identifiers out of frontend contracts.
+- **Consequences / trade-offs:** Cleaner UI mapping and stronger API boundary; frontend must rely on allowed actions instead of raw state internals.
+- **Status:** Accepted
+- **Evidence level:** Confirmed by implementation
