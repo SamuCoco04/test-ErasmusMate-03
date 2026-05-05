@@ -2,6 +2,7 @@ import type { Prisma } from '@prisma/client';
 import { PrismaClient } from '@prisma/client';
 import { SocialDuplicateError, SocialForbiddenError, SocialInvalidTransitionError, SocialNotFoundError, SocialValidationError } from './social-errors';
 import type { ConnectionCategory, ConnectionListsResponse, DiscoveryConnectionStatus, SafeConnectionItem } from './types';
+import { createNotification } from '@/src/modules/notifications/notifications';
 
 function ensureStudent(role: string) { if (role !== 'STUDENT') throw new SocialForbiddenError(); }
 const activeStates = ['PENDING', 'ACCEPTED', 'BLOCKED'];
@@ -63,9 +64,13 @@ export async function requestConnection(prisma: PrismaClient, actor: {role: stri
   if (existing?.state === 'BLOCKED') throw new SocialDuplicateError('Connection is blocked for this pair');
   if (existing && activeStates.includes(existing.state)) throw new SocialDuplicateError('Connection already exists for this pair');
   if (existing) {
-    return prisma.socialConnection.update({ where: { id: existing.id }, data: { requesterProfileId: me.id, receiverProfileId: target.id, state: 'PENDING', requestedAt: new Date(), respondedAt: null, blockedAt: null, lastActionByProfileId: me.id } });
+    const updated = await prisma.socialConnection.update({ where: { id: existing.id }, data: { requesterProfileId: me.id, receiverProfileId: target.id, state: 'PENDING', requestedAt: new Date(), respondedAt: null, blockedAt: null, lastActionByProfileId: me.id } });
+    await createNotification({ recipientUserId: target.userId, actorUserId: actor.userId, area: 'SOCIAL', type: 'CONNECTION_REQUEST_RECEIVED', title: 'New connection request', body: `${me.displayName} sent you a connection request.`, entityType: 'CONNECTION', entityId: updated.id });
+    return updated;
   }
-  return prisma.socialConnection.create({ data: { id: `conn-${Date.now()}-${Math.random().toString(36).slice(2,8)}`, pairKey: pairKey(me.id, target.id), requesterProfileId: me.id, receiverProfileId: target.id, state: 'PENDING', requestedAt: new Date(), lastActionByProfileId: me.id } });
+  const created = await prisma.socialConnection.create({ data: { id: `conn-${Date.now()}-${Math.random().toString(36).slice(2,8)}`, pairKey: pairKey(me.id, target.id), requesterProfileId: me.id, receiverProfileId: target.id, state: 'PENDING', requestedAt: new Date(), lastActionByProfileId: me.id } });
+  await createNotification({ recipientUserId: target.userId, actorUserId: actor.userId, area: 'SOCIAL', type: 'CONNECTION_REQUEST_RECEIVED', title: 'New connection request', body: `${me.displayName} sent you a connection request.`, entityType: 'CONNECTION', entityId: created.id });
+  return created;
 }
 
 export async function transitionConnection(prisma: PrismaClient, actor: {role:string; userId:string}, connectionId: string, action: string) {

@@ -1,5 +1,6 @@
 import { PrismaClient } from '@prisma/client';
 import { SocialForbiddenError, SocialNotFoundError, SocialValidationError } from './social-errors';
+import { createNotification } from '@/src/modules/notifications/notifications';
 
 interface ActorContext { role: string; userId: string }
 interface SendMessagePayload { body: string }
@@ -130,5 +131,7 @@ export async function sendMessage(prisma: PrismaClient, actor: ActorContext, con
       body: trimmed,
     },
   });
+  const recipient = await prisma.socialProfile.findUnique({ where: { id: recipientProfileId } });
+  if (recipient) await createNotification({ recipientUserId: recipient.userId, actorUserId: actor.userId, area: 'SOCIAL', type: 'MESSAGE_RECEIVED', title: 'New message', body: `${me.displayName} sent you a message.`, entityType: 'MESSAGE', entityId: created.id });
   return toMessageDTO(created);
 }

@@ -13,7 +13,8 @@ export default function CoordinatorInstitutionalLayout({ children }: { children:
               { label: 'Review queue', href: '/coordinator/review-queue' },
               { label: 'Learning Agreement review', href: '/coordinator/learning-agreement-review' },
               { label: 'Deadlines', href: '/coordinator/deadlines' },
-              { label: 'Exceptions', href: '/coordinator/exceptions' }
+              { label: 'Exceptions', href: '/coordinator/exceptions' },
+              { label: 'Notifications', href: '/coordinator/notifications' }
             ]}
           />
         </aside>

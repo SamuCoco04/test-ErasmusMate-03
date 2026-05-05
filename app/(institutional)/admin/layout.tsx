@@ -11,7 +11,8 @@ export default function AdminInstitutionalLayout({ children }: { children: React
             items={[
               { label: 'Admin dashboard', href: '/admin/dashboard', active: true },
               { label: 'Moderation overview', href: '/admin/social-moderation' },
-              { label: 'Platform status', href: '/admin/dashboard' }
+              { label: 'Platform status', href: '/admin/dashboard' },
+              { label: 'Notifications', href: '/admin/notifications' }
             ]}
           />
         </aside>
