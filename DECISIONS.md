@@ -680,3 +680,10 @@ A major phase is not complete unless relevant decisions are documented here with
 - Evidence level: Implemented in discovery API mapping and discovery UI contract.
 
 - 2026-05-05: Implemented Phase 5G city-level social map discovery with explicit mapVisibility and approximate city-center coordinates only; no precise/live location fields are stored or exposed.
+
+## 2026-05-05 — Phase 5G correction: recommendation-based social map
+- Decision: Replace student-profile map discovery with city recommendation map items (places/tips only) and keep discover-students as a separate workflow.
+- Rationale: Product rules require social support map to show Erasmus city recommendations without exposing student live or personal location.
+- Consequences: Added `CityRecommendation` model + recommendation services/routes/pages; `/api/social/map` is now a compatibility wrapper over recommendation map data.
+- Status: Accepted.
+- Evidence level: Implemented in schema, seed, APIs, UI, and tests.

@@ -214,6 +214,7 @@ model SocialProfile {
   sentConnections     SocialConnection[] @relation("SocialConnectionRequester")
   submittedReports    SocialReport[] @relation("SocialReportReporter")
   targetReports       SocialReport[] @relation("SocialReportTarget")
+  createdRecommendations CityRecommendation[]
   receivedConnections SocialConnection[] @relation("SocialConnectionReceiver")
 
   sentMessages     SocialMessage[] @relation("SocialMessageSender")
@@ -337,11 +338,35 @@ model LearningAgreementEvent {
   @@index([agreementId, createdAt])
 }
 
+model CityRecommendation {
+  id                   String   @id
+  createdByProfileId   String
+  title                String
+  description          String
+  category             String
+  city                 String
+  country              String
+  addressLabel         String
+  approximateLatitude  Float?
+  approximateLongitude Float?
+  visibility           String
+  moderationState      String
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+
+  createdByProfile     SocialProfile @relation(fields: [createdByProfileId], references: [id])
+  reports              SocialReport[]
+
+  @@index([city, category])
+  @@index([visibility, moderationState])
+}
+
 model SocialReport {
   id                String   @id
   reporterProfileId String
   targetProfileId   String?
   targetMessageId   String?
+  targetRecommendationId String?
   reason            String
   details           String?
   status            String
@@ -354,6 +379,7 @@ model SocialReport {
   reporterProfile   SocialProfile @relation("SocialReportReporter", fields: [reporterProfileId], references: [id])
   targetProfile     SocialProfile? @relation("SocialReportTarget", fields: [targetProfileId], references: [id])
   targetMessage     SocialMessage? @relation(fields: [targetMessageId], references: [id])
+  targetRecommendation CityRecommendation? @relation(fields: [targetRecommendationId], references: [id])
   reviewedBy        User? @relation("SocialReportReviewer", fields: [reviewedById], references: [id])
 
   @@index([status, createdAt])
