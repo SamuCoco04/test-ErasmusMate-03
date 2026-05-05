@@ -687,3 +687,10 @@ A major phase is not complete unless relevant decisions are documented here with
 - Consequences: Added `CityRecommendation` model + recommendation services/routes/pages; `/api/social/map` is now a compatibility wrapper over recommendation map data.
 - Status: Accepted.
 - Evidence level: Implemented in schema, seed, APIs, UI, and tests.
+
+## 2026-05-05 — Phase 5G.1 map provider integration (Leaflet/OpenStreetMap)
+- Decision: Implement a client-only Leaflet map with OpenStreetMap tiles for `/social/student/map`, loaded via Next dynamic import with `ssr: false`.
+- Rationale: Provides a real interactive map without requiring API keys, avoids SSR window access issues, and preserves local/offline-tolerant MVP setup.
+- Consequences: Map API payload is now normalized to recommendation-only fields including `recommendationId`; no student location/profile internals are exposed by map endpoints.
+- Status: Accepted.
+- Evidence level: Implemented in social map page/component, recommendation map service, and social map tests.

@@ -1,8 +1,24 @@
 'use client';
 
-import { useCallback, useEffect, useState } from 'react';
+import dynamic from 'next/dynamic';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
-type MapItem = { id: string; title: string; category: string; city: string; country: string; addressLabel: string; description: string; approximateLatitude: number | null; approximateLongitude: number | null };
+type MapItem = {
+  recommendationId: string;
+  title: string;
+  category: string;
+  city: string;
+  country: string;
+  addressLabel: string;
+  description: string;
+  approximateLatitude: number | null;
+  approximateLongitude: number | null;
+};
+
+const SocialRecommendationsMap = dynamic(
+  () => import('@/src/components/social-recommendations-map').then((mod) => mod.SocialRecommendationsMap),
+  { ssr: false, loading: () => <div className='rounded-xl border bg-slate-50 p-4 text-sm'>Loading local map provider…</div> },
+);
 
 export default function SocialMapPage() {
   const [items, setItems] = useState<MapItem[]>([]);
@@ -18,25 +34,43 @@ export default function SocialMapPage() {
     setItems(body.items ?? []);
   }, []);
 
-  useEffect(() => { void fetchMap(city, category); }, [fetchMap, city, category]);
+  useEffect(() => {
+    void fetchMap(city, category);
+  }, [fetchMap, city, category]);
+
+  const categories = useMemo(() => Array.from(new Set(items.map((item) => item.category))).sort(), [items]);
 
   return <div className='space-y-4'>
     <h1 className='text-2xl font-semibold'>City recommendations map</h1>
-    <p className='text-sm text-slate-600'>This map shows Erasmus city places and practical tips. It never shows student live or personal location.</p>
-    <div className='flex gap-2'>
+    <p className='text-sm text-slate-600'>Only recommendation place locations are shown. Student live or personal location is never displayed.</p>
+    <div className='flex flex-wrap gap-2'>
       <input value={city} onChange={(e) => setCity(e.target.value)} placeholder='Filter by city' className='rounded border px-3 py-2' />
-      <input value={category} onChange={(e) => setCategory(e.target.value)} placeholder='Filter by category' className='rounded border px-3 py-2' />
+      <select value={category} onChange={(e) => setCategory(e.target.value)} className='rounded border px-3 py-2'>
+        <option value=''>All categories</option>
+        {categories.map((value) => <option key={value} value={value}>{value}</option>)}
+      </select>
       <button onClick={() => fetchMap(city, category)} className='rounded bg-slate-900 px-3 py-2 text-white'>Apply</button>
     </div>
-    <div className='rounded-xl border bg-white p-4'>
-      <p className='mb-3 text-xs text-slate-500'>Map provider adapter: placeholder list view for local demo without external API keys.</p>
-      <div className='grid min-h-40 grid-cols-1 gap-3 md:grid-cols-2'>
-        {items.map((item) => <div key={item.id} className='rounded-lg border p-3'>
+
+    <div className='grid gap-4 lg:grid-cols-[2fr_1fr]'>
+      <div className='rounded-xl border bg-white p-3'>
+        <p className='mb-2 text-xs text-slate-500'>Map provider: Leaflet + OpenStreetMap (local prototype, no API key required).</p>
+        <SocialRecommendationsMap items={items} />
+      </div>
+      <div className='space-y-3'>
+        {items.map((item) => <article key={item.recommendationId} className='rounded-lg border bg-white p-3'>
           <p className='font-medium'>{item.title}</p>
           <p className='text-sm'>{item.category} · {item.city}, {item.country}</p>
           <p className='text-xs text-slate-500'>{item.addressLabel}</p>
           <p className='mt-1 text-sm'>{item.description}</p>
-        </div>)}
+          <button className='mt-2 rounded border px-2 py-1 text-xs' onClick={async () => {
+            await fetch(`/api/social/recommendations/${item.recommendationId}/report`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ reason: 'Inaccurate recommendation' }),
+            });
+          }}>Report</button>
+        </article>)}
       </div>
     </div>
   </div>;

@@ -48,7 +48,7 @@ export async function createRecommendation(prisma: PrismaClient, actor: ActorCon
 export async function getRecommendationMapItems(prisma: PrismaClient, actor: ActorContext, filters: URLSearchParams) {
   ensureStudent(actor.role);
   await requireProfile(prisma, actor.userId);
-  return prisma.cityRecommendation.findMany({
+  const items = await prisma.cityRecommendation.findMany({
     where: {
       visibility: 'VISIBLE', moderationState: 'ACTIVE',
       ...(filters.get('city') ? { city: filters.get('city')! } : {}),
@@ -57,6 +57,18 @@ export async function getRecommendationMapItems(prisma: PrismaClient, actor: Act
     orderBy: [{ city: 'asc' }, { title: 'asc' }],
     select: { id: true, title: true, category: true, city: true, country: true, addressLabel: true, approximateLatitude: true, approximateLongitude: true, description: true },
   });
+
+  return items.map((item) => ({
+    recommendationId: item.id,
+    title: item.title,
+    category: item.category,
+    city: item.city,
+    country: item.country,
+    addressLabel: item.addressLabel,
+    approximateLatitude: item.approximateLatitude,
+    approximateLongitude: item.approximateLongitude,
+    description: item.description,
+  }));
 }
 
 export async function reportRecommendation(prisma: PrismaClient, actor: ActorContext, recommendationId: string, reason: string, details?: string) {
