@@ -310,3 +310,5 @@ If Codex creates tests with different names or IDs, it must update this matrix t
 | SW-SOC-5G2-003 | Coordinate and empty-field rejection | Student | Service/API | Submit invalid lat/lng and empty title/category/description (`tests/social/map-visibility.test.ts`) | Backend returns controlled validation errors | Implemented - passing |
 | SW-SOC-5G2-004 | List/map consistency for new records | Student | Service/API | Create recommendation then query list/map with matching filters (`tests/social/map-visibility.test.ts`) | New record appears in both list and map APIs | Implemented - passing |
 | SW-SOC-5G2-005 | Map create affordance contract | Student | UI contract | Map page includes create section, map-click guidance, and safety copy (`tests/social/social-ui-contracts.test.ts`) | UI exposes map placement recommendation creation safely | Implemented - passing |
+
+| WF-INS-SUB-ATTACH | Official document attachment metadata lifecycle | Student/Coordinator/Admin | Vitest | Add/list/replace/remove attachments with role and state guards | Metadata persists; unauthorized and locked-state operations blocked | Implemented |
