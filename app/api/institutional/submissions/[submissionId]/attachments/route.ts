@@ -9,9 +9,9 @@ function statusFor(code: string) {
   return 400;
 }
 
-export async function GET(_: Request, { params }: { params: Promise<{ submissionId: string }> }) {
+export async function GET(request: Request, { params }: { params: Promise<{ submissionId: string }> }) {
   try {
-    const ctx = await getDemoContextFromRequest();
+    const ctx = await getDemoContextFromRequest(request);
     const { submissionId } = await params;
     const data = await listAttachments(ctx, submissionId);
     return Response.json({ data });
@@ -23,7 +23,7 @@ export async function GET(_: Request, { params }: { params: Promise<{ submission
 
 export async function POST(request: Request, { params }: { params: Promise<{ submissionId: string }> }) {
   try {
-    const ctx = await getDemoContextFromRequest();
+    const ctx = await getDemoContextFromRequest(request);
     const { submissionId } = await params;
     const form = await request.formData();
     const file = form.get('file');
