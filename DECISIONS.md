@@ -752,3 +752,14 @@ A major phase is not complete unless relevant decisions are documented here with
 - Consequences: Better operator trust and fewer failed open attempts; no guard weakening in backend APIs.
 - Status: Accepted.
 - Evidence level: Implemented in UI and contract tests.
+
+### DEC-021 — Phase 6D student submissions clarity is client-led, backend-authoritative
+- **Date:** 2026-05-05
+- **Phase:** Phase 6D — Student submissions UX polish and workflow clarity
+- **Decision:** Improve student submissions UX with status filters, search, approved toggle behavior, clearer card/attachment summaries, and safer action visibility while keeping backend transition/permission logic authoritative.
+- **Rationale:** Students need quicker understanding of pending work and file actions without implying client-side authority.
+- **Alternatives considered:** Moving state/action checks to frontend-only rule logic; redesigning around a heavier UI framework.
+- **Consequences / trade-offs:** Better scanability and lower clutter; still relies on full page refresh after successful actions in this phase.
+- **Affected areas:** `src/components/institutional/student-submissions-client.tsx`, student submissions UX contract tests, submissions traceability rows.
+- **Status:** Accepted
+- **Evidence level:** Confirmed by implementation
