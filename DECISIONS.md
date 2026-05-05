@@ -703,3 +703,15 @@ A major phase is not complete unless relevant decisions are documented here with
 - Evidence level: Implemented in services, route handlers, UI forms, and tests.
 
 - 2026-05-05: Added DocumentAttachment metadata-only model and lifecycle endpoints with status-based replacement/removal (ACTIVE/REPLACED/REMOVED), keeping binary storage out of DB.
+
+- Decision: Reused `ProcedureDefinition` as configurable requested document definitions for phase 6B hotfix, extending it with attachment constraints and active flag.
+  - Rationale: Avoided introducing a parallel model while enabling coordinator/admin configuration with minimal migration risk.
+  - Consequences / trade-offs: Procedure definitions now carry requested-document metadata (`acceptedMimeTypesJson`, `maxSizeBytes`, `isActive`, `createdById`), which keeps workflows coherent but couples procedure and requirement semantics.
+  - Status: accepted.
+  - Evidence level: implemented in schema, seed, API, and coordinator UI.
+
+- Decision: Preserve strict attachment validation for submit/resubmit and fix resubmit target state to `RESUBMITTED`.
+  - Rationale: Enforces institutional auditability and aligns transitions with expected workflow semantics.
+  - Consequences / trade-offs: Tests and fixtures must explicitly include active attachments before transitions.
+  - Status: accepted.
+  - Evidence level: implemented in submissions transition logic and updated submission tests.

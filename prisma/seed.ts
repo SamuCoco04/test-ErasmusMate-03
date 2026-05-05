@@ -98,7 +98,7 @@ await prisma.mobilityRecord.upsert({ where: { id: 'mobility-1' }, update: { stud
     { id: 'proc-4', title: 'Transcript request', sortOrder: 4 },
   ];
   for (const p of procedures) {
-    await prisma.procedureDefinition.upsert({ where: { id: p.id }, update: { institutionId: 'inst-home-1', title: p.title, description: `${p.title} for Erasmus procedure`, isRequired: true, sortOrder: p.sortOrder }, create: { id: p.id, institutionId: 'inst-home-1', title: p.title, description: `${p.title} for Erasmus procedure`, isRequired: true, sortOrder: p.sortOrder } });
+    await prisma.procedureDefinition.upsert({ where: { id: p.id }, update: { institutionId: 'inst-home-1', title: p.title, description: `${p.title} for Erasmus procedure`, isRequired: true, sortOrder: p.sortOrder, acceptedMimeTypesJson: JSON.stringify(['application/pdf']), maxSizeBytes: 5_242_880, isActive: true, createdById: 'coordinator-1' }, create: { id: p.id, institutionId: 'inst-home-1', title: p.title, description: `${p.title} for Erasmus procedure`, isRequired: true, sortOrder: p.sortOrder, acceptedMimeTypesJson: JSON.stringify(['application/pdf']), maxSizeBytes: 5_242_880, isActive: true, createdById: 'coordinator-1' } });
   }
 
   const documentSubmissions = [

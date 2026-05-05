@@ -15,7 +15,24 @@ describe('Institutional submissions workflow', () => {
     expect(created.state).toBe('DRAFT');
   });
 
-  it('student can submit own DRAFT', async () => {
+
+  it('student cannot submit DRAFT without ACTIVE attachment', async () => {
+    await expect(transitionSubmission({ role: 'STUDENT', userId: 'student-1' }, 'sub-1', 'submit')).rejects.toThrow('At least one active attachment is required');
+  });
+
+  it('student can submit DRAFT with ACTIVE attachment', async () => {
+    await prisma.documentAttachment.create({
+      data: {
+        id: 'att-sub-1-active',
+        submissionId: 'sub-1',
+        uploadedById: 'student-1',
+        fileName: 'passport-copy.pdf',
+        mimeType: 'application/pdf',
+        sizeBytes: 1000,
+        storageKey: 'demo/sub-1/passport-copy.pdf',
+        status: 'ACTIVE',
+      },
+    });
     const updated = await transitionSubmission({ role: 'STUDENT', userId: 'student-1' }, 'sub-1', 'submit');
     expect(updated.state).toBe('SUBMITTED');
   });
@@ -50,9 +67,34 @@ describe('Institutional submissions workflow', () => {
     await expect(transitionSubmission({ role: 'COORDINATOR', userId: 'coordinator-1' }, 'sub-5', 'reopen')).rejects.toThrow('Rationale is required');
   });
 
-  it('student can resubmit REJECTED/REOPENED', async () => {
-    const updated = await transitionSubmission({ role: 'STUDENT', userId: 'student-1' }, 'sub-4', 'resubmit', 'Added corrected metadata');
-    expect(updated.state).toBe('RESUBMITTED');
+  it('student can resubmit REJECTED/REOPENED/NEEDS_CORRECTION with ACTIVE attachment', async () => {
+    const rejected = await transitionSubmission({ role: 'STUDENT', userId: 'student-1' }, 'sub-4', 'resubmit', 'Added corrected metadata');
+    expect(rejected.state).toBe('RESUBMITTED');
+
+    await prisma.documentSubmission.create({
+      data: {
+        id: 'sub-needs-correction',
+        mobilityRecordId: 'mobility-1',
+        procedureId: 'proc-1',
+        state: 'NEEDS_CORRECTION',
+      },
+    });
+
+    await prisma.documentAttachment.create({
+      data: {
+        id: 'att-needs-correction',
+        submissionId: 'sub-needs-correction',
+        uploadedById: 'student-1',
+        fileName: 'corrected.pdf',
+        mimeType: 'application/pdf',
+        sizeBytes: 1300,
+        storageKey: 'demo/sub-needs-correction/corrected.pdf',
+        status: 'ACTIVE',
+      },
+    });
+
+    const corrected = await transitionSubmission({ role: 'STUDENT', userId: 'student-1' }, 'sub-needs-correction', 'resubmit', 'Corrected as requested');
+    expect(corrected.state).toBe('RESUBMITTED');
   });
 
 
@@ -78,6 +120,19 @@ describe('Institutional submissions workflow', () => {
 
     const before = await prisma.documentSubmission.findUniqueOrThrow({ where: { id: 'sub-regression-reviewer-notes' } });
     expect(before.reviewerNotes).toBe('Coordinator note must persist');
+
+    await prisma.documentAttachment.create({
+      data: {
+        id: 'att-regression-reviewer-notes',
+        submissionId: 'sub-regression-reviewer-notes',
+        uploadedById: 'student-1',
+        fileName: 'updated-transcript-request.pdf',
+        mimeType: 'application/pdf',
+        sizeBytes: 1100,
+        storageKey: 'demo/sub-regression-reviewer-notes/updated.pdf',
+        status: 'ACTIVE',
+      },
+    });
 
     const updated = await transitionSubmission({ role: 'STUDENT', userId: 'student-1' }, 'sub-regression-reviewer-notes', 'resubmit', 'Student explanation');
     expect(updated.reviewerNotes).toBe('Coordinator note must persist');

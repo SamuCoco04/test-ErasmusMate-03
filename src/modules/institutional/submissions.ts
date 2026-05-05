@@ -3,7 +3,7 @@ import { DemoContext } from '@/src/modules/shared/demo-context';
 import { computeEffectiveDeadlineState, markDeadlineFulfilled } from './deadlines';
 import { createNotification } from '@/src/modules/notifications/notifications';
 
-export type SubmissionState = 'DRAFT'|'SUBMITTED'|'IN_REVIEW'|'APPROVED'|'REJECTED'|'REOPENED'|'NEEDS_CORRECTION';
+export type SubmissionState = 'DRAFT'|'SUBMITTED'|'RESUBMITTED'|'IN_REVIEW'|'APPROVED'|'REJECTED'|'REOPENED'|'NEEDS_CORRECTION';
 export type SubmissionAction = 'create_draft'|'submit'|'start_review'|'approve'|'reject'|'reopen'|'request_correction'|'resubmit';
 
 export class SubmissionError extends Error { constructor(public code:string, message:string){super(message);} }
@@ -44,7 +44,7 @@ export async function listSubmissionsForStudent(ctx:DemoContext){
 
 export async function listReviewQueueForCoordinator(ctx:DemoContext){
   requireRole(ctx,['COORDINATOR']);
-  return prisma.documentSubmission.findMany({where:{mobilityRecord:{coordinatorId:ctx.userId},state:{in:['SUBMITTED','IN_REVIEW','APPROVED','REJECTED','REOPENED','NEEDS_CORRECTION']}},include:{procedure:true,mobilityRecord:true},orderBy:{updatedAt:'desc'}});
+  return prisma.documentSubmission.findMany({where:{mobilityRecord:{coordinatorId:ctx.userId},state:{in:['SUBMITTED','RESUBMITTED','IN_REVIEW','APPROVED','REJECTED','REOPENED','NEEDS_CORRECTION']}},include:{procedure:true,mobilityRecord:true},orderBy:{updatedAt:'desc'}});
 }
 
 export async function getSubmissionDetail(ctx:DemoContext, submissionId:string){
@@ -67,10 +67,10 @@ export async function transitionSubmission(ctx:DemoContext, submissionId:string,
   if (ctx.role !== 'STUDENT' && ctx.role !== 'COORDINATOR') throw new SubmissionError('FORBIDDEN', 'Forbidden');
   const isStudent = ctx.role==='STUDENT';
   const sub = isStudent ? await assertOwnedByStudent(submissionId,ctx.userId) : await assertCoordinatorAssigned(submissionId,ctx.userId);
-  const nextByAction: Record<SubmissionAction, SubmissionState> = {create_draft:'DRAFT', submit:'SUBMITTED', start_review:'IN_REVIEW', approve:'APPROVED', reject:'REJECTED', reopen:'REOPENED', request_correction:'NEEDS_CORRECTION', resubmit:'SUBMITTED'};
+  const nextByAction: Record<SubmissionAction, SubmissionState> = {create_draft:'DRAFT', submit:'SUBMITTED', start_review:'IN_REVIEW', approve:'APPROVED', reject:'REJECTED', reopen:'REOPENED', request_correction:'NEEDS_CORRECTION', resubmit:'RESUBMITTED'};
   const state = sub.state as SubmissionState;
   const allowed: Record<SubmissionAction, SubmissionState[]> = {
-    create_draft:[], submit:['DRAFT'], start_review:['SUBMITTED'], approve:['IN_REVIEW'], reject:['IN_REVIEW'], reopen:['APPROVED','REJECTED'], request_correction:['IN_REVIEW'], resubmit:['REJECTED','REOPENED','NEEDS_CORRECTION']
+    create_draft:[], submit:['DRAFT'], start_review:['SUBMITTED','RESUBMITTED'], approve:['IN_REVIEW'], reject:['IN_REVIEW'], reopen:['APPROVED','REJECTED'], request_correction:['IN_REVIEW'], resubmit:['REJECTED','REOPENED','NEEDS_CORRECTION']
   };
   if((isStudent && !['submit','resubmit'].includes(action)) || (!isStudent && !['start_review','approve','reject','reopen','request_correction'].includes(action))) throw new SubmissionError('FORBIDDEN','Forbidden');
   if(!allowed[action].includes(state)) throw new SubmissionError('INVALID_TRANSITION','Invalid state transition');
