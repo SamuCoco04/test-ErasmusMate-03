@@ -39,6 +39,7 @@ export interface SocialDiscoveryItem {
   contactPreference?: string;
   contactPreferenceLabel?: string;
   connectionStatus: DiscoveryConnectionStatus;
+  unavailableReason?: 'CONTACT_PREFERENCE_CONNECTIONS_ONLY' | 'CONTACT_PREFERENCE_HIDDEN' | null;
 }
 
 export type ConnectionCategory = 'incomingPending' | 'outgoingPending' | 'accepted' | 'unavailable';

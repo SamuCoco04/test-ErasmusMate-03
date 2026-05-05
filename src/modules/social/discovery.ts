@@ -6,10 +6,11 @@ import { getConnectionStateForProfile } from './connections';
 function ensureStudent(role: string) { if (role !== 'STUDENT') throw new SocialForbiddenError(); }
 
 
-function normalizeDiscoveryStatus(connectionStatus: DiscoveryConnectionStatus, contactPreference: string | null): DiscoveryConnectionStatus {
-	if (['REQUEST_SENT', 'REQUEST_RECEIVED', 'CONNECTED', 'BLOCKED'].includes(connectionStatus)) return connectionStatus;
-	if (contactPreference !== 'OPEN_TO_REQUESTS') return 'UNAVAILABLE';
-	return 'AVAILABLE_TO_REQUEST';
+function normalizeDiscoveryStatus(connectionStatus: DiscoveryConnectionStatus, contactPreference: string | null): Pick<SocialDiscoveryItem, 'connectionStatus' | 'unavailableReason'> {
+	if (['REQUEST_SENT', 'REQUEST_RECEIVED', 'CONNECTED', 'BLOCKED'].includes(connectionStatus)) return { connectionStatus, unavailableReason: null };
+	if (contactPreference === 'CONNECTIONS_ONLY') return { connectionStatus: 'UNAVAILABLE', unavailableReason: 'CONTACT_PREFERENCE_CONNECTIONS_ONLY' };
+	if (contactPreference === 'HIDDEN') return { connectionStatus: 'UNAVAILABLE', unavailableReason: 'CONTACT_PREFERENCE_HIDDEN' };
+	return { connectionStatus: 'AVAILABLE_TO_REQUEST', unavailableReason: null };
 }
 
 function toContactPreferenceLabel(contactPreference: string | null): string {
@@ -58,7 +59,7 @@ export async function listDiscoveryProfiles(prisma: PrismaClient, actor: { role:
 
   return Promise.all(items.map(async (item) => {
 		const rawStatus = await getConnectionStateForProfile(prisma, actor, item.id);
-		return { ...item, connectionStatus: normalizeDiscoveryStatus(rawStatus, item.contactPreference ?? null) };
+		return { ...item, ...normalizeDiscoveryStatus(rawStatus, item.contactPreference ?? null) };
 	}));
 }
 
@@ -70,5 +71,5 @@ export async function getDiscoveryProfileDetail(prisma: PrismaClient, actor: { r
 	if (!p) throw new SocialNotFoundError();
 	const mapped = mapPublic(p as SocialProfileRow);
 	const rawStatus = await getConnectionStateForProfile(prisma, actor, p.id);
-	return { ...mapped, connectionStatus: normalizeDiscoveryStatus(rawStatus, mapped.contactPreference ?? null) };
+	return { ...mapped, ...normalizeDiscoveryStatus(rawStatus, mapped.contactPreference ?? null) };
 }

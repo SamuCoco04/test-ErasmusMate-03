@@ -665,3 +665,16 @@ A major phase is not complete unless relevant decisions are documented here with
 - Consequences: Users must send a new request after unblock; messaging stays blocked until reconnection is accepted.
 - Status: Accepted.
 - Evidence level: Implemented in service + tests.
+
+## 2026-05-05 — Phase 5F.2 re-request and unblock lifecycle cleanup
+- Decision: Treat `CANCELLED` and `REJECTED` as non-active pair states and allow deterministic re-request by resetting same `pairKey` row to `PENDING`.
+- Rationale: Fixes stale "Request sent" behavior and preserves one canonical row per profile pair.
+- Consequences: Students can cancel/re-request and reject/re-request cleanly; duplicate and blocked pair guards remain enforced server-side.
+- Status: Accepted.
+- Evidence level: Implemented in social connection/discovery services and tests.
+
+- Decision: Discovery now emits one canonical status plus student-safe `unavailableReason` for contact-preference-only unavailability.
+- Rationale: Prevents contradictory labels after unblock and makes CONNECTIONS_ONLY behavior explicit without exposing moderation internals.
+- Consequences: UI can show "Only available to existing connections" consistently; moderation details remain hidden from student payloads.
+- Status: Accepted.
+- Evidence level: Implemented in discovery API mapping and discovery UI contract.

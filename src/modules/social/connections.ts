@@ -60,6 +60,7 @@ export async function requestConnection(prisma: PrismaClient, actor: {role: stri
   const target = await prisma.socialProfile.findUnique({ where: { id: targetProfileId } });
   if (!target || target.visibility !== 'VISIBLE' || target.moderationState !== 'ACTIVE') throw new SocialValidationError('Target profile is unavailable');
   const existing = await prisma.socialConnection.findUnique({ where: { pairKey: pairKey(me.id, target.id) } });
+  if (existing?.state === 'BLOCKED') throw new SocialDuplicateError('Connection is blocked for this pair');
   if (existing && activeStates.includes(existing.state)) throw new SocialDuplicateError('Connection already exists for this pair');
   if (existing) {
     return prisma.socialConnection.update({ where: { id: existing.id }, data: { requesterProfileId: me.id, receiverProfileId: target.id, state: 'PENDING', requestedAt: new Date(), respondedAt: null, blockedAt: null, lastActionByProfileId: me.id } });

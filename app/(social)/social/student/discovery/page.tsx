@@ -57,6 +57,9 @@ export default function SocialDiscoveryPage() {
       return (<article key={p.id} className='rounded-xl border bg-white p-4'>
         <h2 className='font-semibold'>{p.displayName}</h2><p className='text-sm'>{p.hostCity}{p.hostCountry ? `, ${p.hostCountry}` : ''}</p><p className='text-sm'>{p.studyArea}</p><p className='text-sm'>{p.bio || 'No bio yet'}</p>
         <p className='mb-2 text-xs text-slate-500'>Status: {stateLabel[p.connectionStatus]}</p>
+        {p.connectionStatus === 'UNAVAILABLE' && p.unavailableReason === 'CONTACT_PREFERENCE_CONNECTIONS_ONLY' ? (
+          <p className='mb-2 text-xs text-slate-500'>Only available to existing connections</p>
+        ) : null}
         {p.contactPreferenceLabel ? <p className='text-xs text-slate-500'>Contact preference: {p.contactPreferenceLabel.toLowerCase()}</p> : null}
         {canRequest ? <button className='rounded bg-slate-900 px-3 py-1 text-white' onClick={() => sendRequest(p.id)}>Send request</button> : null}
         {canMessage ? <a className='rounded bg-slate-900 px-3 py-1 text-white' href='/social/student/messages'>Message</a> : null}
