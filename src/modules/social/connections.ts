@@ -78,7 +78,10 @@ export async function transitionConnection(prisma: PrismaClient, actor: {role:st
   if (action === 'reject') { if (c.state !== 'PENDING' || c.receiverProfileId !== me.id) throw new SocialInvalidTransitionError(); return prisma.socialConnection.update({ where: { id: connectionId }, data: { state: 'REJECTED', respondedAt: new Date(), lastActionByProfileId: me.id } }); }
   if (action === 'cancel') { if (c.state !== 'PENDING' || c.requesterProfileId !== me.id) throw new SocialInvalidTransitionError(); return prisma.socialConnection.update({ where: { id: connectionId }, data: { state: 'CANCELLED', respondedAt: new Date(), lastActionByProfileId: me.id } }); }
   if (action === 'block') { return prisma.socialConnection.update({ where: { id: connectionId }, data: { state: 'BLOCKED', blockedAt: new Date(), lastActionByProfileId: me.id } }); }
-  if (action === 'unblock') { if (c.state !== 'BLOCKED') throw new SocialInvalidTransitionError(); return prisma.socialConnection.update({ where: { id: connectionId }, data: { state: 'CANCELLED', blockedAt: null, respondedAt: new Date(), lastActionByProfileId: me.id } }); }
+  if (action === 'unblock') {
+    if (c.state !== 'BLOCKED' || c.lastActionByProfileId !== me.id) throw new SocialInvalidTransitionError();
+    return prisma.socialConnection.update({ where: { id: connectionId }, data: { state: 'CANCELLED', blockedAt: null, respondedAt: new Date(), lastActionByProfileId: me.id } });
+  }
   throw new SocialValidationError('Unknown action');
 }
 
