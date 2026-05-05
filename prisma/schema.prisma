@@ -203,6 +203,9 @@ model SocialProfile {
   bio                 String?
   visibility          String
   contactPreference   String
+  mapVisibility       String   @default("HIDDEN")
+  approximateLatitude Float?
+  approximateLongitude Float?
   moderationState     String
   createdAt           DateTime @default(now())
   updatedAt           DateTime @updatedAt
@@ -216,7 +219,7 @@ model SocialProfile {
   sentMessages     SocialMessage[] @relation("SocialMessageSender")
   receivedMessages SocialMessage[] @relation("SocialMessageRecipient")
 
-  @@index([visibility, moderationState])
+  @@index([visibility, moderationState, mapVisibility])
   @@index([hostCity, studyArea])
 }
 
