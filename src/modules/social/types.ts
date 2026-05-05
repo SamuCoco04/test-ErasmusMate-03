@@ -21,7 +21,7 @@ export interface SocialProfileDTO {
   contactPreference?: string;
 }
 
-export type DiscoveryConnectionStatus = 'NOT_CONNECTED' | 'REQUEST_SENT' | 'REQUEST_RECEIVED' | 'CONNECTED' | 'BLOCKED' | 'UNAVAILABLE';
+export type DiscoveryConnectionStatus = 'AVAILABLE_TO_REQUEST' | 'REQUEST_SENT' | 'REQUEST_RECEIVED' | 'CONNECTED' | 'BLOCKED' | 'UNAVAILABLE';
 
 export interface SocialDiscoveryItem {
   id: string;
@@ -59,6 +59,7 @@ export interface SafeConnectionItem {
     cancel: boolean;
     message: boolean;
     block: boolean;
+    unblock: boolean;
   };
 }
 
@@ -70,5 +71,5 @@ export interface ConnectionListsResponse {
 }
 
 export interface ConnectionTransitionPayload {
-  action: 'accept' | 'reject' | 'cancel' | 'block';
+  action: 'accept' | 'reject' | 'cancel' | 'block' | 'unblock';
 }

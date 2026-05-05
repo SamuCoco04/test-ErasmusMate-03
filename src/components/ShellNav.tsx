@@ -9,7 +9,7 @@ export function SidebarNav({ items }: { items: Array<{ label: string; href: stri
   return (
     <nav className="space-y-2" aria-label="Sidebar">
       {items.map((item, index) => {
-        const isActive = item.active ?? pathname === item.href;
+        const isActive = item.active ?? (pathname === item.href || pathname.startsWith(`${item.href}/`));
         return (
           <Link
             key={`${index}-${item.href}`}

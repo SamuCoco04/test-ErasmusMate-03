@@ -286,3 +286,10 @@ If Codex creates tests with different names or IDs, it must update this matrix t
 | SERVICE-SOC-UX-5D-005 | Messages other-student naming | Conversation list uses only other student name | Student | Service/API | Validate threads include `otherProfile.displayName` and no raw requester/receiver rendering in UI contracts (`tests/social/messaging.test.ts`, `tests/social/social-ui-contracts.test.ts`) | Message list stays perspective-safe and unambiguous | Implemented - passing |
 
 | Social moderation & reporting | Student/Admin | Service/API + E2E-ready | Student reports profile/message; admin dismisses/actions report; hidden profile excluded from discovery/connections | Report created with guards; moderation transition updates status and profile moderation state | Active |
+
+| SW-SOC-5F-1 | Connection lifecycle | Student | Service/API | Cancel pending then re-request same profile | Request can be sent again using same pair row | Passing |
+| SW-SOC-5F-2 | Connection lifecycle | Student | Service/API | Reject then re-request same profile | Request can be sent again using same pair row | Passing |
+| SW-SOC-5F-3 | Messaging guard | Student | Service/API | Block accepted connection | Messaging is forbidden while blocked | Passing |
+| SW-SOC-5F-4 | Connection lifecycle | Student | Service/API | Unblock blocked connection | Pair returns to requestable status (not auto-connected) | Passing |
+| SW-SOC-5F-5 | Reporting | Student | Service/API | Duplicate open report for same target | Second report is rejected | Passing |
+| SW-SOC-5F-6 | Social navigation | Student | UI contract | Sidebar includes social routes and active-safe checks | Labels present and matching route targets | Passing |

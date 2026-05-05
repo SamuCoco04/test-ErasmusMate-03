@@ -6,7 +6,7 @@ const discoveryPage = readFileSync('app/(social)/social/student/discovery/page.t
 const messagesPage = readFileSync('app/(social)/social/student/messages/page.tsx', 'utf8');
 
 describe('Social UI hardening contracts', () => {
-  it('connections page has clear sections and supports blocking from requests and accepted rows', () => {
+  it('connections page has clear sections and supports blocking and unblocking from clear sections', () => {
     expect(connectionsPage).toContain('Requests received');
     expect(connectionsPage).toContain('Requests sent');
     expect(connectionsPage).toContain('Connected students');
@@ -17,12 +17,13 @@ describe('Social UI hardening contracts', () => {
     expect(connectionsPage).not.toContain(' & ');
     expect(connectionsPage).toContain('c.allowedActions.message ?');
     expect(connectionsPage).toContain('c.allowedActions.block ?');
+    expect(connectionsPage).toContain('c.allowedActions.unblock ?');
   });
 
   it('discovery page uses safe contact labels and guarded send request action', () => {
     expect(discoveryPage).toContain('Available to request');
     expect(discoveryPage).toContain('Connections only');
-    expect(discoveryPage).toContain("p.connectionStatus === 'NOT_CONNECTED' && p.contactPreference === 'OPEN_TO_REQUESTS'");
+    expect(discoveryPage).toContain("p.connectionStatus === 'AVAILABLE_TO_REQUEST' && p.contactPreference === 'OPEN_TO_REQUESTS'");
     expect(discoveryPage).not.toContain('moderationState');
     expect(discoveryPage).not.toContain('pairKey');
   });

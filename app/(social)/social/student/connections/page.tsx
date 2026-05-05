@@ -71,7 +71,9 @@ export default function ConnectionsPage() {
 
     <section>
       <h2 className='font-semibold'>Blocked connections</h2>
-      {blocked.length === 0 ? <p className='text-sm text-slate-500'>No blocked connections</p> : blocked.map((c) => renderRow(c, 'Blocked', <span className='rounded border px-2 py-1 text-sm text-slate-600'>Blocked</span>))}
+      {blocked.length === 0 ? <p className='text-sm text-slate-500'>No blocked connections</p> : blocked.map((c) => renderRow(c, 'Blocked', <>
+        {c.allowedActions.unblock ? <button className='rounded bg-slate-900 px-2 py-1 text-white' onClick={() => act(c, 'unblock')}>{`Unblock ${c.otherProfile.displayName}`}</button> : null}
+      </>))}
     </section>
   </div>;
 }
