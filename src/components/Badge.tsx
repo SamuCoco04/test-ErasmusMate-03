@@ -1,7 +1,19 @@
 import { cn } from '@/src/lib/cn';
 
-export function Badge({ className, ...props }: React.HTMLAttributes<HTMLSpanElement>) {
-  return <span className={cn('inline-flex rounded-full bg-blue-50 px-3 py-1 text-xs font-medium tracking-wide text-accent', className)} {...props} />;
+type BadgeTone = 'info' | 'success' | 'warning' | 'danger' | 'neutral';
+
+const badgeTones: Record<BadgeTone, string> = {
+  info: 'bg-blue-50 text-accent',
+  success: 'bg-emerald-100 text-emerald-800',
+  warning: 'bg-amber-100 text-amber-800',
+  danger: 'bg-rose-100 text-rose-800',
+  neutral: 'bg-slate-100 text-slate-700'
+};
+
+type BadgeProps = React.HTMLAttributes<HTMLSpanElement> & { tone?: BadgeTone };
+
+export function Badge({ tone = 'info', className, ...props }: BadgeProps) {
+  return <span className={cn('inline-flex rounded-full px-3 py-1 text-xs font-medium tracking-wide', badgeTones[tone], className)} {...props} />;
 }
 
 type StatusTone = 'info' | 'pending' | 'success' | 'warning';
