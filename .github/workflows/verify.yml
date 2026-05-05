@@ -1,16 +1,17 @@
- name: Verify ErasmusMate
+name: Verify ErasmusMate
 
 on:
   push:
     branches: [main]
   pull_request:
+  workflow_dispatch:
 
 jobs:
   verify:
     runs-on: ubuntu-latest
 
     env:
-      DATABASE_URL: file:./dev.db
+      DATABASE_URL: "file:./dev.db"
       NEXT_TELEMETRY_DISABLED: "1"
 
     steps:
