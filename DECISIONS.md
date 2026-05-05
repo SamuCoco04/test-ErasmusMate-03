@@ -701,3 +701,5 @@ A major phase is not complete unless relevant decisions are documented here with
 - Consequences: Added strict coordinate/required-field validation and safe response projection; map API now returns `descriptionExcerpt` only; creation forms include explicit privacy safety copy.
 - Status: Accepted.
 - Evidence level: Implemented in services, route handlers, UI forms, and tests.
+
+- 2026-05-05: Added DocumentAttachment metadata-only model and lifecycle endpoints with status-based replacement/removal (ACTIVE/REPLACED/REMOVED), keeping binary storage out of DB.
