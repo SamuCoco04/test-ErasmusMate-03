@@ -11,18 +11,18 @@ export class AttachmentError extends Error { constructor(public code: string, me
 type AttachmentInput = { fileName: string; mimeType: string; sizeBytes: number; storageKey: string };
 
 async function getSubmissionForScope(submissionId: string, ctx: DemoContext) {
-  const submission = await prisma.documentSubmission.findUnique({ where: { id: submissionId }, include: { mobilityRecord: true, attachments: true } });
+  const submission = await prisma.documentSubmission.findUnique({ where: { id: submissionId }, include: { mobilityRecord: true, attachments: true, procedure: true } });
   if (!submission) throw new AttachmentError('NOT_FOUND', 'Submission not found');
   if (ctx.role === 'STUDENT' && submission.mobilityRecord.studentId !== ctx.userId) throw new AttachmentError('FORBIDDEN', 'Forbidden');
   if (ctx.role === 'COORDINATOR' && submission.mobilityRecord.coordinatorId !== ctx.userId) throw new AttachmentError('FORBIDDEN', 'Forbidden');
   return submission;
 }
 
-function validateInput(input: AttachmentInput) {
+function validateInput(input: AttachmentInput, allowedMimeTypes: string[], maxSizeBytes: number) {
   if (!input.fileName?.trim()) throw new AttachmentError('VALIDATION', 'Filename is required');
-  if (!ALLOWED_MIME.has(input.mimeType)) throw new AttachmentError('VALIDATION', 'Unsupported file type');
+  if (!allowedMimeTypes.includes(input.mimeType) && !ALLOWED_MIME.has(input.mimeType)) throw new AttachmentError('VALIDATION', 'Unsupported file type');
   if (!Number.isInteger(input.sizeBytes) || input.sizeBytes <= 0) throw new AttachmentError('VALIDATION', 'Invalid file size');
-  if (input.sizeBytes > MAX_SIZE_BYTES) throw new AttachmentError('VALIDATION', 'File is too large');
+  if (input.sizeBytes > maxSizeBytes || input.sizeBytes > MAX_SIZE_BYTES) throw new AttachmentError('VALIDATION', 'File is too large');
 }
 
 function sanitize(attachment: { id: string; submissionId: string; fileName: string; mimeType: string; sizeBytes: number; version: number; status: string; createdAt: Date; updatedAt: Date }) {
@@ -51,8 +51,9 @@ export async function listAttachments(ctx: DemoContext, submissionId: string) {
 
 export async function addAttachment(ctx: DemoContext, submissionId: string, input: AttachmentInput) {
   if (ctx.role !== 'STUDENT') throw new AttachmentError('FORBIDDEN', 'Forbidden');
-  validateInput(input);
   const submission = await getSubmissionForScope(submissionId, ctx);
+  const allowedMimeTypes = JSON.parse(submission.procedure.acceptedMimeTypesJson || '[]') as string[];
+  validateInput(input, allowedMimeTypes, submission.procedure.maxSizeBytes);
   if (!EDITABLE_STATES.has(submission.state)) throw new AttachmentError('INVALID_STATE', 'Submission is locked for attachments');
   const version = submission.attachments.length + 1;
   const created = await prisma.documentAttachment.create({ data: { id: `att-${crypto.randomUUID()}`, submissionId, uploadedById: ctx.userId, fileName: input.fileName.trim(), mimeType: input.mimeType, sizeBytes: input.sizeBytes, storageKey: input.storageKey, version, status: 'ACTIVE' } });
@@ -63,8 +64,9 @@ export async function addAttachment(ctx: DemoContext, submissionId: string, inpu
 
 export async function replaceAttachment(ctx: DemoContext, submissionId: string, attachmentId: string, input: AttachmentInput) {
   if (ctx.role !== 'STUDENT') throw new AttachmentError('FORBIDDEN', 'Forbidden');
-  validateInput(input);
   const submission = await getSubmissionForScope(submissionId, ctx);
+  const allowedMimeTypes = JSON.parse(submission.procedure.acceptedMimeTypesJson || '[]') as string[];
+  validateInput(input, allowedMimeTypes, submission.procedure.maxSizeBytes);
   if (!EDITABLE_STATES.has(submission.state)) throw new AttachmentError('INVALID_STATE', 'Submission is locked for attachments');
   const previous = await prisma.documentAttachment.findFirst({ where: { id: attachmentId, submissionId } });
   if (!previous) throw new AttachmentError('NOT_FOUND', 'Attachment not found');
