@@ -10,7 +10,7 @@ export default function AdminInstitutionalLayout({ children }: { children: React
           <SidebarNav
             items={[
               { label: 'Admin dashboard', href: '/admin/dashboard', active: true },
-              { label: 'Moderation overview', href: '/admin/dashboard' },
+              { label: 'Moderation overview', href: '/admin/social-moderation' },
               { label: 'Platform status', href: '/admin/dashboard' }
             ]}
           />
