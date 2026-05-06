@@ -21,7 +21,8 @@ async function getSubmissionForScope(submissionId: string, ctx: DemoContext) {
 
 function validateInput(input: AttachmentInput, allowedMimeTypes: string[], maxSizeBytes: number) {
   if (!input.fileName?.trim()) throw new AttachmentError('VALIDATION', 'Filename is required');
-  if (!allowedMimeTypes.includes(input.mimeType) && !ALLOWED_MIME.has(input.mimeType)) throw new AttachmentError('VALIDATION', 'Unsupported file type');
+  const effectiveAllowedMimeTypes = allowedMimeTypes.length > 0 ? allowedMimeTypes : Array.from(ALLOWED_MIME);
+  if (!effectiveAllowedMimeTypes.includes(input.mimeType)) throw new AttachmentError('VALIDATION', 'Unsupported file type');
   if (!Number.isInteger(input.sizeBytes) || input.sizeBytes <= 0) throw new AttachmentError('VALIDATION', 'Invalid file size');
   if (input.sizeBytes > maxSizeBytes || input.sizeBytes > MAX_SIZE_BYTES) throw new AttachmentError('VALIDATION', 'File is too large');
 }
