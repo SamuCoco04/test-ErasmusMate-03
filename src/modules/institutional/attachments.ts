@@ -99,5 +99,6 @@ export async function openAttachment(ctx: DemoContext, submissionId: string, att
   if (attachment.storageKey.startsWith('demo/')) throw new AttachmentError('NOT_FOUND', 'Demo metadata only');
   const file = await readInstitutionalUpload(attachment.storageKey).catch(() => null);
   if (!file) throw new AttachmentError('NOT_FOUND', 'Document not available');
+  await prisma.auditRecord.create({ data: { id: `audit-${crypto.randomUUID()}`, mobilityRecordId: attachment.submission.mobilityRecordId, actorId: ctx.userId, eventType: 'SUBMISSION_ATTACHMENT_OPENED', details: JSON.stringify({ submissionId, attachmentId }) } });
   return { file, fileName: attachment.fileName, mimeType: attachment.mimeType, sizeBytes: attachment.sizeBytes };
 }
