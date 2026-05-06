@@ -775,3 +775,12 @@ A major phase is not complete unless relevant decisions are documented here with
 - **Affected areas:** `/api/institutional/procedures`, admin procedures/document requirements pages, institutional API/UI contract tests.
 - **Status:** Accepted
 - **Evidence level:** Confirmed by implementation and tests
+
+### DEC-023 — Phase 6C deadline calendar read model and deterministic reminder/export
+- **Date:** 2026-05-05
+- **Phase:** Phase 6C — Calendar, Deadline Export & Reminder Rules
+- **Decision:** Keep deadline calendar as a backend read model (`effectiveDueDate`, reminder labels, scoped visibility) and implement `.ics` export in-memory from scoped records.
+- **Rationale:** Preserves institutional ownership/role guards while making deadlines actionable without introducing external schedulers.
+- **Consequences / trade-offs:** No cron/email/push in this phase; reminder generation remains deterministic service logic invoked by application/test flows.
+- **Status:** Accepted
+- **Evidence level:** Confirmed by implementation

@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it } from 'vitest';
 import { prisma } from '@/src/lib/prisma';
 import { seed } from '@/prisma/seed';
 import { DEMO_CONTEXT_COOKIE_NAME } from '@/src/modules/shared/demo-context';
-import { computeEffectiveDeadlineState, generateDeadlineReminders, listDeadlinesForCoordinator, listDeadlinesForStudent } from '@/src/modules/institutional/deadlines';
+import { classifyDeadlineReminderRule, computeEffectiveDeadlineState, generateDeadlineReminders, listDeadlinesForCoordinator, listDeadlinesForStudent } from '@/src/modules/institutional/deadlines';
 import { GET as exportDeadlines } from '@/app/api/institutional/deadlines/export/route';
 
 describe('Phase 6C deadlines, export, reminders', () => {
@@ -22,6 +22,14 @@ describe('Phase 6C deadlines, export, reminders', () => {
 
   it('effectiveDueDate uses override date', () => {
     expect(computeEffectiveDeadlineState({ state: 'UPCOMING', dueDate: new Date('2026-05-01'), overrideDueDate: new Date('2026-06-01'), fulfilledAt: null }, new Date('2026-05-10'))).toBe('OVERRIDDEN');
+  });
+
+
+
+  it('reminder classification respects due soon window and fulfilled exclusion', () => {
+    expect(classifyDeadlineReminderRule({ effectiveDueDate: new Date('2026-05-10'), effectiveState: 'UPCOMING' }, new Date('2026-05-05'), 7)).toBe('DEADLINE_DUE_SOON');
+    expect(classifyDeadlineReminderRule({ effectiveDueDate: new Date('2026-05-01'), effectiveState: 'OVERDUE' }, new Date('2026-05-05'), 7)).toBe('DEADLINE_OVERDUE');
+    expect(classifyDeadlineReminderRule({ effectiveDueDate: new Date('2026-05-06'), effectiveState: 'FULFILLED' }, new Date('2026-05-05'), 7)).toBe(null);
   });
 
   it('calendar export returns text/calendar without internal fields', async () => {
