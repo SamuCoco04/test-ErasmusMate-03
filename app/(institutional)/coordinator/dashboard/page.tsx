@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import { DashboardCard } from '@/src/components/DashboardCard';
 import { PageHeader } from '@/src/components/PageHeader';
 import { getDemoContextFromRequest } from '@/src/modules/shared/demo-context';
@@ -16,6 +17,12 @@ export default async function CoordinatorDashboardPage() {
         <DashboardCard title='Needs correction' description={`${data.needsCorrectionCount} submissions rejected`} status='Student resubmission needed' />
         <DashboardCard title='Overdue deadlines' description={`${data.overdueDeadlineCount} overdue institutional deadlines`} status='Open deadline management' />
         <DashboardCard title='Pending exceptions' description={`${data.pendingExceptionCount} requests needing decision`} status='Open exceptions queue' />
+      </div>
+
+      <div className='flex gap-3'>
+        <Link href='/coordinator/learning-agreement-review' className='inline-flex items-center rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-900 hover:bg-slate-50'>
+          Review Learning Agreements
+        </Link>
       </div>
 
       <section className='space-y-3'>
