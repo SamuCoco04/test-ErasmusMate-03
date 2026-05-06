@@ -3,7 +3,14 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/src/lib/cn';
 
-export function SidebarNav({ items }: { items: Array<{ label: string; href: string; active?: boolean }> }) {
+type SidebarItem = {
+  label: string;
+  href: string;
+  active?: boolean;
+  variant?: 'default' | 'area-switch';
+};
+
+export function SidebarNav({ items }: { items: SidebarItem[] }) {
   const pathname = usePathname();
 
   return (
@@ -17,7 +24,11 @@ export function SidebarNav({ items }: { items: Array<{ label: string; href: stri
             aria-current={isActive ? 'page' : undefined}
             className={cn(
               'block rounded-lg px-3 py-2 text-sm font-medium no-underline transition',
-              isActive ? 'bg-blue-50 text-accent' : 'text-slate-700 hover:bg-slate-100'
+              item.variant === 'area-switch'
+                ? 'border border-dashed border-blue-200 bg-blue-50/70 text-accent hover:bg-blue-100'
+                : isActive
+                  ? 'bg-blue-50 text-accent'
+                  : 'text-slate-700 hover:bg-slate-100'
             )}
           >
             {item.label}

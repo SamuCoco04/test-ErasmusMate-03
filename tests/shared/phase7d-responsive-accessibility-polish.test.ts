@@ -15,7 +15,7 @@ describe('phase 7D responsive/accessibility/demo polish contracts', () => {
     expect(studentLayout).toContain('Deadlines');
     expect(studentLayout).toContain('Exceptions');
     expect(socialLayout).toContain('Social discovery');
-    expect(socialLayout).toContain('Back to official mobility area');
+    expect(socialLayout).toContain('Go to official mobility area');
   });
 
   it('shows accessible labels on key social filters and forms', () => {

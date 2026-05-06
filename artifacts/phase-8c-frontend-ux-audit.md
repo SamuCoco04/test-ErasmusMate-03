@@ -168,3 +168,33 @@ The largest current UX risks are not broken flows; they are **discoverability an
 1. Removed route-like/internal labels from student institutional dashboard cards:
    - Replaced `Open /student/exceptions`, `Open /student/deadlines`, `Open /coordinator/exceptions` copy with user-facing status text.
 2. Added a focused UI contract test to prevent reintroduction of route-like labels in the student dashboard.
+
+## 18. Phase 8C.2 follow-up
+
+### High findings reduced in this hotfix phase
+
+1. **Cross-area navigation consistency improved**
+   - Institutional and social student layouts now use aligned wording: `Go to social area` and `Go to official mobility area`.
+   - Area-switch actions are styled with a distinct `area-switch` visual treatment so they are less likely to be mistaken for regular in-area navigation.
+
+2. **Global notification affordance introduced**
+   - Top bar now provides an `Open notifications` bell affordance in the top-right utility cluster.
+   - It links to existing notification pages and shows unread count when available from current user notifications.
+
+3. **Global profile affordance introduced**
+   - Top bar now provides an `Open profile` affordance adjacent to notifications.
+   - It links to currently available profile/workspace routes without inventing new account pages.
+
+4. **Route-copy hygiene strengthened**
+   - Additional UI contract coverage was added to reduce risk of route-like copy reappearing on key dashboard surfaces.
+
+### Deferred items for Phase 9C
+
+- Full notifications dropdown experience, per-type deep links, and advanced lifecycle UX remain deferred.
+- Rich profile/account menu behavior remains deferred.
+- Larger dashboard visual hierarchy redesign and broader shell differentiation remain deferred.
+
+### Current limitations
+
+- Notification affordance is currently a safe click-through entry point to existing notifications pages rather than a full inline feed.
+- Profile affordance is currently route-link based, not an account management menu.

@@ -4,7 +4,7 @@ import { TopBar } from '@/src/components/TopBar';
 export default function StudentInstitutionalLayout({ children }: { children: React.ReactNode }) {
   return (
     <main className="min-h-screen bg-canvas px-4 py-6 md:px-8">
-      <TopBar areaName="Student institutional area" />
+      <TopBar areaName="Official mobility area · Student" notificationsHref="/student/notifications" profileHref="/social/student/profile" />
       <div className="mx-auto grid max-w-7xl gap-6 md:grid-cols-[220px_1fr]">
         <aside className="rounded-2xl border border-slate-200 bg-white p-4 shadow-card">
           <SidebarNav
@@ -16,7 +16,7 @@ export default function StudentInstitutionalLayout({ children }: { children: Rea
               { label: 'Deadlines', href: '/student/deadlines' },
               { label: 'Exceptions', href: '/student/exceptions' },
               { label: 'Notifications', href: '/student/notifications' },
-              { label: 'Open social support', href: '/social/student/dashboard' }
+              { label: 'Go to social area', href: '/social/student/dashboard', variant: 'area-switch' }
             ]}
           />
         </aside>
