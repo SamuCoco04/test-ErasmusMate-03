@@ -54,6 +54,14 @@ describe('Phase 7C social UI contracts', () => {
     expect(files.map).toContain('Click the map to place your recommendation marker.');
     expect(files.messages).toContain('Report');
     expect(files.moderation).toContain('Social moderation');
-    expect(files.moderation).toContain('Dismiss');
+    expect(files.moderation).toContain('Profile report');
+    expect(files.moderation).toContain('Message report');
+    expect(files.moderation).toContain('Recommendation report');
+    expect(files.moderation).toContain('Pending');
+    expect(files.moderation).toContain('Actioned');
+    expect(files.moderation).toContain('Dismissed');
+    expect(files.moderation).toContain('Decision rationale');
+    expect(files.moderation).toContain('Dismiss report');
+    expect(files.moderation).toContain('Hide recommendation');
   });
 });
