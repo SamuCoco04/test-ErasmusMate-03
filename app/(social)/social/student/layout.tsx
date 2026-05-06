@@ -10,7 +10,7 @@ export default function SocialStudentLayout({ children }: { children: React.Reac
           <SidebarNav
             items={[
               { label: 'Social dashboard', href: '/social/student/dashboard' },
-              { label: 'Discover students', href: '/social/student/discovery' },
+              { label: 'Social discovery', href: '/social/student/discovery' },
               { label: 'Recommendations', href: '/social/student/recommendations' },
               { label: 'Map', href: '/social/student/map' },
               { label: 'Connections', href: '/social/student/connections' },
