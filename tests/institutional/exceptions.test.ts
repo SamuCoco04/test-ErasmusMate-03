@@ -30,4 +30,51 @@ describe('Institutional exceptions workflow', () => {
     const overrideAudit = await prisma.auditRecord.findFirst({ where: { eventType: 'DEADLINE_OVERRIDE_APPLIED' } });
     expect(overrideAudit).toBeTruthy();
   });
+
+  it('blocks non-student exception creation', async () => {
+    await expect(
+      createExceptionRequest(
+        { role: 'COORDINATOR', userId: 'coordinator-1' },
+        { title: 'Ask for more time', reason: 'Medical reason', deadlineId: 'dead-1' },
+      ),
+    ).rejects.toMatchObject({ code: 'FORBIDDEN' });
+  });
+
+  it('blocks student exception creation for another student context', async () => {
+    await prisma.user.upsert({
+      where: { id: 'student-x' },
+      update: { email: 'studentx@erasmusmate.demo', displayName: 'Student X', role: 'STUDENT', institutionId: 'inst-home-1' },
+      create: { id: 'student-x', email: 'studentx@erasmusmate.demo', displayName: 'Student X', role: 'STUDENT', institutionId: 'inst-home-1' },
+    });
+    await expect(
+      createExceptionRequest(
+        { role: 'STUDENT', userId: 'student-x' },
+        { title: 'Ask for more time', reason: 'Medical reason', deadlineId: 'dead-1' },
+      ),
+    ).rejects.toMatchObject({ code: 'FORBIDDEN' });
+  });
+
+  it('requires rationale for reject transition', async () => {
+    await expect(
+      transitionException({ role: 'COORDINATOR', userId: 'coordinator-1' }, 'exc-1', 'reject', { rationale: '   ' }),
+    ).rejects.toMatchObject({ code: 'VALIDATION' });
+  });
+
+  it('blocks apply when exception is not approved', async () => {
+    await expect(
+      transitionException({ role: 'COORDINATOR', userId: 'coordinator-1' }, 'exc-1', 'apply', { rationale: 'Apply extension', overrideDueDate: '2026-06-30' }),
+    ).rejects.toMatchObject({ code: 'INVALID_TRANSITION' });
+  });
+
+  it('blocks apply when override date is missing', async () => {
+    await expect(
+      transitionException({ role: 'COORDINATOR', userId: 'coordinator-1' }, 'exc-3', 'apply', { rationale: 'Apply extension without date' }),
+    ).rejects.toMatchObject({ code: 'VALIDATION' });
+  });
+
+  it('returns not found for unknown exception id in transition', async () => {
+    await expect(
+      transitionException({ role: 'COORDINATOR', userId: 'coordinator-1' }, 'exc-missing', 'approve', { rationale: 'ok' }),
+    ).rejects.toMatchObject({ code: 'NOT_FOUND' });
+  });
 });

@@ -115,10 +115,11 @@ Use the following test type values:
 | E2E-EXC-002 | Exception review | Coordinator can approve exception | Coordinator | E2E | Coordinator approves newly created student exception (`e2e/institutional/workflows.spec.ts`) | Exception state updates to Approved and remains visible in queue | Implemented - passing |
 | E2E-EXC-003 | Exception review | Coordinator can reject exception with rationale | Coordinator | E2E | Coordinator rejects exception request | Student sees rejection and rationale | Planned |
 | E2E-EXC-004 | Exception application | Approved exception can apply supported change | Coordinator | E2E | Coordinator applies deadline exception | Related deadline or obligation reflects approved exception | Planned |
-| SERVICE-EXC-001 | Scope validation | Deadline-scoped exception requires deadline reference | Student | Service/API | Create deadline exception without reference (`tests/institutional/exceptions.test.ts`) | Backend rejects request | Planned |
-| SERVICE-EXC-002 | Apply guard | Unsupported apply action blocked | Coordinator | Service/API | Apply exception without supported target | Backend rejects action | Planned |
+| SERVICE-EXC-001 | Scope validation | Deadline-scoped exception requires deadline reference | Student | Service/API | Create deadline exception with invalid/foreign scope and non-student actor (`tests/institutional/exceptions.test.ts`) | Backend rejects request with role/ownership guard | Implemented - negative-path coverage |
+| SERVICE-EXC-002 | Apply guard | Unsupported apply action blocked | Coordinator | Service/API | Apply exception from non-approved state or without required apply payload (`tests/institutional/exceptions.test.ts`) | Backend rejects unsafe apply transition/payload | Implemented - negative-path coverage |
 | SERVICE-EXC-003 | Exception permissions | Only authorized coordinator decides | Coordinator | Service/API | Unassigned coordinator tries to decide (tests/institutional/exceptions.test.ts) | Backend rejects action | Implemented - passing |
 | SERVICE-EXC-004 | Auditability | Exception actions audited | Student / Coordinator | Service/API | Create, approve, apply exception (tests/institutional/exceptions.test.ts) | Event/audit records are created | Implemented - passing |
+| SERVICE-EXC-005 | Review guard matrix | Exception review guard behavior stays safe | Coordinator | Service/API | Reject without rationale and transition unknown ID (`tests/institutional/exceptions.test.ts`) | Validation and not-found behaviors are controlled and deterministic | Implemented - service/API tests |
 
 ---
 
@@ -151,6 +152,15 @@ Use the following test type values:
 | SERVICE-LA-008 | Academic Summary display values | Summary UI uses human-friendly labels and empty grade value | Student | Service/API | Render source for `/student/academic-summary` and assert copy/fallbacks (`tests/institutional/student-learning-agreement-ui.test.ts`) | Page shows “Approved courses”, “Total ECTS”, “No approved courses yet”, and “Not recorded” | Implemented - passing |
 
 ---
+
+## 3.6b Institutional notifications
+
+| Test ID | Workflow / Area | Requirement / Rule | Actor | Type | Scenario | Expected result | Status |
+|---|---|---|---|---|---|---|---|
+| SERVICE-NOTIF-001 | Notification listing | Notification API is owner-scoped | Student / Coordinator | Service/API | List notifications for student context with mixed seeded recipients (`tests/institutional/notifications-api.test.ts`) | Response includes only active user notifications with read state fields | Implemented - service/API tests |
+| SERVICE-NOTIF-002 | Mark-read ownership | Only owner can mark notification as read | Student / Coordinator | Service/API | Mark own, foreign, and missing notification IDs (`tests/institutional/notifications-api.test.ts`) | Owner succeeds; foreign/missing IDs return safe forbidden without internals | Implemented - negative-path coverage |
+| SERVICE-NOTIF-003 | Read-all ownership and idempotency | Read-all mutates only active user state | Student | Service/API | Execute read-all twice with mixed recipient notifications (`tests/institutional/notifications-api.test.ts`) | First call marks only own unread rows; second call is idempotent; other users remain unread | Implemented - service/API tests |
+| SERVICE-NOTIF-004 | Empty notification safety | Notification endpoints remain stable on empty/unread-empty states | Student | Service/API | List/mark-all when no unread notifications exist (`tests/institutional/notifications-api.test.ts`) | API returns stable 200 response with empty or zero-count payload | Implemented - service/API tests |
 
 ## 3.7 Social profile and discovery
 
