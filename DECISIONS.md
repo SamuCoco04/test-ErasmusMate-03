@@ -817,3 +817,5 @@ A major phase is not complete unless relevant decisions are documented here with
 - **Affected areas:** `src/modules/institutional/read-models.ts`, coordinator dashboard UI, institutional tests, traceability mapping.
 - **Status:** Accepted
 - **Evidence level:** Confirmed by implementation
+
+- Phase 6F: Introduced normalized activity feed read-model combining institutional audit records, learning-agreement events, and admin-only sanitized social moderation events. Rationale: coherent traceability view without leaking internals. Consequence: dashboards/notifications can render consistent timeline while keeping role scoping strict.
