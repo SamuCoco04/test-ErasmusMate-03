@@ -6,26 +6,32 @@ export default function HomePage() {
   return (
     <main className="mx-auto min-h-screen max-w-5xl space-y-8 px-6 py-16">
       <PageHeader
-        sectionLabel="Phase 2B shell foundation"
+        sectionLabel="Global launcher"
         title="ErasmusMate"
-        subtitle="Choose a dashboard area. Workflow implementation, demo identity, and map features are coming in next phases."
+        subtitle="Choose the area you want to open for this demo session."
       />
 
       <section className="grid gap-4 md:grid-cols-2">
         <Card className="space-y-4">
-          <h2 className="text-xl font-semibold text-ink">Institutional core</h2>
-          <p className="text-sm text-muted">Official mobility dashboards are ready as placeholders.</p>
-          <div className="grid gap-2">
-            <ButtonLink href="/student/dashboard" variant="secondary">Student dashboard</ButtonLink>
-            <ButtonLink href="/coordinator/dashboard" variant="secondary">Coordinator dashboard</ButtonLink>
-            <ButtonLink href="/admin/dashboard" variant="secondary">Admin dashboard</ButtonLink>
-          </div>
+          <h2 className="text-xl font-semibold text-ink">Student institutional area</h2>
+          <p className="text-sm text-muted">Official mobility procedures, documents, deadlines, and Learning Agreement.</p>
+          <ButtonLink href="/student/dashboard" variant="secondary">Open student institutional area</ButtonLink>
         </Card>
 
         <Card className="space-y-4">
-          <h2 className="text-xl font-semibold text-ink">Social support</h2>
-          <p className="text-sm text-muted">Student social support remains separate and secondary.</p>
-          <ButtonLink href="/social/student/dashboard" variant="secondary">Social student dashboard</ButtonLink>
+          <h2 className="text-xl font-semibold text-ink">Student social support</h2>
+          <p className="text-sm text-muted">Erasmus discovery, connections, messages, and city recommendations.</p>
+          <ButtonLink href="/social/student/dashboard" variant="secondary">Open student social support</ButtonLink>
+        </Card>
+        <Card className="space-y-4">
+          <h2 className="text-xl font-semibold text-ink">Coordinator workspace</h2>
+          <p className="text-sm text-muted">Review assigned student requests and academic workflows.</p>
+          <ButtonLink href="/coordinator/dashboard" variant="secondary">Open coordinator workspace</ButtonLink>
+        </Card>
+        <Card className="space-y-4">
+          <h2 className="text-xl font-semibold text-ink">Admin console</h2>
+          <p className="text-sm text-muted">Configure institutional processes and moderate social content.</p>
+          <ButtonLink href="/admin/dashboard" variant="secondary">Open admin console</ButtonLink>
         </Card>
       </section>
     </main>
