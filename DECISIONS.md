@@ -874,3 +874,25 @@ A major phase is not complete unless relevant decisions are documented here with
 - **Consequences / trade-offs:** Reuses existing pair row/state model (no Prisma schema change) and keeps moderation internals hidden; block/unblock remains participant-scoped with unblock limited to the blocker.
 - **Status:** Accepted
 - **Evidence level:** Confirmed by updated service/UI contract tests
+
+### DEC-017 — Phase 8A.4 formal coverage audit with controlled scope
+- **Date:** 2026-05-06
+- **Phase:** Phase 8A.4 — Requirements, Workflow, Business Rule & Test Coverage Audit
+- **Decision:** Run a formal cross-area coverage audit and prioritize documentation of gaps over feature implementation during this phase.
+- **Rationale:** Phase 8A.4 is intended to establish evidence of what is implemented vs weakly covered, without silently expanding scope or introducing unplanned workflow behavior.
+- **Alternatives considered:** Implementing missing features directly during audit; postponing audit to later hardening phases.
+- **Consequences / trade-offs:** Produces a clear 8B backlog and preserves phase discipline; known gaps remain until targeted implementation phases.
+- **Affected areas:** `artifacts/phase-8a-coverage-audit.md`, `TRACEABILITY_TEST_MATRIX.md`, test planning for Phase 8B.
+- **Status:** Accepted
+- **Evidence level:** Confirmed by implementation
+
+### DEC-018 — Phase 8A.4 deferral policy for hardening and evidence packs
+- **Date:** 2026-05-06
+- **Phase:** Phase 8A.4 — Requirements, Workflow, Business Rule & Test Coverage Audit
+- **Decision:** Move uncovered functional/test items to Phase 8B backlog, defer security-hardening consolidation to 9A, and defer evidence-pack synthesis to 9B.
+- **Rationale:** Keeps audit phase focused on gap detection and traceability while aligning execution order with the existing roadmap.
+- **Alternatives considered:** Addressing all coverage and hardening gaps immediately in 8A.4.
+- **Consequences / trade-offs:** Better planning clarity and lower audit-phase risk; remaining gaps require disciplined follow-through in later phases.
+- **Affected areas:** Phase roadmap execution, backlog prioritization, documentation consistency.
+- **Status:** Accepted
+- **Evidence level:** Confirmed by implementation
