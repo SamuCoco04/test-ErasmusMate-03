@@ -134,3 +134,22 @@ Remaining deferred gaps after Phase 8B.2:
 
 Current limitation notes:
 - Exception and notification hardening here is scoped to direct workflow guard assertions; centralized Phase 9A security hardening pack remains intentionally out of scope.
+
+## 10) Phase 8B.3 follow-up — remaining institutional E2E acceptance closure
+
+E2E acceptance coverage added in this slice:
+- Added full exception request approval→apply Playwright coverage with coordinator action and student-visible applied state verification.
+- Added institutional notification recipient journey coverage: trigger exception approval notification, verify student visibility, mark as read, and verify coordinator cannot see recipient-only notification.
+- Added Learning Agreement request-changes loop coverage: coordinator requests changes with rationale, student sees rationale, resubmit is blocked until row revision, then student revises and resubmits back to in-review.
+
+Deferred-gap closure status after Phase 8B.3:
+- Exception apply full E2E flow: **closed** (implemented with executable Playwright scenario).
+- Institutional notification-to-action E2E: **partially closed** (recipient visibility/read journey covered; click-through navigation action remains deferred because notification cards currently have no direct action link).
+- Learning Agreement deny/request-changes → revise/resubmit E2E depth: **closed for stable revise/resubmit path**.
+
+UI limitations observed:
+- Coordinator exceptions page still uses native prompt dialogs for rationale/date; scenario kept stable by explicit dialog handlers.
+- Notification panel currently supports read-state actions but does not yet expose direct “open related item” navigation.
+
+Validation note:
+- Local container baselines can differ for Playwright runtime prerequisites; GitHub Verify remains the authoritative baseline for merge readiness.

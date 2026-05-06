@@ -916,3 +916,14 @@ A major phase is not complete unless relevant decisions are documented here with
 - **Affected areas:** `tests/institutional/exceptions.test.ts`, `tests/institutional/notifications-api.test.ts`, traceability/audit alignment.
 - **Status:** Accepted
 - **Evidence level:** Confirmed by implementation
+
+### DEC-052 — Phase 8B.3 prioritizes institutional E2E acceptance closure after service/API hardening
+- **Date:** 2026-05-06
+- **Phase:** Phase 8B.3 — Remaining institutional E2E acceptance closure
+- **Decision:** Focus this phase on closing high-value institutional Playwright acceptance gaps (exception apply, notification recipient journey, and Learning Agreement request-changes revise/resubmit) instead of expanding backend rule scope.
+- **Rationale:** Phase 8B.2 already strengthened exception and notification service/API guard depth, so the highest risk shifted to missing end-user acceptance proof across UI + backend persistence.
+- **Alternatives considered:** Add more service-only permutations first; broad UI refactors to remove existing prompt interactions before adding E2E.
+- **Consequences / trade-offs:** Faster closure of audit-visible deferred acceptance items; notification click-through remains explicitly deferred until UI exposes direct action links.
+- **Affected areas:** `e2e/institutional/workflows.spec.ts`, `TRACEABILITY_TEST_MATRIX.md`, `artifacts/phase-8a-coverage-audit.md`.
+- **Status:** Accepted
+- **Evidence level:** Confirmed by implementation
