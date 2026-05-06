@@ -938,3 +938,15 @@ A major phase is not complete unless relevant decisions are documented here with
 - **Affected areas:** `TRACEABILITY_TEST_MATRIX.md`, shared UI contract tests, phase audit artifact.
 - **Status:** Accepted
 - **Evidence level:** Confirmed by implementation
+
+
+### DEC-052 — Phase 8C.1 frontend-readiness audit with copy-only hotfix policy
+- **Date:** 2026-05-06
+- **Phase:** Phase 8C.1 — Frontend UX readiness audit
+- **Decision:** Run a focused UX readiness audit and limit implementation changes to low-risk copy hygiene + UI contract guard tests, deferring larger navigation/top-bar affordance redesign work to later UX-polish phases.
+- **Rationale:** The pre-Phase-9 goal is risk discovery and demo-readiness assessment, not structural redesign.
+- **Alternatives considered:** Immediate bell/avatar implementation and broad shell/nav restyling in this phase.
+- **Consequences / trade-offs:** Fast, low-risk improvements now; known top-bar utility and cross-area navigation polish remains a tracked backlog for Phase 8C.2/9C.
+- **Affected areas:** `artifacts/phase-8c-frontend-ux-audit.md`, student dashboard copy, UI contract tests.
+- **Status:** Accepted
+- **Evidence level:** Confirmed by implementation

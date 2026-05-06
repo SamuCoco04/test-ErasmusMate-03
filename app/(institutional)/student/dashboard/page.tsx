@@ -12,9 +12,9 @@ export default async function StudentDashboardPage() {
     <div className='flex flex-wrap justify-end gap-2'><ButtonLink href='/student/learning-agreement' variant='secondary'>Open Learning Agreement</ButtonLink><ButtonLink href='/student/academic-summary'>Open Academic Summary</ButtonLink></div>
     {data && <div className='grid gap-4 md:grid-cols-2'>
       <DashboardCard title='Current Erasmus stay' description={`${data.record?.homeInstitutionId} → ${data.record?.hostInstitution.name} (${data.record?.mobilityStatus})`} status='Active record' />
-      <DashboardCard title='Procedure summary' description={`Draft: ${data.submissions.filter(s=>s.state==='DRAFT').length} · Pending review: ${data.submissions.filter(s=>s.state==='SUBMITTED').length} · Approved: ${data.submissions.filter(s=>s.state==='APPROVED').length} · Needs correction: ${data.submissions.filter(s=>s.state==='REJECTED').length}`} status='Open /student/exceptions' />
-      <DashboardCard title='Deadline summary' description={`Due soon: ${data.deadlines.filter(d=>d.state==='UPCOMING').length} · Overdue: ${data.deadlines.filter(d=>d.state==='OVERDUE').length} · Fulfilled: ${data.deadlines.filter(d=>d.state==='FULFILLED').length}`} status='Open /student/deadlines' />
-      <DashboardCard title='Exception requests' description={`Open /coordinator/exceptions: ${data.exceptions.filter(e=>['PENDING','UNDER_REVIEW'].includes(e.state)).length}`} status='Open /student/exceptions' />
+      <DashboardCard title='Procedure summary' description={`Draft: ${data.submissions.filter(s=>s.state==='DRAFT').length} · Pending review: ${data.submissions.filter(s=>s.state==='SUBMITTED').length} · Approved: ${data.submissions.filter(s=>s.state==='APPROVED').length} · Needs correction: ${data.submissions.filter(s=>s.state==='REJECTED').length}`} status='Action needed soon' />
+      <DashboardCard title='Deadline summary' description={`Due soon: ${data.deadlines.filter(d=>d.state==='UPCOMING').length} · Overdue: ${data.deadlines.filter(d=>d.state==='OVERDUE').length} · Fulfilled: ${data.deadlines.filter(d=>d.state==='FULFILLED').length}`} status='Check deadlines' />
+      <DashboardCard title='Exception requests' description={`Requests pending coordinator review: ${data.exceptions.filter(e=>['PENDING','UNDER_REVIEW'].includes(e.state)).length}`} status='Action needed soon' />
     </div>}
   </PageShell>;
 }

@@ -183,3 +183,8 @@ Phase 8 is closed through traceability harmonization and UI contract finalizatio
 - Proceed to Phase 9A for targeted hardening.
 - Proceed to Phase 9B for evidence-pack/report generation.
 - Proceed to Phase 9C for notification action routing UX and cross-area navigation polish.
+
+
+## Phase 8C follow-up note (2026-05-06)
+
+Phase 8C.1 executed as a frontend-readiness UX audit follow-up before Phase 9A hardening. Findings and prioritization are documented in `artifacts/phase-8c-frontend-ux-audit.md`, with only low-risk copy/test hotfixes applied in this slice.
