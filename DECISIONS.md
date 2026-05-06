@@ -982,3 +982,14 @@ A major phase is not complete unless relevant decisions are documented here with
 - **Affected areas:** social discovery/connections UI, social connection request guard, social UI contracts, traceability and audit artifacts.
 - **Status:** Accepted
 - **Evidence level:** Confirmed by implementation and tests
+
+### DEC-8C4 — Stabilize institutional E2E via deterministic role context and serial isolation
+- **Date:** 2026-05-06
+- **Phase:** Phase 8C.4 — E2E Stabilization and Fixture Isolation
+- **Decision:** Stabilize institutional Playwright workflows by (1) ensuring demo role cookie is explicitly set in browser context during tests, (2) scoping ambiguous form selectors, (3) making Learning Agreement request-changes test generate its own in-review row, and (4) running institutional workflow specs serially.
+- **Rationale:** Failures were caused by role-context drift, selector collisions with the topbar role select, and state mutation between tests against shared seed records.
+- **Alternatives considered:** Full DB reseed per test; broad data-testid rollout; skipping brittle tests.
+- **Consequences / trade-offs:** Higher local reliability with minimal product impact; institutional suite execution is slower due to serial mode.
+- **Affected areas:** `e2e/institutional/workflows.spec.ts`, `playwright.config.ts`.
+- **Status:** Accepted
+- **Evidence level:** Confirmed by targeted and full E2E runs

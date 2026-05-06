@@ -3,9 +3,22 @@ import { expect, test } from '@playwright/test';
 async function setRole(page: import('@playwright/test').Page, role: 'STUDENT' | 'COORDINATOR') {
   const response = await page.request.patch('/api/demo-context', { data: { role } });
   expect(response.ok()).toBeTruthy();
+  const payload = await response.json();
+  await page.context().addCookies([
+    {
+      name: 'erasmusmate_demo_context',
+      value: JSON.stringify(payload.context),
+      domain: '127.0.0.1',
+      path: '/',
+      httpOnly: true,
+      sameSite: 'Lax',
+    },
+  ]);
 }
 
 test.describe('Institutional E2E acceptance workflows', () => {
+  test.describe.configure({ mode: 'serial' });
+
   test('student submission resubmit loop and coordinator decision loop', async ({ page, request }) => {
     await setRole(page, 'STUDENT');
     await page.goto('/student/submissions');
@@ -60,10 +73,11 @@ test.describe('Institutional E2E acceptance workflows', () => {
     await expect(page.getByRole('heading', { name: 'Exception requests' })).toBeVisible();
 
     const uniqueTitle = `Phase 8B.3 exception ${Date.now()}`;
-    await page.locator('input').first().fill(uniqueTitle);
-    await page.locator('select').selectOption('dead-2');
-    await page.getByPlaceholder('Reason for your request').fill('Embassy appointment moved and I need an extension.');
-    await page.getByRole('button', { name: 'Send request' }).click();
+    const exceptionForm = page.locator('form').first();
+    await exceptionForm.locator('input').fill(uniqueTitle);
+    await exceptionForm.locator('select').selectOption('dead-2');
+    await exceptionForm.getByPlaceholder('Reason for your request').fill('Embassy appointment moved and I need an extension.');
+    await exceptionForm.getByRole('button', { name: 'Send request' }).click();
     await expect(page.getByText(uniqueTitle)).toBeVisible();
     await expect(page.getByText('Waiting for decision')).toBeVisible();
 
@@ -101,10 +115,11 @@ test.describe('Institutional E2E acceptance workflows', () => {
     await page.goto('/student/exceptions');
 
     const uniqueTitle = `Phase 8B.3 notification ${Date.now()}`;
-    await page.locator('input').first().fill(uniqueTitle);
-    await page.locator('select').selectOption('dead-1');
-    await page.getByPlaceholder('Reason for your request').fill('Need extension due to delayed consulate response.');
-    await page.getByRole('button', { name: 'Send request' }).click();
+    const exceptionForm = page.locator('form').first();
+    await exceptionForm.locator('input').fill(uniqueTitle);
+    await exceptionForm.locator('select').selectOption('dead-1');
+    await exceptionForm.getByPlaceholder('Reason for your request').fill('Need extension due to delayed consulate response.');
+    await exceptionForm.getByRole('button', { name: 'Send request' }).click();
     await expect(page.getByText(uniqueTitle)).toBeVisible();
 
     await setRole(page, 'COORDINATOR');
@@ -133,12 +148,22 @@ test.describe('Institutional E2E acceptance workflows', () => {
   });
 
   test('learning agreement request-changes revise and resubmit loop', async ({ page }) => {
+    await setRole(page, 'STUDENT');
+    await page.goto('/student/learning-agreement');
+    const rowToRevise = page.locator('tr').filter({ hasText: 'Needs changes' }).first();
+    await rowToRevise.getByRole('button', { name: 'Edit' }).click();
+    await page.getByLabel('Destination Course Code').fill('DS-200');
+    await page.getByLabel('Destination Course Name').fill('Database Systems Advanced');
+    await page.getByRole('button', { name: 'Save changes' }).click();
+    await expect(page.getByText('Row updated and sent for review.')).toBeVisible();
+
     await setRole(page, 'COORDINATOR');
     await page.goto('/coordinator/learning-agreement-review');
     await expect(page.getByRole('heading', { name: 'Learning Agreement Review' })).toBeVisible();
 
-    await page.getByPlaceholder('Add reason for changes').first().fill('Please provide clearer destination course match.');
-    await page.getByRole('button', { name: 'Request changes' }).first().click();
+    const latestInReviewRow = page.locator('tr').filter({ hasText: 'DS-200' }).first();
+    await latestInReviewRow.getByPlaceholder('Add reason for changes').fill('Please provide clearer destination course match.');
+    await latestInReviewRow.getByRole('button', { name: 'Request changes' }).click();
     await expect(page.getByText('Changes requested for row.')).toBeVisible();
 
     await setRole(page, 'STUDENT');
