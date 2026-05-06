@@ -130,7 +130,7 @@ export function StudentSubmissionsClient({ initialSubmissions, procedureOptions 
             <div className='font-medium'>{s.procedureTitle}</div>
             <div className='text-xs text-slate-500'>Reference ID: {s.id}</div>
           </div>
-          <span className='rounded-full border border-slate-300 px-2 py-1 text-xs font-medium'>{statusLabel(s.state)}</span>
+          <span data-testid='submission-status-badge' aria-label={`Submission status: ${statusLabel(s.state)}`} className='rounded-full border border-slate-300 px-2 py-1 text-xs font-medium'>{statusLabel(s.state)}</span>
         </div>
         {s.reviewerNotes && <div className='mb-2 rounded bg-amber-50 p-2 text-xs text-amber-800'><span className='font-medium'>Latest reviewer note: </span>{s.reviewerNotes}</div>}
         <div className='mb-2 text-xs text-slate-600'>Attachments: {s.attachments.length}</div>
