@@ -124,7 +124,7 @@ export function StudentSubmissionsClient({ initialSubmissions, procedureOptions 
 
     {filteredSubmissions.map((s) => {
       const editable = EDITABLE_STATES.includes(s.state);
-      return <div key={s.id} className='rounded-lg border p-3 text-sm'>
+      return <div key={s.id} data-testid='submission-card' data-submission-id={s.id} className='rounded-lg border p-3 text-sm'>
         <div className='mb-2 flex flex-wrap items-start justify-between gap-2'>
           <div>
             <div className='font-medium'>{s.procedureTitle}</div>

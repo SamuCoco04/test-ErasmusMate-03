@@ -92,7 +92,7 @@ export function CoordinatorReviewQueueClient({ initialItems }: { initialItems: S
     {filteredItems.map((s) => {
       const canStart = ['SUBMITTED', 'RESUBMITTED'].includes(s.state);
       const inReview = s.state === 'IN_REVIEW';
-      return <div key={s.id} className='rounded-xl border border-slate-200 bg-white p-4 text-sm shadow-sm'>
+      return <div key={s.id} data-testid='review-queue-item' data-submission-id={s.id} className='rounded-xl border border-slate-200 bg-white p-4 text-sm shadow-sm'>
         <div className='flex flex-wrap items-start justify-between gap-3'>
           <div>
             <div className='font-medium text-slate-900'>{s.title}</div>

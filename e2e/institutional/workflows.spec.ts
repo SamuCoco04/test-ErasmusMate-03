@@ -1,5 +1,14 @@
 import { expect, test } from '@playwright/test';
 
+
+function submissionCard(page: import('@playwright/test').Page, submissionId: string) {
+  return page.locator(`[data-testid="submission-card"][data-submission-id="${submissionId}"]`);
+}
+
+function reviewQueueItem(page: import('@playwright/test').Page, submissionId: string) {
+  return page.locator(`[data-testid="review-queue-item"][data-submission-id="${submissionId}"]`);
+}
+
 async function setRole(page: import('@playwright/test').Page, role: 'STUDENT' | 'COORDINATOR') {
   const response = await page.request.patch('/api/demo-context', { data: { role } });
   expect(response.ok()).toBeTruthy();
@@ -24,27 +33,27 @@ test.describe('Institutional E2E acceptance workflows', () => {
     await page.goto('/student/submissions');
 
     await expect(page.getByRole('heading', { name: 'Submissions' })).toBeVisible();
-    const transcriptCard = page.locator('div').filter({ hasText: /Transcript request/ }).filter({ hasText: /Reference ID:\s*sub-4/ }).first();
+    const transcriptCard = submissionCard(page, 'sub-4');
     await expect(transcriptCard).toBeVisible();
     await expect(transcriptCard.getByTestId('submission-status-badge')).toHaveText('Needs correction');
 
     await transcriptCard.getByRole('button', { name: 'Resubmit' }).click();
-    const resubmittedCard = page.locator('div').filter({ hasText: /Transcript request/ }).filter({ hasText: /Reference ID:\s*sub-4/ }).first();
+    const resubmittedCard = submissionCard(page, 'sub-4');
     await expect(resubmittedCard.getByTestId('submission-status-badge')).toHaveText('Waiting for review');
 
     await setRole(page, 'COORDINATOR');
     await page.goto('/coordinator/review-queue');
     await expect(page.getByRole('heading', { name: 'Review queue' })).toBeVisible();
 
-    const transcriptQueueItem = page.locator('div').filter({ hasText: /Transcript request/ }).filter({ hasText: /Reference ID:\s*sub-4/ }).first();
+    const transcriptQueueItem = reviewQueueItem(page, 'sub-4');
     await expect(transcriptQueueItem).toBeVisible();
     await transcriptQueueItem.getByRole('button', { name: 'Start review' }).click();
 
-    const inReviewQueueItem = page.locator('div').filter({ hasText: /Transcript request/ }).filter({ hasText: /Reference ID:\s*sub-4/ }).first();
+    const inReviewQueueItem = reviewQueueItem(page, 'sub-4');
     await expect(inReviewQueueItem.getByTestId('submission-status-badge')).toHaveText('In review');
     await inReviewQueueItem.getByRole('button', { name: 'Approve' }).click();
 
-    const approvedQueueItem = page.locator('div').filter({ hasText: /Transcript request/ }).filter({ hasText: /Reference ID:\s*sub-4/ }).first();
+    const approvedQueueItem = reviewQueueItem(page, 'sub-4');
     await expect(approvedQueueItem.getByTestId('submission-status-badge')).toHaveText('Approved');
 
     const studentView = await request.get('/api/institutional/submissions', {
