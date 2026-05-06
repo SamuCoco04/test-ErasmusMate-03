@@ -26,11 +26,11 @@ test.describe('Institutional E2E acceptance workflows', () => {
     await expect(page.getByRole('heading', { name: 'Submissions' })).toBeVisible();
     const transcriptCard = page.locator('div').filter({ hasText: /Transcript request/ }).filter({ hasText: /Reference ID:\s*sub-4/ }).first();
     await expect(transcriptCard).toBeVisible();
-    await expect(transcriptCard.getByText('Needs correction', { exact: true })).toBeVisible();
+    await expect(transcriptCard.getByTestId('submission-status-badge')).toHaveText('Needs correction');
 
     await transcriptCard.getByRole('button', { name: 'Resubmit' }).click();
     const resubmittedCard = page.locator('div').filter({ hasText: /Transcript request/ }).filter({ hasText: /Reference ID:\s*sub-4/ }).first();
-    await expect(resubmittedCard.getByText('Waiting for review', { exact: true })).toBeVisible();
+    await expect(resubmittedCard.getByTestId('submission-status-badge')).toHaveText('Waiting for review');
 
     await setRole(page, 'COORDINATOR');
     await page.goto('/coordinator/review-queue');
@@ -41,11 +41,11 @@ test.describe('Institutional E2E acceptance workflows', () => {
     await transcriptQueueItem.getByRole('button', { name: 'Start review' }).click();
 
     const inReviewQueueItem = page.locator('div').filter({ hasText: /Transcript request/ }).filter({ hasText: /Reference ID:\s*sub-4/ }).first();
-    await expect(inReviewQueueItem.getByText('In review', { exact: true })).toBeVisible();
+    await expect(inReviewQueueItem.getByTestId('submission-status-badge')).toHaveText('In review');
     await inReviewQueueItem.getByRole('button', { name: 'Approve' }).click();
 
     const approvedQueueItem = page.locator('div').filter({ hasText: /Transcript request/ }).filter({ hasText: /Reference ID:\s*sub-4/ }).first();
-    await expect(approvedQueueItem.getByText('Approved', { exact: true })).toBeVisible();
+    await expect(approvedQueueItem.getByTestId('submission-status-badge')).toHaveText('Approved');
 
     const studentView = await request.get('/api/institutional/submissions', {
       headers: { cookie: 'demo_role=STUDENT' },
@@ -191,7 +191,8 @@ test.describe('Institutional E2E acceptance workflows', () => {
 
     await setRole(page, 'COORDINATOR');
     await page.goto('/coordinator/learning-agreement-review');
-    await expect(page.getByText('In review').first()).toBeVisible();
-    await expect(page.getByText('DS-201A')).toBeVisible();
+    const ds201aRow = page.locator('tr').filter({ hasText: 'DS-201A' }).first();
+    await expect(ds201aRow).toBeVisible();
+    await expect(ds201aRow.getByText('In review', { exact: true })).toBeVisible();
   });
 });

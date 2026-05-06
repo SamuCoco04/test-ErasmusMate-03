@@ -98,7 +98,7 @@ export function CoordinatorReviewQueueClient({ initialItems }: { initialItems: S
             <div className='font-medium text-slate-900'>{s.title}</div>
             <div className='mt-1 text-xs text-slate-500'>Reference ID: {s.id}</div>
           </div>
-          <Badge tone={s.state === 'APPROVED' ? 'success' : s.state === 'REJECTED' ? 'danger' : s.state === 'NEEDS_CORRECTION' ? 'warning' : 'info'}>{STATE_LABELS[s.state] ?? s.state}</Badge>
+          <Badge data-testid='submission-status-badge' aria-label={`Submission status: ${STATE_LABELS[s.state] ?? s.state}`} tone={s.state === 'APPROVED' ? 'success' : s.state === 'REJECTED' ? 'danger' : s.state === 'NEEDS_CORRECTION' ? 'warning' : 'info'}>{STATE_LABELS[s.state] ?? s.state}</Badge>
         </div>
 
         {s.reviewerNotes && <div className='mt-3 rounded-md border border-amber-200 bg-amber-50 p-2 text-xs text-amber-900'>
