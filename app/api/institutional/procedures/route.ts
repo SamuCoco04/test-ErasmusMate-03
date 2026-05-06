@@ -54,9 +54,12 @@ export async function POST(req: Request) {
 
   if (typeof body.isActive !== 'boolean') return Response.json({ error: 'Active state must be explicit' }, { status: 400 });
 
+  const actor = await prisma.user.findUnique({ where: { id: ctx.userId } });
+  if (!actor) return Response.json({ error: 'Forbidden' }, { status: 403 });
+
   const data = await prisma.procedureDefinition.create({ data: {
     id: `proc-${crypto.randomUUID()}`,
-    institutionId: 'inst-home-1',
+    institutionId: actor.institutionId,
     title,
     description: typeof body.description === 'string' ? body.description.trim() : '',
     isRequired: body.isRequired === true,
@@ -66,6 +69,19 @@ export async function POST(req: Request) {
     isActive: body.isActive,
     createdById: ctx.userId,
   }});
+
+  const mobility = await prisma.mobilityRecord.findFirst({ where: { homeInstitutionId: actor.institutionId }, orderBy: { createdAt: 'asc' } });
+  if (mobility) {
+    await prisma.auditRecord.create({
+      data: {
+        id: `audit-${crypto.randomUUID()}`,
+        mobilityRecordId: mobility.id,
+        actorId: ctx.userId,
+        eventType: 'PROCEDURE_DEFINITION_CREATED',
+        details: JSON.stringify({ procedureId: data.id, title: data.title }),
+      },
+    });
+  }
 
   return Response.json({ data }, { status: 201 });
 }
@@ -111,5 +127,17 @@ export async function PATCH(req: Request) {
   }
 
   const data = await prisma.procedureDefinition.update({ where: { id }, data: patch });
+  const mobility = await prisma.mobilityRecord.findFirst({ where: { homeInstitutionId: existing.institutionId }, orderBy: { createdAt: 'asc' } });
+  if (mobility) {
+    await prisma.auditRecord.create({
+      data: {
+        id: `audit-${crypto.randomUUID()}`,
+        mobilityRecordId: mobility.id,
+        actorId: ctx.userId,
+        eventType: 'PROCEDURE_DEFINITION_UPDATED',
+        details: JSON.stringify({ procedureId: id, patch }),
+      },
+    });
+  }
   return Response.json({ data });
 }

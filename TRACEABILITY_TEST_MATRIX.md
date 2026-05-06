@@ -343,3 +343,13 @@ If Codex creates tests with different names or IDs, it must update this matrix t
 
 | PH6C-5 | Effective due date + reminder classification rules | Student/Coordinator | Service/API | Override, overdue, due-soon-window, fulfilled exclusion classification (`tests/institutional/deadlines-phase6c.test.ts`) | Deterministic reminder categories and effective due date behavior | Implemented - passing |
 | PH6C-6 | Deadline UI filter and clarity contract | Student/Coordinator | UI contract | Due-soon/overridden filters, original+effective date copy, empty state, export affordance (`tests/institutional/deadlines-ui-contracts.test.ts`) | Calendar pages keep clear reminder labels and scoped actions | Implemented - passing |
+
+## 3.12 Phase 6D — Admin institutional process configuration
+
+| Test ID | Workflow / Area | Requirement / Rule | Actor | Type | Scenario | Expected result | Status |
+|---|---|---|---|---|---|---|---|
+| SERVICE-ADM-PROC-001 | Admin procedure config | Admin can list/create/update/deactivate procedure definitions | Admin | Service/API | Manage procedure definitions via institutional procedures API (`tests/institutional/admin-procedures-api.test.ts`) | Procedure definitions persist with active/inactive and file-rule updates | Implemented - passing |
+| SERVICE-ADM-PROC-002 | Admin procedure config guards | Coordinator/student cannot mutate admin configuration | Coordinator / Student | Service/API | Attempt POST/PATCH to procedure config APIs with non-admin roles (`tests/institutional/admin-procedures-api.test.ts`) | API returns forbidden for non-admin mutation attempts | Implemented - passing |
+| SERVICE-ADM-PROC-003 | Active configuration usage | Inactive procedures are not available for new submission drafts | Student | Service/API | Deactivate procedure then create draft (`tests/institutional/submissions.test.ts`) | Backend blocks new draft creation for inactive procedures | Implemented - passing |
+| SERVICE-ADM-PROC-004 | Attachment validation by active config | Updated MIME rules affect future uploads | Student / Admin | Service/API | Admin updates procedure accepted MIME list then student uploads disallowed type (`tests/institutional/attachments-api.test.ts`) | Upload is rejected using updated procedure constraints | Implemented - passing |
+| SMOKE-ADM-PROC-001 | Seed idempotency | Seed remains idempotent after Phase 6D updates | Developer | Smoke | Run `npm run db:seed` twice | Both seed runs complete without uniqueness/consistency failures | Implemented - passing |
