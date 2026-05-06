@@ -15,6 +15,11 @@ describe('Institutional submissions workflow', () => {
     expect(created.state).toBe('DRAFT');
   });
 
+  it('student cannot create draft from inactive procedure definitions', async () => {
+    await prisma.procedureDefinition.update({ where: { id: 'proc-2' }, data: { isActive: false } });
+    await expect(createDraftSubmission({ role: 'STUDENT', userId: 'student-1' }, 'proc-2')).rejects.toThrow('Procedure not available');
+  });
+
 
   it('student cannot submit DRAFT without ACTIVE attachment', async () => {
     await expect(transitionSubmission({ role: 'STUDENT', userId: 'student-1' }, 'sub-1', 'submit')).rejects.toThrow('At least one active attachment is required');

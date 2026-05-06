@@ -784,3 +784,25 @@ A major phase is not complete unless relevant decisions are documented here with
 - **Consequences / trade-offs:** No cron/email/push in this phase; reminder generation remains deterministic service logic invoked by application/test flows.
 - **Status:** Accepted
 - **Evidence level:** Confirmed by implementation
+
+### DEC-044 — Phase 6D admin procedure configuration uses soft deactivation and institution-scoped creation
+- **Date:** 2026-05-06
+- **Phase:** Phase 6D — Admin configuration of institutional processes
+- **Decision:** Keep procedure definition lifecycle non-destructive in APIs (create/update/activate/deactivate) and block student draft creation for inactive procedures; create new procedure definitions under the acting admin's institution rather than hardcoded institution IDs.
+- **Rationale:** Preserves historical submissions/auditability, avoids cross-institution leakage, and keeps official workflows stable while allowing admin configuration changes.
+- **Alternatives considered:** Add destructive delete endpoint; keep hardcoded institution ID during procedure creation.
+- **Consequences / trade-offs:** Historical records remain intact and future submissions respect active configuration; fully dedicated institution-level admin audit model remains deferred.
+- **Affected areas:** `app/api/institutional/procedures/route.ts`, `src/modules/institutional/submissions.ts`, institutional API tests.
+- **Status:** Accepted
+- **Evidence level:** Confirmed by implementation
+
+### DEC-045 — Phase 6D procedure configuration changes write best-effort audit entries through existing mobility-linked model
+- **Date:** 2026-05-06
+- **Phase:** Phase 6D — Admin configuration of institutional processes
+- **Decision:** When a procedure definition is created/updated, write audit events using the existing `AuditRecord` model by attaching events to the earliest mobility record of the same institution when available.
+- **Rationale:** The current audit model is mobility-record scoped and has no institution-only audit table; this keeps traceability without schema expansion in this phase.
+- **Alternatives considered:** Add a new institution-scoped audit table in Phase 6D; skip audit events entirely.
+- **Consequences / trade-offs:** Provides practical audit evidence now; institution-wide audit history is indirect and should be refined in a future phase.
+- **Affected areas:** `app/api/institutional/procedures/route.ts`.
+- **Status:** Accepted
+- **Evidence level:** Confirmed by implementation

@@ -3,6 +3,7 @@ import { seed } from '@/prisma/seed';
 import { prisma } from '@/src/lib/prisma';
 import { POST as addAttachmentRoute } from '@/app/api/institutional/submissions/[submissionId]/attachments/route';
 import { POST as replaceAttachmentRoute } from '@/app/api/institutional/submissions/[submissionId]/attachments/[attachmentId]/replace/route';
+import { PATCH as patchProcedureRoute } from '@/app/api/institutional/procedures/route';
 
 describe('Institutional attachment API multipart flow', () => {
   beforeEach(async () => {
@@ -119,5 +120,21 @@ describe('Institutional attachment API multipart flow', () => {
     expect(newAttachment.status).toBe('ACTIVE');
     expect(newAttachment.version).toBe(2);
     expect(newAttachment.submissionId).toBe('sub-4');
+  });
+
+  it('updated procedure MIME rules affect future uploads', async () => {
+    const updateResponse = await patchProcedureRoute(new Request('http://localhost/api/institutional/procedures', {
+      method: 'PATCH',
+      headers: { 'content-type': 'application/json', cookie: `erasmusmate_demo_context=${encodeURIComponent(JSON.stringify({ role: 'ADMIN', userId: 'admin-1' }))}` },
+      body: JSON.stringify({ id: 'proc-1', acceptedMimeTypes: ['image/png'] }),
+    }));
+    expect(updateResponse.status).toBe(200);
+
+    const form = new FormData();
+    form.set('file', new File([new Uint8Array([37, 80, 68, 70])], 'passport-copy.pdf', { type: 'application/pdf' }));
+    const response = await addAttachmentRoute(new Request('http://localhost/api/institutional/submissions/sub-1/attachments', { method: 'POST', body: form }), {
+      params: Promise.resolve({ submissionId: 'sub-1' }),
+    });
+    expect(response.status).toBe(400);
   });
 });

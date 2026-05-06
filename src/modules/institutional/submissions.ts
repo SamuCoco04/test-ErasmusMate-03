@@ -58,6 +58,9 @@ export async function createDraftSubmission(ctx:DemoContext, procedureId:string)
   requireRole(ctx,['STUDENT']);
   const mr = await prisma.mobilityRecord.findFirst({where:{studentId:ctx.userId}});
   if(!mr) throw new SubmissionError('NOT_FOUND','Mobility record not found');
+  const procedure = await prisma.procedureDefinition.findUnique({ where: { id: procedureId } });
+  if (!procedure || !procedure.isActive) throw new SubmissionError('NOT_FOUND', 'Procedure not available');
+  if (procedure.institutionId !== mr.homeInstitutionId) throw new SubmissionError('FORBIDDEN', 'Forbidden');
   const sub = await prisma.documentSubmission.create({data:{id:`sub-${crypto.randomUUID()}`,mobilityRecordId:mr.id,procedureId,state:'DRAFT'}});
   await writeAuditAndEvent(sub.id,mr.id,ctx.userId,'create_draft','NONE','DRAFT');
   return sub;
