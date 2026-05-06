@@ -54,6 +54,7 @@ describe('Social: connection lifecycle contract', () => {
 
   it('participants only and non-students cannot transition', async () => {
     await expect(transitionConnection(prisma, { role: 'STUDENT', userId: 'student-4' }, 'conn-seed-2', 'block')).rejects.toThrow('Forbidden');
+    await expect(transitionConnection(prisma, { role: 'COORDINATOR', userId: 'coordinator-1' }, 'conn-seed-2', 'block')).rejects.toThrow('Forbidden');
     await expect(requestConnection(prisma, { role: 'ADMIN', userId: 'admin-1' }, 'sp-student-2')).rejects.toThrow('Forbidden');
   });
 
@@ -67,5 +68,12 @@ describe('Social: connection lifecycle contract', () => {
     const mine = await getMyConnections(prisma, { role: 'STUDENT', userId: 'student-1' });
     const blocked = mine.unavailable.find((item) => item.state === 'BLOCKED');
     expect(blocked?.allowedActions.unblock).toBe(true);
+  });
+
+  it('unblock keeps pair non-connected and allows new request', async () => {
+    await transitionConnection(prisma, { role: 'STUDENT', userId: 'student-1' }, 'conn-seed-4', 'unblock');
+    const renewed = await requestConnection(prisma, { role: 'STUDENT', userId: 'student-1' }, 'sp-student-6');
+    expect(renewed.id).toBe('conn-seed-4');
+    expect(renewed.state).toBe('PENDING');
   });
 });

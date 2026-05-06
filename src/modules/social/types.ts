@@ -40,6 +40,15 @@ export interface SocialDiscoveryItem {
   contactPreferenceLabel?: string;
   connectionStatus: DiscoveryConnectionStatus;
   unavailableReason?: 'CONTACT_PREFERENCE_CONNECTIONS_ONLY' | 'CONTACT_PREFERENCE_HIDDEN' | null;
+  allowedActions?: {
+    request: boolean;
+    cancel: boolean;
+    accept: boolean;
+    reject: boolean;
+    message: boolean;
+    block: boolean;
+    unblock: boolean;
+  };
 }
 
 export type ConnectionCategory = 'incomingPending' | 'outgoingPending' | 'accepted' | 'unavailable';

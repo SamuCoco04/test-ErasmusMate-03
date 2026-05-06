@@ -35,6 +35,10 @@ describe('Phase 7C social UI contracts', () => {
     expect(files.discovery).toContain('Host city filter');
     expect(files.discovery).toContain('Study area filter');
     expect(files.discovery).toContain('Status:');
+    expect(files.discovery).toContain('Available to request');
+    expect(files.discovery).toContain('Request pending');
+    expect(files.discovery).toContain('Connected');
+    expect(files.discovery).toContain('Blocked');
     expect(files.discovery).toContain('Report profile');
     expect(files.discovery).not.toContain('pairKey');
   });
@@ -44,8 +48,14 @@ describe('Phase 7C social UI contracts', () => {
     expect(files.connections).toContain('Requests sent');
     expect(files.connections).toContain('Connected students');
     expect(files.connections).toContain('Blocked connections');
+    expect(files.connections).toContain('Cancel request');
+    expect(files.connections).toContain('Accept');
+    expect(files.connections).toContain('Reject');
+    expect(files.connections).toContain('Message');
+    expect(files.connections).toContain('Unblock');
     expect(files.connections).toContain('c.allowedActions.message ?');
     expect(files.messages).toContain('No accepted connections yet');
+    expect(files.messages).toContain('Messaging is available only for accepted connections.');
   });
 
   it('keeps recommendations/map/report affordances and admin moderation actions', () => {
