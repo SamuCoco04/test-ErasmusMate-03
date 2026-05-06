@@ -1,10 +1,10 @@
 import { cn } from '@/src/lib/cn';
 
-export function Card({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
+export function Card({ className, ...props }: React.ComponentPropsWithoutRef<'section'>) {
   return <section className={cn('rounded-2xl border border-slate-200 bg-white p-6 shadow-card', className)} {...props} />;
 }
 
-export function CardHeader({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
+export function CardHeader({ className, ...props }: React.ComponentPropsWithoutRef<'header'>) {
   return <header className={cn('flex items-start justify-between gap-4', className)} {...props} />;
 }
 

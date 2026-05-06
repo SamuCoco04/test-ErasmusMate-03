@@ -7,7 +7,7 @@ This folder introduces reusable, typed UI primitives for ErasmusMate pages witho
 - `badge.tsx`: `Badge` and `StatusBadge` with typed tones.
 - `card.tsx`: `Card`, `CardHeader`, `CardBody`, `CardTitle`, `CardDescription`.
 - `state.tsx`: `EmptyState`, `LoadingState`, `ErrorState`, `InlineAlert`.
-- `table.tsx`: lightweight semantic table wrapper (`DataTable`, `DataTableHead`, `DataTableBody`, `DataTableRow`, `DataTableCell`).
+- `table.tsx`: lightweight semantic table wrapper (`DataTable`, `DataTableHead`, `DataTableBody`, `DataTableRow`, `DataTableCell`, `DataTableHeadCell`).
 
 ## Layout helpers
 - `src/components/layout/page-shell.tsx`: `PageShell`, `PageHeader`, `SectionHeader`.
