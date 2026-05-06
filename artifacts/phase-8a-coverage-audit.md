@@ -107,3 +107,15 @@
 - Legacy naming cleanup: **Document as limitation**
 - Areas already sufficiently covered by service/API contracts: **No action needed**
 
+
+## 8) Phase 8B.1 follow-up — institutional E2E acceptance activation
+
+Reduced gaps in this slice:
+- Activated executable Playwright acceptance evidence for cross-role institutional submission loop (student resubmit + coordinator decision).
+- Activated executable Playwright acceptance evidence for Learning Agreement coordinator row decision with student-visible confirmation.
+- Activated executable Playwright acceptance evidence for exception create + coordinator approve path.
+
+Remaining limitations for next slice (Phase 8B.2):
+- Learning Agreement full submit → deny/request changes → revise/resubmit loop is still only partially covered in E2E; deeper revision semantics remain primarily service/API-backed.
+- Exception `apply` transition is not yet E2E-covered due to prompt-driven UI interactions and fixture brittleness risk.
+- Institutional notification-to-action acceptance path remains pending dedicated E2E coverage.

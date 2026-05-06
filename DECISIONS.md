@@ -896,3 +896,12 @@ A major phase is not complete unless relevant decisions are documented here with
 - **Affected areas:** Phase roadmap execution, backlog prioritization, documentation consistency.
 - **Status:** Accepted
 - **Evidence level:** Confirmed by implementation
+
+### DEC-050 — Phase 8B.1 prioritizes institutional E2E acceptance before lower-risk coverage polish
+- **Date:** 2026-05-06
+- **Phase:** Phase 8B.1 — Institutional E2E Acceptance Activation
+- **Decision:** Prioritize executable Playwright institutional acceptance loops (submission decision flow, Learning Agreement row decision visibility, exception create/review) before notification-depth and security-hardening tasks.
+- **Rationale:** Phase 8A.4 identified the highest current risk as weak end-to-end acceptance evidence despite strong service/API depth; activating institutional E2E closes the biggest demo and regression confidence gap first.
+- **Consequences / trade-offs:** Institutional E2E confidence improves immediately; some medium-priority and hardening tasks remain intentionally deferred to subsequent phases (8B.2/9A).
+- **Status:** Accepted
+- **Evidence level:** Confirmed by implementation and E2E specs

@@ -81,11 +81,11 @@ Use the following test type values:
 | Test ID | Workflow / Area | Requirement / Rule | Actor | Type | Scenario | Expected result | Status |
 |---|---|---|---|---|---|---|---|
 | E2E-SUB-001 | Document submission | Student can create submission | Student | E2E | Student starts a required procedure submission | Draft or editable submission is created | Planned |
-| E2E-SUB-002 | Document submission | Student can submit own procedure | Student | E2E | Student submits a required item | Submission changes to submitted state and appears to coordinator | Planned |
-| E2E-SUB-003 | Coordinator review | Coordinator can approve | Coordinator | E2E | Coordinator approves submitted item | Submission becomes approved and student sees updated state | Planned |
+| E2E-SUB-002 | Document submission | Student can submit own procedure | Student | E2E | Student resubmits a correction-required item and status returns to waiting review (`e2e/institutional/workflows.spec.ts`) | Submission changes to submitted/resubmitted state and appears to coordinator queue | Implemented - passing |
+| E2E-SUB-003 | Coordinator review | Coordinator can approve | Coordinator | E2E | Coordinator starts review and approves seeded student submission (`e2e/institutional/workflows.spec.ts`) | Submission becomes approved and student/API view reflects updated state | Implemented - passing |
 | E2E-SUB-004 | Coordinator review | Coordinator can reject with rationale | Coordinator | E2E | Coordinator rejects submitted item with rationale | Submission becomes rejected and rationale is visible to student | Planned |
 | E2E-SUB-005 | Rejection rationale | Rejection requires rationale | Coordinator | E2E | Coordinator attempts reject without rationale | Action is blocked with clear message | Planned |
-| E2E-SUB-006 | Resubmission | Student can resubmit after rejection | Student | E2E | Student revises rejected item and resubmits | Submission returns to review queue | Planned |
+| E2E-SUB-006 | Resubmission | Student can resubmit after rejection | Student | E2E | Student triggers resubmit action from correction state (`e2e/institutional/workflows.spec.ts`) | Submission returns to coordinator review queue | Implemented - passing |
 | E2E-SUB-007 | Reopen | Coordinator can reopen when supported | Coordinator / Student | E2E | Coordinator reopens approved/reviewed item | Student sees item as needing correction or review again | Planned |
 | SERVICE-SUB-001 | Submission transitions | Invalid transitions blocked | Student / Coordinator | Service/API | Attempt invalid state transition (`tests/institutional/submissions.test.ts`) | Backend rejects transition | Implemented - passing |
 | SERVICE-SUB-002 | Submission ownership | Student cannot submit another student’s item | Student | Service/API | Student attempts to mutate another student submission | Backend rejects action | Implemented - passing |
@@ -111,8 +111,8 @@ Use the following test type values:
 
 | Test ID | Workflow / Area | Requirement / Rule | Actor | Type | Scenario | Expected result | Status |
 |---|---|---|---|---|---|---|---|
-| E2E-EXC-001 | Exception request | Student can create exception request | Student | E2E | Student submits exception request for deadline/procedure issue | Request is created and visible to coordinator | Planned |
-| E2E-EXC-002 | Exception review | Coordinator can approve exception | Coordinator | E2E | Coordinator approves exception request | Exception state updates and student sees decision | Planned |
+| E2E-EXC-001 | Exception request | Student can create exception request | Student | E2E | Student submits new exception request from exception page (`e2e/institutional/workflows.spec.ts`) | Request is created and visible in coordinator exception queue | Implemented - passing |
+| E2E-EXC-002 | Exception review | Coordinator can approve exception | Coordinator | E2E | Coordinator approves newly created student exception (`e2e/institutional/workflows.spec.ts`) | Exception state updates to Approved and remains visible in queue | Implemented - passing |
 | E2E-EXC-003 | Exception review | Coordinator can reject exception with rationale | Coordinator | E2E | Coordinator rejects exception request | Student sees rejection and rationale | Planned |
 | E2E-EXC-004 | Exception application | Approved exception can apply supported change | Coordinator | E2E | Coordinator applies deadline exception | Related deadline or obligation reflects approved exception | Planned |
 | SERVICE-EXC-001 | Scope validation | Deadline-scoped exception requires deadline reference | Student | Service/API | Create deadline exception without reference (`tests/institutional/exceptions.test.ts`) | Backend rejects request | Planned |
@@ -131,7 +131,7 @@ Use the following test type values:
 | E2E-LA-003 | Learning Agreement validation | Empty agreement cannot be submitted | Student | E2E | Student submits agreement with zero rows | Submission is blocked with clear message | Planned |
 | E2E-LA-004 | Learning Agreement validation | Incomplete rows block submission | Student | E2E | Student submits row missing required data | Submission is blocked and row issue is visible | Planned |
 | E2E-LA-005 | Learning Agreement submit | Student can submit valid agreement | Student | E2E | Student submits valid course table | Agreement moves to review state and appears to coordinator | Planned |
-| E2E-LA-006 | Row review | Coordinator can approve row | Coordinator | E2E | Coordinator approves row | Row becomes approved | Planned (Phase 4C UI ready; E2E pending execution) |
+| E2E-LA-006 | Row review | Coordinator can approve row | Coordinator | E2E | Coordinator approves an in-review Learning Agreement row (`e2e/institutional/workflows.spec.ts`) | Row becomes approved and visible to student | Implemented - passing |
 | E2E-LA-007 | Row review | Coordinator can deny row with rationale | Coordinator | E2E | Coordinator denies row with rationale | Row becomes denied and rationale is visible to student | Planned |
 | E2E-LA-008 | Row review | Deny requires rationale | Coordinator | E2E | Coordinator denies row without rationale | Action is blocked | Planned (Phase 4C UI ready; E2E pending execution) |
 | E2E-LA-009 | Partial approval | Mixed decisions produce partial approval | Student / Coordinator | E2E | Some rows approved and some denied | Agreement displays partial approval state | Planned |
