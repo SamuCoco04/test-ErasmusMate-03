@@ -53,15 +53,16 @@ test.describe('Institutional E2E acceptance workflows', () => {
     await expect(inReviewQueueItem.getByTestId('submission-status-badge')).toHaveText('In review');
     await inReviewQueueItem.getByRole('button', { name: 'Approve' }).click();
 
-    const approvedQueueItem = reviewQueueItem(page, 'sub-4');
-    await expect(approvedQueueItem.getByTestId('submission-status-badge')).toHaveText('Approved');
+    // Approved items are intentionally hidden by default in the coordinator queue
+    // unless the "Show approved" filter is enabled.
+    await expect(reviewQueueItem(page, 'sub-4')).toBeHidden();
 
     const studentView = await request.get('/api/institutional/submissions', {
       headers: { cookie: 'demo_role=STUDENT' },
     });
     expect(studentView.ok()).toBeTruthy();
     const payload = await studentView.json();
-    const transcriptSubmission = payload.data.find((item: { procedure: { title: string }; state: string }) => item.procedure.title === 'Transcript request');
+    const transcriptSubmission = payload.data.find((item: { id: string; state: string }) => item.id === 'sub-4');
     expect(transcriptSubmission?.state).toBe('APPROVED');
   });
 
