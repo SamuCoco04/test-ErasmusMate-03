@@ -4,7 +4,7 @@ import { TopBar } from '@/src/components/TopBar';
 export default function AdminInstitutionalLayout({ children }: { children: React.ReactNode }) {
   return (
     <main className="min-h-screen bg-canvas px-4 py-6 md:px-8">
-      <TopBar areaName="Admin console" />
+      <TopBar areaName="Official mobility area · Admin" notificationsHref="/admin/notifications" profileHref="/admin/dashboard" />
       <div className="mx-auto grid max-w-7xl gap-6 md:grid-cols-[220px_1fr]">
         <aside className="rounded-2xl border border-slate-200 bg-white p-4 shadow-card">
           <SidebarNav

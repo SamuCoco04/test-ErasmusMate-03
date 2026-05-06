@@ -6,5 +6,6 @@ describe('Student dashboard copy hygiene', () => {
     const page = readFileSync('app/(institutional)/student/dashboard/page.tsx', 'utf8');
     expect(page).not.toContain('Open /student/');
     expect(page).not.toContain('Open /coordinator/');
+    expect(page).not.toContain('Open /social/');
   });
 });

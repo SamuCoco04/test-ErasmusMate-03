@@ -950,3 +950,19 @@ A major phase is not complete unless relevant decisions are documented here with
 - **Affected areas:** `artifacts/phase-8c-frontend-ux-audit.md`, student dashboard copy, UI contract tests.
 - **Status:** Accepted
 - **Evidence level:** Confirmed by implementation
+
+### DEC-8C2 — Apply focused UX hotfixes before Phase 9A/9C
+- **Date:** 2026-05-06
+- **Phase:** Phase 8C.2 — Frontend UX hotfixes
+- **Decision:** Implement a limited topbar/navigation/copy hotfix pass (cross-area wording, top-right notifications/profile affordances, route-copy guard tests) before Phase 9A hardening and before any broad Phase 9C redesign.
+- **Rationale:** Phase 8C.1 audit showed no critical blockers but highlighted high-visibility product-affordance gaps that reduce demo credibility. A controlled hotfix pass closes these gaps quickly with low regression risk.
+- **Alternatives considered:**
+  1. Skip UX updates and move directly to 9A security hardening.
+  2. Start full redesign early (Phase 9C scope) before security phase.
+- **Consequences / trade-offs:**
+  - Improves discoverability and product-like presentation now.
+  - Keeps backend/schema and workflow semantics stable.
+  - Leaves richer notification/profile lifecycle UX intentionally deferred to 9C.
+- **Affected areas:** `src/components/TopBar.tsx`, institutional/social layouts, shared UI contract tests, traceability evidence.
+- **Status:** Accepted
+- **Evidence level:** Confirmed by implementation

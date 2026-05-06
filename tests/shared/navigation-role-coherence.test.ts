@@ -26,9 +26,9 @@ describe('Navigation and role coherence contracts', () => {
   });
 
   it('keeps student institutional and social bridge links visible', () => {
-    expect(studentLayout).toContain('Open social support');
+    expect(studentLayout).toContain('Go to social area');
     expect(studentLayout).toContain('/social/student/dashboard');
-    expect(socialLayout).toContain('Back to official mobility');
+    expect(socialLayout).toContain('Go to official mobility area');
     expect(socialLayout).toContain('/student/dashboard');
   });
 
@@ -41,10 +41,18 @@ describe('Navigation and role coherence contracts', () => {
   });
 
   it('uses human-readable role and area labels', () => {
-    expect(studentLayout).toContain('Student institutional area');
-    expect(socialLayout).toContain('Student social support');
-    expect(coordinatorLayout).toContain('Coordinator workspace');
-    expect(adminLayout).toContain('Admin console');
+    expect(studentLayout).toContain('Official mobility area · Student');
+    expect(socialLayout).toContain('Social support area · Student');
+    expect(coordinatorLayout).toContain('Official mobility area · Coordinator');
+    expect(adminLayout).toContain('Official mobility area · Admin');
+  });
+
+
+  it('keeps topbar notification and profile affordances discoverable', () => {
+    expect(topBar).toContain('Open notifications');
+    expect(topBar).toContain('Open profile');
+    expect(topBar).toContain('data-testid="topbar-notifications"');
+    expect(topBar).toContain('data-testid="topbar-profile"');
   });
 
   it('removes obsolete later-phase copy from key launcher and dashboard pages', () => {
