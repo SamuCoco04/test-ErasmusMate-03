@@ -25,7 +25,7 @@ Use the following status values:
 |---|---|
 | Planned | Test is planned but not yet implemented. |
 | Implemented - expected failing | Test exists but fails because the feature is not implemented yet. |
-| Implemented - passing | Test exists and passes. |
+| Implemented - passing E2E | Test exists, is executable end-to-end, and passes. |
 | Implemented - failing | Test exists and fails unexpectedly. |
 | Deferred | Test is intentionally postponed with reason. |
 | Removed | Test was removed and the reason must be documented. |
@@ -67,6 +67,9 @@ Use the following test type values:
 
 | Test ID | Workflow / Area | Requirement / Rule | Actor | Type | Scenario | Expected result | Status |
 |---|---|---|---|---|---|---|---|
+
+| UI-LAUNCH-001 | Global launcher | Launcher exposes role entry points | Student / Coordinator / Admin | Service/API | Contract-check launcher labels and routes (`tests/shared/launcher-contract.test.ts`) | Stable labels/links for Student Dashboard, Coordinator Dashboard, Admin Dashboard, Student Social | Implemented - UI contract tests |
+| UI-LAUNCH-002 | Role-area cues | Major areas keep role/context cues and return path | Student / Coordinator / Admin | Service/API | Contract-check top bar return affordance and role coherence (`tests/shared/navigation-role-coherence.test.ts`) | Area context remains visible and Back to ErasmusMate home is discoverable | Implemented - UI contract tests |
 | E2E-INST-DASH-001 | Student dashboard | Student must see relevant mobility status | Student | E2E | Student opens dashboard | Dashboard shows current Erasmus stay, pending tasks, key deadlines and quick actions | Planned |
 | E2E-INST-DASH-002 | Student dashboard | Minimum-click UX | Student | E2E | Student opens dashboard with pending task | Student can access next pending action in one or few clicks | Planned |
 | E2E-INST-DASH-003 | Mobility record | Student can view mobility record | Student | E2E | Student opens My Mobility Record | Mobility details and academic summary entry are visible | Planned |
@@ -409,11 +412,11 @@ If Codex creates tests with different names or IDs, it must update this matrix t
 
 | Test ID | Workflow / Area | Requirement / Rule | Actor | Type | Scenario | Expected result | Status |
 |---|---|---|---|---|---|---|---|
-| UI-NAV-8A1-001 | Global launcher | Root route must expose direct entry points for student institutional, student social, coordinator, and admin areas | Student/Coordinator/Admin | UI Contract | Check `/` source contains links to `/student/dashboard`, `/social/student/dashboard`, `/coordinator/dashboard`, and `/admin/dashboard` (`tests/shared/phase8a1-navigation-role-coherence.test.ts`) | Launcher keeps all four role-area entry links visible and deterministic | Implemented - passing |
-| UI-NAV-8A1-002 | Student institutional/social bridge | Student institutional UI must provide direct bridge to social support and social UI must provide bridge back to official mobility | Student | UI Contract | Validate student institutional/social layout labels and cross-area hrefs (`tests/shared/phase8a1-navigation-role-coherence.test.ts`) | Students can move between official mobility and social support without dead ends | Implemented - passing |
-| UI-NAV-8A1-003 | Global return affordance | Main role areas need a consistent way back to ErasmusMate home | Student/Coordinator/Admin | UI Contract | Validate shared `TopBar` includes “Back to ErasmusMate home” and all role layouts render `TopBar` (`tests/shared/phase8a1-navigation-role-coherence.test.ts`) | All main role areas expose a discoverable return path to `/` | Implemented - passing |
-| UI-NAV-8A1-004 | Role/area clarity | Area labels must be human-readable with explicit role context | Student/Coordinator/Admin | UI Contract | Validate role-area labels in student institutional, student social, coordinator, and admin layouts (`tests/shared/phase8a1-navigation-role-coherence.test.ts`) | Labels clearly state “Student institutional area”, “Student social support”, “Coordinator workspace”, and “Admin console” | Implemented - passing |
-| UI-NAV-8A1-005 | Obsolete demo copy cleanup | Key launcher/dashboard pages should not claim functional areas are deferred when now implemented | Student/Admin | UI Contract | Assert absence of obsolete “later phase / not implemented” copy on home + key dashboards (`tests/shared/phase8a1-navigation-role-coherence.test.ts`) | Demo copy reflects current functional state without misleading phase-deferral text | Implemented - passing |
+| UI-NAV-8A1-001 | Global launcher | Root route must expose direct entry points for student institutional, student social, coordinator, and admin areas | Student/Coordinator/Admin | UI Contract | Check `/` source contains links to `/student/dashboard`, `/social/student/dashboard`, `/coordinator/dashboard`, and `/admin/dashboard` (`tests/shared/navigation-role-coherence.test.ts`) | Launcher keeps all four role-area entry links visible and deterministic | Implemented - passing |
+| UI-NAV-8A1-002 | Student institutional/social bridge | Student institutional UI must provide direct bridge to social support and social UI must provide bridge back to official mobility | Student | UI Contract | Validate student institutional/social layout labels and cross-area hrefs (`tests/shared/navigation-role-coherence.test.ts`) | Students can move between official mobility and social support without dead ends | Implemented - passing |
+| UI-NAV-8A1-003 | Global return affordance | Main role areas need a consistent way back to ErasmusMate home | Student/Coordinator/Admin | UI Contract | Validate shared `TopBar` includes “Back to ErasmusMate home” and all role layouts render `TopBar` (`tests/shared/navigation-role-coherence.test.ts`) | All main role areas expose a discoverable return path to `/` | Implemented - passing |
+| UI-NAV-8A1-004 | Role/area clarity | Area labels must be human-readable with explicit role context | Student/Coordinator/Admin | UI Contract | Validate role-area labels in student institutional, student social, coordinator, and admin layouts (`tests/shared/navigation-role-coherence.test.ts`) | Labels clearly state “Student institutional area”, “Student social support”, “Coordinator workspace”, and “Admin console” | Implemented - passing |
+| UI-NAV-8A1-005 | Obsolete demo copy cleanup | Key launcher/dashboard pages should not claim functional areas are deferred when now implemented | Student/Admin | UI Contract | Assert absence of obsolete “later phase / not implemented” copy on home + key dashboards (`tests/shared/navigation-role-coherence.test.ts`) | Demo copy reflects current functional state without misleading phase-deferral text | Implemented - passing |
 
 | Phase | Workflow | Requirement / Rule | Actor | Test Type | Scenario | Expected Result | Status |
 |---|---|---|---|---|---|---|---|

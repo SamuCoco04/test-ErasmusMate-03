@@ -13,25 +13,25 @@ export default function HomePage() {
 
       <section className="grid gap-4 md:grid-cols-2">
         <Card className="space-y-4">
-          <h2 className="text-xl font-semibold text-ink">Student institutional area</h2>
+          <h2 className="text-xl font-semibold text-ink">Student Dashboard</h2>
           <p className="text-sm text-muted">Official mobility procedures, documents, deadlines, and Learning Agreement.</p>
-          <ButtonLink href="/student/dashboard" variant="secondary">Open student institutional area</ButtonLink>
+          <ButtonLink href="/student/dashboard" variant="secondary">Open Student Dashboard</ButtonLink>
         </Card>
 
         <Card className="space-y-4">
-          <h2 className="text-xl font-semibold text-ink">Student social support</h2>
+          <h2 className="text-xl font-semibold text-ink">Student Social</h2>
           <p className="text-sm text-muted">Erasmus discovery, connections, messages, and city recommendations.</p>
-          <ButtonLink href="/social/student/dashboard" variant="secondary">Open student social support</ButtonLink>
+          <ButtonLink href="/social/student/dashboard" variant="secondary">Open Student Social</ButtonLink>
         </Card>
         <Card className="space-y-4">
-          <h2 className="text-xl font-semibold text-ink">Coordinator workspace</h2>
+          <h2 className="text-xl font-semibold text-ink">Coordinator Dashboard</h2>
           <p className="text-sm text-muted">Review assigned student requests and academic workflows.</p>
-          <ButtonLink href="/coordinator/dashboard" variant="secondary">Open coordinator workspace</ButtonLink>
+          <ButtonLink href="/coordinator/dashboard" variant="secondary">Open Coordinator Dashboard</ButtonLink>
         </Card>
         <Card className="space-y-4">
-          <h2 className="text-xl font-semibold text-ink">Admin console</h2>
+          <h2 className="text-xl font-semibold text-ink">Admin Dashboard</h2>
           <p className="text-sm text-muted">Configure institutional processes and moderate social content.</p>
-          <ButtonLink href="/admin/dashboard" variant="secondary">Open admin console</ButtonLink>
+          <ButtonLink href="/admin/dashboard" variant="secondary">Open Admin Dashboard</ButtonLink>
         </Card>
       </section>
     </main>

@@ -17,7 +17,7 @@ const obsoleteCopyPatterns = [
   'placeholders.'
 ];
 
-describe('Phase 8A.1 global navigation and role coherence contracts', () => {
+describe('Navigation and role coherence contracts', () => {
   it('keeps global launcher links for all main role areas', () => {
     expect(homePage).toContain('/student/dashboard');
     expect(homePage).toContain('/social/student/dashboard');
