@@ -119,3 +119,18 @@ Remaining limitations for next slice (Phase 8B.2):
 - Learning Agreement full submit → deny/request changes → revise/resubmit loop is still only partially covered in E2E; deeper revision semantics remain primarily service/API-backed.
 - Exception `apply` transition is not yet E2E-covered due to prompt-driven UI interactions and fixture brittleness risk.
 - Institutional notification-to-action acceptance path remains pending dedicated E2E coverage.
+
+## 9) Phase 8B.2 follow-up — exception negative paths and notification service depth
+
+Coverage added in this slice:
+- Added service-level exception negative-path matrix checks for role guard, ownership guard, reject rationale requirement, apply-state restrictions, missing apply payload, and not-found transition behavior.
+- Added dedicated notifications API/service coverage for list ownership scoping, mark-read ownership, missing notification handling, read-all ownership isolation, and read-all idempotency/zero-unread behavior.
+- Added direct assertions for safe error behavior on covered negative paths (controlled status + no local path leakage in payloads).
+
+Remaining deferred gaps after Phase 8B.2:
+- Exception `apply` transition remains deferred at full E2E depth; service/API guard coverage now exists.
+- Institutional notification-to-action E2E journey remains deferred; backend/API semantics are now covered.
+- Learning Agreement full deny/request-changes → revise/resubmit loop remains only partially covered at E2E depth.
+
+Current limitation notes:
+- Exception and notification hardening here is scoped to direct workflow guard assertions; centralized Phase 9A security hardening pack remains intentionally out of scope.

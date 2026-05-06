@@ -905,3 +905,14 @@ A major phase is not complete unless relevant decisions are documented here with
 - **Consequences / trade-offs:** Institutional E2E confidence improves immediately; some medium-priority and hardening tasks remain intentionally deferred to subsequent phases (8B.2/9A).
 - **Status:** Accepted
 - **Evidence level:** Confirmed by implementation and E2E specs
+
+### DEC-051 — Phase 8B.2 prioritizes backend exception/notification guards before broader E2E expansion
+- **Date:** 2026-05-06
+- **Phase:** Phase 8B.2 — Exception negative paths and notification coverage
+- **Decision:** Prioritize service/API-level coverage for exception negative paths and notifications ownership/idempotency semantics ahead of broader institutional E2E expansion and security-pack work.
+- **Rationale:** Phase 8A.4 and 8B.1 left highest residual risk in backend guard matrices and notification ownership/read semantics; these are faster and safer to stabilize through deterministic service/API tests than UI-heavy flows.
+- **Alternatives considered:** Expand Playwright-first to exception apply and notification-to-action journeys in this phase.
+- **Consequences / trade-offs:** Faster risk reduction in backend correctness and error safety; some acceptance depth remains deferred to 8B.3 for full UI-driven coverage.
+- **Affected areas:** `tests/institutional/exceptions.test.ts`, `tests/institutional/notifications-api.test.ts`, traceability/audit alignment.
+- **Status:** Accepted
+- **Evidence level:** Confirmed by implementation
