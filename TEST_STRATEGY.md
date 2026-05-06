@@ -594,3 +594,10 @@ Testing is sufficient for a phase when:
 - validation commands were run or documented
 - failures are explained
 - no unexpected blocking failure remains
+
+## Phase 8C.4 E2E stabilization policy (2026-05-06)
+
+- Institutional Playwright acceptance workflows run in serial mode inside `e2e/institutional/workflows.spec.ts` to prevent cross-test mutation of shared seeded records.
+- Institutional tests must set demo context via API and mirror the `erasmusmate_demo_context` cookie into the browser context before role-sensitive navigation.
+- Prefer form-scoped selectors (`form ...`) and role/label-based selectors over generic element selectors to avoid collisions with topbar demo controls.
+- Playwright is configured with `webServer` (`npm run dev`, `http://127.0.0.1:3000`, `reuseExistingServer: true`) for reliable local execution.
