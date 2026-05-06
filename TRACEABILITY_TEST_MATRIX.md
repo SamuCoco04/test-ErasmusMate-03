@@ -79,6 +79,8 @@ Use the following test type values:
 
 ---
 
+| UI-INST-DASH-004 | Student dashboard copy hygiene | UI must avoid route-like/internal implementation labels | Student | Service/API | Assert institutional student dashboard does not include route-shaped labels in card copy (`tests/institutional/student-dashboard-copy.test.ts`) | User-facing labels remain human-readable and non-technical | Implemented - passing |
+
 ## 3.3 Official procedure and document submission workflow
 
 | Test ID | Workflow / Area | Requirement / Rule | Actor | Type | Scenario | Expected result | Status |
