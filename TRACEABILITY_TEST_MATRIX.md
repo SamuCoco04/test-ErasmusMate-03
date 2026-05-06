@@ -424,3 +424,13 @@ If Codex creates tests with different names or IDs, it must update this matrix t
 | SOC-CONN-8A3-008 | Role guards | Coordinator/admin forbidden from student social transitions/messaging | Coordinator/Admin | Service/API | Connection transition/request and messaging role checks (`tests/social/connections.test.ts`, `tests/social/messaging.test.ts`) | Forbidden errors; no privileged bypass | Implemented - passing |
 | SOC-CONN-8A3-009 | UI lifecycle labels | Discovery/connections/messages expose safe user-facing lifecycle labels and actions | Student | UI Contract | Source checks for labels/actions (`tests/social/social-ui-contracts.test.ts`) | Required labels and action affordances visible without internal terms | Implemented - passing |
 | SOC-CONN-8A3-010 | Seed reliability | Seed remains idempotent with connection lifecycle logic | Developer | Smoke/Service | Run seed twice + idempotency test (`tests/social/messaging.test.ts`) | No unique errors; deterministic setup preserved | Implemented - passing |
+
+## 3.12 Phase 8A.4 coverage audit mapping
+
+| Audit ID | Workflow / Area | Actor | Type | Evidence | Current status |
+|---|---|---|---|---|---|
+| AUDIT-8A4-001 | Institutional workflows coverage audit | Student / Coordinator / Admin | Manual + Service/API evidence | `artifacts/phase-8a-coverage-audit.md`, `tests/institutional/*.test.ts`, `app/api/institutional/*` | Implemented - passing |
+| AUDIT-8A4-002 | Social workflows coverage audit | Student / Admin | Manual + Service/API evidence | `artifacts/phase-8a-coverage-audit.md`, `tests/social/*.test.ts`, `app/api/social/*`, `app/api/admin/social/*` | Implemented - passing |
+| AUDIT-8A4-003 | Role/permission guard coverage audit | Student / Coordinator / Admin | Manual + Service/API evidence | `artifacts/phase-8a-coverage-audit.md`, `tests/social/social-api.test.ts`, `tests/institutional/*.test.ts` | Implemented - passing |
+| AUDIT-8A4-004 | UI route/contract coverage audit | Student / Coordinator / Admin | Manual + UI contract evidence | `artifacts/phase-8a-coverage-audit.md`, `tests/shared/*.test.ts`, `tests/institutional/*ui*.test.ts`, `tests/social/social-ui-contracts.test.ts` | Implemented - passing |
+| AUDIT-8A4-005 | Audit artifact traceability | Developer | Smoke/Meta | `artifacts/phase-8a-coverage-audit.md`, `tests/smoke/phase8a4-audit-artifacts.test.ts` | Implemented - passing |
