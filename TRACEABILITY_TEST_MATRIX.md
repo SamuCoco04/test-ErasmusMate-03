@@ -365,3 +365,10 @@ If Codex creates tests with different names or IDs, it must update this matrix t
 | UI-COORD-OPS-001 | Coordinator dashboard UX contract | Dashboard includes summary cards, workload section, and risk labels | Coordinator | UI Contract | Source contract check for `/coordinator/dashboard` (`tests/institutional/coordinator-dashboard-ui-contracts.test.ts`) | Page includes expected operational cards, workload overview, risk badges, and empty-state copy | Implemented - passing |
 
 | WF-ACT-6F | Institutional/Social activity feed scoping and sanitization | Student/Coordinator/Admin | API/Service | Role-scoped feed returns newest-first normalized items and hides sensitive fields | Feed limited, sorted, and sanitized by role | Implemented |
+
+## 3.13 Phase 7A — Frontend design system foundation
+
+| Test ID | Workflow / Area | Requirement / Rule | Actor | Type | Scenario | Expected result | Status |
+|---|---|---|---|---|---|---|---|
+| UI-DS-7A-001 | Reusable UI foundation | Introduce typed reusable UI/layout primitives without domain changes | Developer | UI Contract | Validate presence of Phase 7A foundation docs and exported `PageShell`/`PageHeader`/`SectionHeader` (`tests/ui/phase7a-design-system-foundation.test.ts`) | Foundation modules are present and documented for phased adoption | Implemented - passing |
+| UI-DS-7A-002 | Representative page adoption | Apply new foundation lightly to representative institutional pages | Student/Coordinator/Admin | UI Contract | Validate student/coordinator/admin dashboard pages use new `PageShell` composition (`tests/ui/phase7a-design-system-foundation.test.ts`) | Limited migration proves reusable foundation integration while preserving existing workflows | Implemented - passing |

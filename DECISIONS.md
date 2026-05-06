@@ -819,3 +819,13 @@ A major phase is not complete unless relevant decisions are documented here with
 - **Evidence level:** Confirmed by implementation
 
 - Phase 6F: Introduced normalized activity feed read-model combining institutional audit records, learning-agreement events, and admin-only sanitized social moderation events. Rationale: coherent traceability view without leaking internals. Consequence: dashboards/notifications can render consistent timeline while keeping role scoping strict.
+
+### DEC-046 — Phase 7A reusable frontend design-system foundation with deferred full overhaul
+- **Date:** 2026-05-06
+- **Phase:** Phase 7A — Frontend Design System Foundation
+- **Decision:** Introduce typed, reusable UI and layout primitives (`src/components/ui/*`, `src/components/layout/page-shell.tsx`) and lightly migrate representative institutional dashboards without altering backend/domain logic, Prisma schema, seed data, API contracts, or role/workflow semantics.
+- **Rationale:** Enables consistent iterative UI modernization in later phases while preserving already-validated institutional/social workflows.
+- **Consequences / trade-offs:** Faster, safer UI reuse now; full institutional/social redesign is explicitly deferred to Phase 7B/7C/7D.
+- **Affected areas:** `src/components/ui/*`, `src/components/layout/page-shell.tsx`, dashboard pages, UI contract tests, traceability matrix.
+- **Status:** Accepted
+- **Evidence level:** Confirmed by implementation and tests

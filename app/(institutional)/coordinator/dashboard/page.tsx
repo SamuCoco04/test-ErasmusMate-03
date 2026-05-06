@@ -1,13 +1,13 @@
 import Link from 'next/link';
 import { DashboardCard } from '@/src/components/DashboardCard';
-import { PageHeader } from '@/src/components/PageHeader';
+import { PageHeader, PageShell, SectionHeader } from '@/src/components/layout/page-shell';
 import { getDemoContextFromRequest } from '@/src/modules/shared/demo-context';
 import { getCoordinatorDashboardSummary } from '@/src/modules/institutional/read-models';
 
 export default async function CoordinatorDashboardPage() {
   const ctx = await getDemoContextFromRequest();
   const data = ctx.role === 'COORDINATOR' ? await getCoordinatorDashboardSummary(ctx) : null;
-  return <div className='space-y-6'>
+  return <PageShell>
     <PageHeader sectionLabel='Coordinator dashboard' title='Review area' subtitle='Review institutional items and Learning Agreements assigned to you.' />
     {data && <>
       <div className='grid gap-4 md:grid-cols-2 lg:grid-cols-3'>
@@ -26,7 +26,7 @@ export default async function CoordinatorDashboardPage() {
       </div>
 
       <section className='space-y-3'>
-        <h2 className='text-lg font-semibold'>Assigned student workload</h2>
+        <SectionHeader title='Assigned student workload' />
         {data.workload.length === 0 ? (
           <p className='rounded-xl border border-dashed border-slate-300 bg-white p-4 text-sm text-slate-600'>No assigned mobility records yet. Once students are assigned, their submission and deadline workload will appear here.</p>
         ) : (
@@ -45,5 +45,5 @@ export default async function CoordinatorDashboardPage() {
         )}
       </section>
     </>}
-  </div>;
+  </PageShell>;
 }

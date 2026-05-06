@@ -1,5 +1,5 @@
 import { DashboardCard } from '@/src/components/DashboardCard';
-import { PageHeader } from '@/src/components/PageHeader';
+import { PageHeader, PageShell } from '@/src/components/layout/page-shell';
 import { ButtonLink } from '@/src/components/Button';
 import { getDemoContextFromRequest } from '@/src/modules/shared/demo-context';
 import { getStudentDashboardSummary } from '@/src/modules/institutional/read-models';
@@ -7,7 +7,7 @@ import { getStudentDashboardSummary } from '@/src/modules/institutional/read-mod
 export default async function StudentDashboardPage() {
   const ctx = await getDemoContextFromRequest();
   const data = ctx.role === 'STUDENT' ? await getStudentDashboardSummary(ctx) : null;
-  return <div className='space-y-6'>
+  return <PageShell>
     <PageHeader sectionLabel='Student dashboard' title='Official mobility workspace' subtitle='Document metadata workflow is now active. File upload will be connected in a later phase.' />
     <div className='flex flex-wrap justify-end gap-2'><ButtonLink href='/student/learning-agreement' variant='secondary'>Open Learning Agreement</ButtonLink><ButtonLink href='/student/academic-summary'>Open Academic Summary</ButtonLink></div>
     {data && <div className='grid gap-4 md:grid-cols-2'>
@@ -16,5 +16,5 @@ export default async function StudentDashboardPage() {
       <DashboardCard title='Deadline summary' description={`Due soon: ${data.deadlines.filter(d=>d.state==='UPCOMING').length} · Overdue: ${data.deadlines.filter(d=>d.state==='OVERDUE').length} · Fulfilled: ${data.deadlines.filter(d=>d.state==='FULFILLED').length}`} status='Open /student/deadlines' />
       <DashboardCard title='Exception requests' description={`Open /coordinator/exceptions: ${data.exceptions.filter(e=>['PENDING','UNDER_REVIEW'].includes(e.state)).length}`} status='Open /student/exceptions' />
     </div>}
-  </div>;
+  </PageShell>;
 }
