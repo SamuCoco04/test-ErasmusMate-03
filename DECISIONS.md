@@ -847,3 +847,14 @@ A major phase is not complete unless relevant decisions are documented here with
 - **Consequences / trade-offs:** UX clarity and accessibility improve with minimal code churn; a final full-application coverage audit is deferred to Phase 8A.
 - **Status:** Accepted
 - **Evidence level:** Confirmed by implementation and Phase 7D UI contract tests
+
+### DEC-048 — Phase 8A.1 global launcher and role-navigation coherence hotfix
+- **Date:** 2026-05-06
+- **Phase:** Phase 8A.1 — Global Navigation, Role Context & Demo Coherence Hotfix
+- **Decision:** Add a root ErasmusMate launcher with four role-area entry cards, add explicit student institutional/social bridge links, standardize a shared “Back to ErasmusMate home” affordance in role layouts, and clarify role/area labels across student/coordinator/admin shells.
+- **Rationale:** Cross-cutting navigation confusion blocked fast workflow traversal and reduced demo trust even though core features are already implemented.
+- **Consequences / trade-offs:** Improves discoverability and role context clarity with minimal UI-only changes; institutional/social conceptual separation is preserved while enabling intentional cross-navigation for students.
+- **Guardrails kept:** No Prisma schema changes, no API contract changes, no workflow-state/business-rule/guard changes.
+- **Affected areas:** `app/page.tsx`, role layout shells, shared `TopBar`, and Phase 8A.1 UI contract tests/traceability rows.
+- **Status:** Accepted
+- **Evidence level:** Confirmed by implementation and tests

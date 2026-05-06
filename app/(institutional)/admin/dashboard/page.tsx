@@ -7,7 +7,7 @@ export default async function AdminDashboardPage() {
   const ctx = await getDemoContextFromRequest();
   const data = ctx.role === 'ADMIN' ? await getAdminInstitutionalOverview(ctx) : null;
   return <PageShell>
-    <PageHeader sectionLabel='Admin dashboard' title='Institutional overview' subtitle='Institutional totals are backend-backed in Phase 3A. Social moderation and map workflows are not implemented in this phase.' />
+    <PageHeader sectionLabel='Admin dashboard' title='Institutional overview' subtitle='Review institutional totals, monitor process health, and access social moderation controls.' />
     {data && <div className='grid gap-4 md:grid-cols-2'>
       <DashboardCard title='Users' description={`${data.users} seeded users`} status='Institutional data' />
       <DashboardCard title='Mobility records' description={`${data.mobilityRecords} active records`} status='Institutional data' />
