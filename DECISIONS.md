@@ -829,3 +829,10 @@ A major phase is not complete unless relevant decisions are documented here with
 - **Affected areas:** `src/components/ui/*`, `src/components/layout/page-shell.tsx`, dashboard pages, UI contract tests, traceability matrix.
 - **Status:** Accepted
 - **Evidence level:** Confirmed by implementation and tests
+
+## 2026-05-06 — Phase 7B institutional UI/UX overhaul using shared design-system foundation
+- **Decision:** Polish institutional student/coordinator/admin screens by aligning them to the Phase 7A reusable layout/state primitives (PageShell/PageHeader/cards/state messaging) without changing institutional domain behavior.
+- **Rationale:** Improve scanning, hierarchy, and demo quality while preserving trusted backend rules and API contracts.
+- **Consequences / trade-offs:** No Prisma schema, API contract, or workflow-state change in this phase; social UI redesign is explicitly deferred to Phase 7C; full responsive/accessibility polish is deferred to Phase 7D.
+- **Status:** Accepted.
+- **Evidence level:** Code and UI contract test coverage updated in Phase 7B.

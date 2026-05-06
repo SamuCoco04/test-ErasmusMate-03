@@ -144,7 +144,10 @@ export function StudentSubmissionsClient({ initialSubmissions, procedureOptions 
               {a.hasStoredContent ? <a className='underline' href={`/api/institutional/submissions/${s.id}/attachments/${a.id}/open`} target='_blank' rel='noreferrer'>Open document</a> : <span className='text-slate-500'>Demo metadata only</span>}
               {editable && a.status === 'ACTIVE' && <>
                 <button disabled={pendingAction === `remove-${a.id}`} className='underline disabled:text-slate-400' onClick={() => call(`remove-${a.id}`, `/api/institutional/submissions/${s.id}/attachments/${a.id}/remove`, {})}>{pendingAction === `remove-${a.id}` ? 'Removing…' : 'Remove file'}</button>
-                <input disabled={pendingAction === `replace-${a.id}`} className='ml-2' type='file' onChange={(e) => upload(`replace-${a.id}`, `/api/institutional/submissions/${s.id}/attachments/${a.id}/replace`, e.target.files?.[0] ?? null)} />
+                <label aria-label={`Replace file for ${a.fileName}`} className='flex cursor-pointer items-center gap-1 text-xs underline'>
+                  <span>{pendingAction === `replace-${a.id}` ? 'Replacing…' : 'Replace file'}</span>
+                  <input disabled={pendingAction === `replace-${a.id}`} className='sr-only' type='file' onChange={(e) => upload(`replace-${a.id}`, `/api/institutional/submissions/${s.id}/attachments/${a.id}/replace`, e.target.files?.[0] ?? null)} />
+                </label>
               </>}
             </div>
           </li>)}
