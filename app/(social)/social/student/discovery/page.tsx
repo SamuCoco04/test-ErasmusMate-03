@@ -13,7 +13,12 @@ export default function SocialDiscoveryPage() {
   const [items, setItems] = useState<SocialDiscoveryItem[]>([]); const [hostCity, setHostCity] = useState(''); const [studyArea, setStudyArea] = useState(''); const [feedback, setFeedback] = useState('');
   const fetchProfiles = useCallback(async (hc = '', sa = '') => { const q = new URLSearchParams(); if (hc) q.set('hostCity', hc); if (sa) q.set('studyArea', sa); const data = await fetch(`/api/social/discovery?${q.toString()}`).then((r) => r.json() as Promise<{ items: SocialDiscoveryItem[] }>); setItems(data.items || []); }, []);
   useEffect(() => { void fetchProfiles(); }, [fetchProfiles]);
-  const sendRequest = async (targetProfileId: string) => { await fetch('/api/social/connections', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ targetProfileId }) }); await fetchProfiles(hostCity, studyArea); };
+  const sendRequest = async (targetProfileId: string) => {
+    const response = await fetch('/api/social/connections', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ targetProfileId }) });
+    const body = await response.json().catch(() => ({} as { error?: string }));
+    setFeedback(response.ok ? 'Connection request sent.' : body.error ?? 'Connection request could not be sent.');
+    await fetchProfiles(hostCity, studyArea);
+  };
   const reportProfile = async (targetProfileId: string) => { const response = await fetch('/api/social/reports', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ targetProfileId, reason: 'Inappropriate profile content' }) }); setFeedback(response.ok ? 'Report submitted. Thank you.' : 'Report could not be submitted.'); };
 
   return <PageShell>
@@ -24,9 +29,10 @@ export default function SocialDiscoveryPage() {
     <div className='grid gap-3 md:grid-cols-2'>{items.map((p) => { const canRequest = p.allowedActions?.request ?? p.connectionStatus === 'AVAILABLE_TO_REQUEST'; const canMessage = p.allowedActions?.message ?? p.connectionStatus === 'CONNECTED'; return <article key={p.id} className='rounded-xl border bg-white p-4'>
       <h2 className='font-semibold'>{p.displayName}</h2><p className='text-sm'>{p.hostCity}{p.hostCountry ? `, ${p.hostCountry}` : ''}</p><p className='text-sm'>{p.studyArea || 'Study area not shared'}</p><p className='text-sm'>{p.bio || 'No bio yet'}</p>
       <div className='my-2'><StatusBadge tone='info'>Status: {stateLabel[p.connectionStatus]}</StatusBadge></div>
-      {p.connectionStatus === 'UNAVAILABLE' && p.unavailableReason === 'CONTACT_PREFERENCE_CONNECTIONS_ONLY' ? <p className='text-xs text-slate-500'>Connections only</p> : null}
+      {p.connectionStatus === 'UNAVAILABLE' && p.unavailableReason === 'CONTACT_PREFERENCE_CONNECTIONS_ONLY' ? <p className='text-xs text-slate-500'>This student only accepts contact from existing connections. You cannot message this student until a connection is accepted.</p> : null}
+      {p.connectionStatus === 'UNAVAILABLE' && p.unavailableReason === 'CONTACT_PREFERENCE_HIDDEN' ? <p className='text-xs text-slate-500'>Connection request unavailable due to this student’s privacy preferences.</p> : null}
       {p.contactPreferenceLabel ? <p className='text-xs text-slate-500'>Contact preference: {p.contactPreferenceLabel.toLowerCase()}</p> : null}
-      <div className='mt-2 flex gap-2'>{canRequest ? <Button onClick={() => sendRequest(p.id)}>Send request</Button> : null}{canMessage ? <a className='rounded bg-slate-900 px-3 py-1 text-white' href='/social/student/messages'>Message</a> : null}<button className='rounded border px-3 py-1 text-sm' onClick={() => reportProfile(p.id)}>Report profile</button></div>
+      <div className='mt-2 flex gap-2'>{canRequest ? <Button onClick={() => sendRequest(p.id)}>Send request</Button> : null}{canMessage ? <a className='rounded bg-slate-900 px-3 py-1 text-white' href='/social/student/messages'>Message</a> : null}{p.connectionStatus === 'REQUEST_SENT' ? <Button variant='secondary' disabled>Request sent</Button> : null}{p.connectionStatus === 'UNAVAILABLE' ? <Button variant='secondary' disabled>Unavailable</Button> : null}<button className='rounded border px-3 py-1 text-sm' onClick={() => reportProfile(p.id)}>Report profile</button></div>
     </article>; })}</div>
   </PageShell>;
 }

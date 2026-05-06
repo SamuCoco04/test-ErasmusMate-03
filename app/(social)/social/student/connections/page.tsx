@@ -9,6 +9,7 @@ function locationText(city: string | null, country: string | null) {
 
 export default function ConnectionsPage() {
   const [data, setData] = useState<ConnectionListsResponse>({ incomingPending: [], outgoingPending: [], accepted: [], unavailable: [] });
+  const [feedback, setFeedback] = useState('');
 
   const load = async () => {
     const connectionsRes = await fetch('/api/social/connections');
@@ -23,11 +24,13 @@ export default function ConnectionsPage() {
       const confirmed = window.confirm(`Block ${item.otherProfile.displayName}? They will no longer be able to message you through this connection.`);
       if (!confirmed) return;
     }
-    await fetch(`/api/social/connections/${item.connectionId}/transition`, {
+    const response = await fetch(`/api/social/connections/${item.connectionId}/transition`, {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
       body: JSON.stringify({ action })
     });
+    const body = await response.json().catch(() => ({} as { error?: string }));
+    setFeedback(response.ok ? `${action === 'block' ? 'Blocked' : action === 'unblock' ? 'Unblocked' : 'Connection updated'} ${item.otherProfile.displayName}.` : body.error ?? 'Action could not be completed.');
     await load();
   };
 
@@ -46,6 +49,7 @@ export default function ConnectionsPage() {
   return <div className='space-y-6'>
     <h1 className='text-2xl font-semibold'>Connections</h1>
     <p className='text-sm text-slate-600'>Manage who can message you. Blocking applies only to the specific student shown on each row.</p>
+    {feedback ? <p className='text-sm text-slate-600'>{feedback}</p> : null}
 
     <section>
       <h2 className='font-semibold'>Requests received</h2>

@@ -40,6 +40,10 @@ describe('Phase 7C social UI contracts', () => {
     expect(files.discovery).toContain('Connected');
     expect(files.discovery).toContain('Blocked');
     expect(files.discovery).toContain('Report profile');
+    expect(files.discovery).toContain('This student only accepts contact from existing connections.');
+    expect(files.discovery).toContain("Connection request unavailable due to this student's privacy preferences.");
+    expect(files.discovery).toContain('Request sent');
+    expect(files.discovery).toContain('Unavailable');
     expect(files.discovery).not.toContain('pairKey');
   });
 

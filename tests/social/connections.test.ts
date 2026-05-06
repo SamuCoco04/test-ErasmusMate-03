@@ -47,6 +47,7 @@ describe('Social: connection lifecycle contract', () => {
     await expect(requestConnection(prisma, { role: 'STUDENT', userId: 'student-1' }, 'sp-student-6')).rejects.toThrow();
   });
 
+
   it('accepted pair allows messaging', async () => {
     const sent = await sendMessage(prisma, { role: 'STUDENT', userId: 'student-1' }, 'conn-seed-2', { body: 'hello there' });
     expect(sent.body).toBe('hello there');
