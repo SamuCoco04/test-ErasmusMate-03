@@ -865,3 +865,12 @@ A major phase is not complete unless relevant decisions are documented here with
 - **Consequences / trade-offs:** We reused the existing `SocialReport` and recommendation moderation state instead of adding schema changes; message moderation uses a safe actioned workflow (with rationale) without unsafe message deletion.
 - **Status:** Accepted.
 - **Evidence level:** Implemented in moderation service/API/UI with tests covering target visibility, recommendation hiding, authorization guards, and student-safe visibility.
+
+### DEC-049 — Phase 8A.3 social connection lifecycle stabilization hotfix
+- **Date:** 2026-05-06
+- **Phase:** Phase 8A.3 — Social Connection Lifecycle Hotfix
+- **Decision:** Stabilize social connection transitions so cancelled/rejected/unblocked pairs return to a safe non-connected requestable lifecycle, preserve accepted-only messaging, and keep blocked/hidden/moderation-hidden protections and role guards intact.
+- **Rationale:** UX review found inconsistent request reuse and cross-page status behavior after cancel/reject/unblock transitions.
+- **Consequences / trade-offs:** Reuses existing pair row/state model (no Prisma schema change) and keeps moderation internals hidden; block/unblock remains participant-scoped with unblock limited to the blocker.
+- **Status:** Accepted
+- **Evidence level:** Confirmed by updated service/UI contract tests

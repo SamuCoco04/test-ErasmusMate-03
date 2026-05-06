@@ -48,8 +48,8 @@ function toSafeConnectionItem(connection: SocialConnectionWithProfiles, myProfil
       reject: category === 'incomingPending',
       cancel: category === 'outgoingPending',
       message: category === 'accepted',
-      block: category === 'accepted' || category === 'incomingPending',
-      unblock: connection.state === 'BLOCKED',
+      block: category === 'accepted' || category === 'incomingPending' || category === 'outgoingPending',
+      unblock: connection.state === 'BLOCKED' && connection.lastActionByProfileId === myProfileId,
     },
   };
 }
@@ -83,7 +83,10 @@ export async function transitionConnection(prisma: PrismaClient, actor: {role:st
   if (action === 'accept') { if (c.state !== 'PENDING' || c.receiverProfileId !== me.id) throw new SocialInvalidTransitionError(); return prisma.socialConnection.update({ where: { id: connectionId }, data: { state: 'ACCEPTED', respondedAt: new Date(), lastActionByProfileId: me.id } }); }
   if (action === 'reject') { if (c.state !== 'PENDING' || c.receiverProfileId !== me.id) throw new SocialInvalidTransitionError(); return prisma.socialConnection.update({ where: { id: connectionId }, data: { state: 'REJECTED', respondedAt: new Date(), lastActionByProfileId: me.id } }); }
   if (action === 'cancel') { if (c.state !== 'PENDING' || c.requesterProfileId !== me.id) throw new SocialInvalidTransitionError(); return prisma.socialConnection.update({ where: { id: connectionId }, data: { state: 'CANCELLED', respondedAt: new Date(), lastActionByProfileId: me.id } }); }
-  if (action === 'block') { return prisma.socialConnection.update({ where: { id: connectionId }, data: { state: 'BLOCKED', blockedAt: new Date(), lastActionByProfileId: me.id } }); }
+  if (action === 'block') {
+    if (!['PENDING', 'ACCEPTED', 'REJECTED', 'CANCELLED', 'BLOCKED'].includes(c.state)) throw new SocialInvalidTransitionError();
+    return prisma.socialConnection.update({ where: { id: connectionId }, data: { state: 'BLOCKED', blockedAt: new Date(), lastActionByProfileId: me.id } });
+  }
   if (action === 'unblock') {
     if (c.state !== 'BLOCKED' || c.lastActionByProfileId !== me.id) throw new SocialInvalidTransitionError();
     return prisma.socialConnection.update({ where: { id: connectionId }, data: { state: 'CANCELLED', blockedAt: null, respondedAt: new Date(), lastActionByProfileId: me.id } });

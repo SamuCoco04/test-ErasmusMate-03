@@ -13,6 +13,18 @@ function normalizeDiscoveryStatus(connectionStatus: DiscoveryConnectionStatus, c
 	return { connectionStatus: 'AVAILABLE_TO_REQUEST', unavailableReason: null };
 }
 
+function discoveryAllowedActions(connectionStatus: DiscoveryConnectionStatus) {
+  return {
+    request: connectionStatus === 'AVAILABLE_TO_REQUEST',
+    cancel: connectionStatus === 'REQUEST_SENT',
+    accept: connectionStatus === 'REQUEST_RECEIVED',
+    reject: connectionStatus === 'REQUEST_RECEIVED',
+    message: connectionStatus === 'CONNECTED',
+    block: ['REQUEST_SENT', 'REQUEST_RECEIVED', 'CONNECTED'].includes(connectionStatus),
+    unblock: connectionStatus === 'BLOCKED',
+  };
+}
+
 function toContactPreferenceLabel(contactPreference: string | null): string {
 	if (contactPreference === 'CONNECTIONS_ONLY') return 'Connections only';
 	if (contactPreference === 'HIDDEN') return 'Unavailable';
@@ -59,7 +71,8 @@ export async function listDiscoveryProfiles(prisma: PrismaClient, actor: { role:
 
   return Promise.all(items.map(async (item) => {
 		const rawStatus = await getConnectionStateForProfile(prisma, actor, item.id);
-		return { ...item, ...normalizeDiscoveryStatus(rawStatus, item.contactPreference ?? null) };
+		const normalized = normalizeDiscoveryStatus(rawStatus, item.contactPreference ?? null);
+		return { ...item, ...normalized, allowedActions: discoveryAllowedActions(normalized.connectionStatus) };
 	}));
 }
 
@@ -71,5 +84,6 @@ export async function getDiscoveryProfileDetail(prisma: PrismaClient, actor: { r
 	if (!p) throw new SocialNotFoundError();
 	const mapped = mapPublic(p as SocialProfileRow);
 	const rawStatus = await getConnectionStateForProfile(prisma, actor, p.id);
-	return { ...mapped, ...normalizeDiscoveryStatus(rawStatus, mapped.contactPreference ?? null) };
+	const normalized = normalizeDiscoveryStatus(rawStatus, mapped.contactPreference ?? null);
+	return { ...mapped, ...normalized, allowedActions: discoveryAllowedActions(normalized.connectionStatus) };
 }
