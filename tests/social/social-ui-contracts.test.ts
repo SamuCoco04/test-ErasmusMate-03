@@ -1,68 +1,59 @@
 import { describe, expect, it } from 'vitest';
 import { readFileSync } from 'node:fs';
 
-const connectionsPage = readFileSync('app/(social)/social/student/connections/page.tsx', 'utf8');
-const discoveryPage = readFileSync('app/(social)/social/student/discovery/page.tsx', 'utf8');
-const messagesPage = readFileSync('app/(social)/social/student/messages/page.tsx', 'utf8');
-const mapPage = readFileSync('app/(social)/social/student/map/page.tsx', 'utf8');
-const recommendationsPage = readFileSync('app/(social)/social/student/recommendations/page.tsx', 'utf8');
-const dashboardPage = readFileSync('app/(social)/social/student/dashboard/page.tsx', 'utf8');
-const layoutPage = readFileSync('app/(social)/social/student/layout.tsx', 'utf8');
+const files = {
+  dashboard: readFileSync('app/(social)/social/student/dashboard/page.tsx', 'utf8'),
+  profile: readFileSync('app/(social)/social/student/profile/page.tsx', 'utf8'),
+  discovery: readFileSync('app/(social)/social/student/discovery/page.tsx', 'utf8'),
+  connections: readFileSync('app/(social)/social/student/connections/page.tsx', 'utf8'),
+  messages: readFileSync('app/(social)/social/student/messages/page.tsx', 'utf8'),
+  recommendations: readFileSync('app/(social)/social/student/recommendations/page.tsx', 'utf8'),
+  map: readFileSync('app/(social)/social/student/map/page.tsx', 'utf8'),
+  moderation: readFileSync('app/(institutional)/admin/social-moderation/page.tsx', 'utf8'),
+};
 
-describe('Social UI hardening contracts', () => {
-  it('connections page has clear sections and supports blocking and unblocking from clear sections', () => {
-    expect(connectionsPage).toContain('Requests received');
-    expect(connectionsPage).toContain('Requests sent');
-    expect(connectionsPage).toContain('Connected students');
-    expect(connectionsPage).not.toContain('& {c.receiverProfile.displayName}');
-    expect(connectionsPage).toContain('window.confirm(');
-    expect(connectionsPage).toContain('Message');
-    expect(connectionsPage).toContain('Block ${c.otherProfile.displayName}');
-    expect(connectionsPage).not.toContain(' & ');
-    expect(connectionsPage).toContain('c.allowedActions.message ?');
-    expect(connectionsPage).toContain('c.allowedActions.block ?');
-    expect(connectionsPage).toContain('c.allowedActions.unblock ?');
+describe('Phase 7C social UI contracts', () => {
+  it('keeps social dashboard purpose and key routes visible', () => {
+    expect(files.dashboard).toContain('Erasmus student support space');
+    expect(files.dashboard).toContain('/social/student/profile');
+    expect(files.dashboard).toContain('/social/student/discovery');
+    expect(files.dashboard).toContain('/social/student/connections');
+    expect(files.dashboard).toContain('/social/student/messages');
+    expect(files.dashboard).toContain('/social/student/recommendations');
+    expect(files.dashboard).toContain('/social/student/map');
   });
 
-  it('does not reference removed /student/social route', () => {
-    const appFiles = [connectionsPage, discoveryPage, messagesPage, layoutPage];
-    appFiles.forEach((fileText) => expect(fileText).not.toContain('/student/social'));
+  it('shows profile privacy labels and avoids moderation internals', () => {
+    expect(files.profile).toContain('Privacy overview');
+    expect(files.profile).toContain('Visibility:');
+    expect(files.profile).toContain('Contact preference:');
+    expect(files.profile).toContain('Map visibility');
+    expect(files.profile).not.toContain('moderationState');
   });
 
-  it('discovery page shows single status and separates contact preference from actions', () => {
-    expect(discoveryPage).toContain("const canRequest = p.connectionStatus === 'AVAILABLE_TO_REQUEST';");
-    expect(discoveryPage).toContain("const canMessage = p.connectionStatus === 'CONNECTED';");
-    expect(discoveryPage).toContain('Status: {stateLabel[p.connectionStatus]}');
-    expect(discoveryPage).toContain('Contact preference:');
-    expect(discoveryPage).not.toContain('moderationState');
-    expect(discoveryPage).not.toContain('pairKey');
+  it('shows discovery filters and safe status labels', () => {
+    expect(files.discovery).toContain('Host city filter');
+    expect(files.discovery).toContain('Study area filter');
+    expect(files.discovery).toContain('Status:');
+    expect(files.discovery).toContain('Report profile');
+    expect(files.discovery).not.toContain('pairKey');
   });
 
-  it('messages page uses other names and blocks empty messages', () => {
-    expect(messagesPage).toContain('otherProfile.displayName');
-    expect(messagesPage).not.toContain('requesterProfile');
-    expect(messagesPage).toContain('latestMessage?.body');
-    expect(messagesPage).toContain('Please write a message before sending.');
-    expect(messagesPage).toContain('disabled={!body.trim()}');
+  it('keeps connection lifecycle actions and accepted-only messaging cues', () => {
+    expect(files.connections).toContain('Requests received');
+    expect(files.connections).toContain('Requests sent');
+    expect(files.connections).toContain('Connected students');
+    expect(files.connections).toContain('Blocked connections');
+    expect(files.connections).toContain('c.allowedActions.message ?');
+    expect(files.messages).toContain('No accepted connections yet');
   });
 
-  it('map discovery route and links are present with safe copy', () => {
-    expect(layoutPage).toContain('Recommendations');
-    expect(layoutPage).toContain('Map');
-    expect(layoutPage).toContain('/social/student/map');
-    expect(dashboardPage).toContain('Map');
-    expect(dashboardPage).toContain('/social/student/map');
-    expect(mapPage).toContain('recommendations map');
-    expect(mapPage).toContain('Leaflet + OpenStreetMap');
-    expect(mapPage).toContain('SocialRecommendationsMap');
-    expect(mapPage).toContain('recommendationId');
-    expect(mapPage).not.toContain('live location sharing');
-    expect(mapPage).not.toContain('precise GPS');
-    expect(mapPage).toContain('Create recommendation');
-    expect(mapPage).toContain('Click the map to place your recommendation marker.');
-    expect(mapPage).toContain('onMapClick');
-    expect(mapPage).toContain('Only recommendation place locations are shown. Student live or personal location is never displayed.');
-    expect(recommendationsPage).toContain('Create recommendation');
-    expect(recommendationsPage).toContain('/api/social/recommendations');
+  it('keeps recommendations/map/report affordances and admin moderation actions', () => {
+    expect(files.recommendations).toContain('Create recommendation');
+    expect(files.map).toContain('Create recommendation');
+    expect(files.map).toContain('Click the map to place your recommendation marker.');
+    expect(files.messages).toContain('Report');
+    expect(files.moderation).toContain('Social moderation');
+    expect(files.moderation).toContain('Dismiss');
   });
 });

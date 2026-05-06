@@ -836,3 +836,5 @@ A major phase is not complete unless relevant decisions are documented here with
 - **Consequences / trade-offs:** No Prisma schema, API contract, or workflow-state change in this phase; social UI redesign is explicitly deferred to Phase 7C; full responsive/accessibility polish is deferred to Phase 7D.
 - **Status:** Accepted.
 - **Evidence level:** Code and UI contract test coverage updated in Phase 7B.
+
+- Phase 7C Social UI/UX Overhaul | Social workflows UI polish using Phase 7A design primitives; preserve existing backend/schema/contracts and role/moderation guards; defer final responsive/accessibility micro-polish to Phase 7D. | Accepted
