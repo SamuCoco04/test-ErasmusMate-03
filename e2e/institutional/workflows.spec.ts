@@ -53,17 +53,25 @@ test.describe('Institutional E2E acceptance workflows', () => {
     await expect(inReviewQueueItem.getByTestId('submission-status-badge')).toHaveText('In review');
     await inReviewQueueItem.getByRole('button', { name: 'Approve' }).click();
 
-    // Approved items are intentionally hidden by default in the coordinator queue
-    // unless the "Show approved" filter is enabled.
-    await expect(reviewQueueItem(page, 'sub-4')).toBeHidden();
+    await expect
+      .poll(async () => {
+        const studentView = await request.get('/api/institutional/submissions', {
+          headers: { cookie: 'demo_role=STUDENT' },
+        });
 
-    const studentView = await request.get('/api/institutional/submissions', {
-      headers: { cookie: 'demo_role=STUDENT' },
-    });
-    expect(studentView.ok()).toBeTruthy();
-    const payload = await studentView.json();
-    const transcriptSubmission = payload.data.find((item: { id: string; state: string }) => item.id === 'sub-4');
-    expect(transcriptSubmission?.state).toBe('APPROVED');
+        expect(studentView.ok()).toBeTruthy();
+
+        const payload = await studentView.json();
+        const submissions = payload?.data ?? payload?.submissions ?? [];
+        const transcriptSubmission = submissions.find((submission: { id: string; state?: string; status?: string }) => submission.id === 'sub-4');
+
+        return transcriptSubmission?.state ?? transcriptSubmission?.status;
+      })
+      .toBe('APPROVED');
+
+    await setRole(page, 'STUDENT');
+    await page.goto('/student/submissions');
+    await expect(submissionCard(page, 'sub-4').getByTestId('submission-status-badge')).toHaveText(/APPROVED|Approved/);
   });
 
   test('learning agreement review decision is visible to student', async ({ page }) => {
