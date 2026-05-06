@@ -966,3 +966,19 @@ A major phase is not complete unless relevant decisions are documented here with
 - **Affected areas:** `src/components/TopBar.tsx`, institutional/social layouts, shared UI contract tests, traceability evidence.
 - **Status:** Accepted
 - **Evidence level:** Confirmed by implementation
+
+### DEC-8C3 — Resolve social action-state clarity before Phase 9A hardening
+- **Date:** 2026-05-06
+- **Phase:** Phase 8C.3 — Social interaction UX and action-state fixes
+- **Decision:** Prioritize a focused fix for discovery request clarity and connection block/unblock feedback correctness before starting Phase 9A security/error-safety hardening.
+- **Rationale:** Manual UX review found social action outcomes were functionally hard to interpret (especially unavailable request reasons and post-block UI feedback), which is a product-readiness blocker even when core backend guards exist.
+- **Alternatives considered:**
+  1. Defer all social UX issues to Phase 9C redesign.
+  2. Start 9A immediately and leave unclear social action-state behavior unresolved.
+- **Consequences / trade-offs:**
+  - Improves demo reliability and user comprehension with minimal scope.
+  - Keeps schema and broader redesign out of scope.
+  - Retains rich microinteraction polish for 9C.
+- **Affected areas:** social discovery/connections UI, social connection request guard, social UI contracts, traceability and audit artifacts.
+- **Status:** Accepted
+- **Evidence level:** Confirmed by implementation and tests

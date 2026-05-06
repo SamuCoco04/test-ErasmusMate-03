@@ -198,3 +198,27 @@ The largest current UX risks are not broken flows; they are **discoverability an
 
 - Notification affordance is currently a safe click-through entry point to existing notifications pages rather than a full inline feed.
 - Profile affordance is currently route-link based, not an account management menu.
+
+## 19. Phase 8C.3 follow-up
+
+### Root cause classification
+
+- **Combination of UX ambiguity + action feedback gap**.
+- Discovery cards correctly surfaced `Unavailable` for privacy-restricted profiles, but helper copy was too terse to explain why action buttons were absent.
+- Connection transitions were backend-supported, but UI feedback after block/unblock/request actions was weak, which made outcomes look unreliable during manual review.
+
+### What was fixed in 8C.3
+
+1. Discovery cards now show explicit privacy explanation copy for unavailable states.
+2. Discovery actions now expose deterministic state labels (`Request sent`, `Unavailable`) and request error/success feedback.
+3. Connections page now shows success/error feedback after transition actions (including block/unblock) and reloads data after action completion.
+4. Request action feedback is now explicit so users understand when API-side rules reject or accept an attempt.
+
+### Deferred to 9C
+
+- Richer inline toasts/animations and advanced microcopy variants.
+- Deeper visual hierarchy refinements for status/action areas.
+
+### Demo readiness impact
+
+- Social request/block workflows are now more understandable and easier to verify in demos because unavailable states and transition outcomes are explicitly communicated.
