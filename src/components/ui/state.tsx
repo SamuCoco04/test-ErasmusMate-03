@@ -2,7 +2,7 @@ import { Card, CardBody, CardTitle, CardDescription } from '@/src/components/ui/
 
 function BaseState({ title, description }: { title: string; description: string }) {
   return (
-    <Card className='border-dashed'>
+    <Card className='border-dashed' role='status' aria-live='polite'>
       <CardBody>
         <CardTitle className='text-base'>{title}</CardTitle>
         <CardDescription>{description}</CardDescription>
@@ -11,7 +11,7 @@ function BaseState({ title, description }: { title: string; description: string 
   );
 }
 
-export const EmptyState = ({ description }: { description: string }) => <BaseState title='Nothing here yet' description={description} />;
+export const EmptyState = ({ description }: { description: string }) => <BaseState title='No results yet' description={description} />;
 export const LoadingState = ({ description }: { description: string }) => <BaseState title='Loading' description={description} />;
 export const ErrorState = ({ description }: { description: string }) => <BaseState title='Something needs attention' description={description} />;
 

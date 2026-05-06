@@ -383,3 +383,12 @@ If Codex creates tests with different names or IDs, it must update this matrix t
 | UI-DS-7B-004 | Coordinator/admin scanning labels | Coordinator review queue and admin procedures pages must retain status and scanning labels | Coordinator/Admin | UI Contract | Check coordinator queue contains role label and admin procedures page contains configuration and status labels (`tests/institutional/phase7b-institutional-ui-contracts.test.ts`) | "Coordinator tasks", "Procedure configuration", "Active", and "Required" labels are present after UI polish | Implemented - passing |
 
 | WF-SOC-UI-7C | Social UI overhaul contracts | Student/Admin | UI contract (Vitest) | Social dashboard/profile/discovery/connections/messages/recommendations/map/moderation labels, actions, and safe-data visibility verified | Pass |
+
+## 3.15 Phase 7D — Responsive, accessibility, and demo polish
+
+| Test ID | Workflow / Area | Requirement / Rule | Actor | Type | Scenario | Expected result | Status |
+|---|---|---|---|---|---|---|---|
+| UI-7D-001 | Shared navigation polish | Institutional and social navigation labels remain consistent and separated | Student | UI Contract | Validate student institutional/social layout labels and route cues (`tests/shared/phase7d-responsive-accessibility-polish.test.ts`) | "Submissions", "Deadlines", "Exceptions", and "Social discovery" labels remain visible with area separation intact | Implemented - passing |
+| UI-7D-002 | Social form/filter accessibility | Key message/recommendation/discovery controls expose clear labels | Student | UI Contract | Check key `aria-label` and filter label strings in social pages (`tests/shared/phase7d-responsive-accessibility-polish.test.ts`) | Important controls are label-addressable for accessibility and demo clarity | Implemented - passing |
+| UI-7D-003 | Empty state clarity | Core social empty states and shared state wording are explicit | Student | UI Contract | Validate social message/recommendation empty copy and shared empty-state title (`tests/shared/phase7d-responsive-accessibility-polish.test.ts`) | Clear no-data messaging exists for demo flows | Implemented - passing |
+| UI-7D-004 | Sensitive internals hiding | Student-facing social UI does not expose local storage paths or moderation internals | Student | UI Contract | Assert absence of `/uploads/`, `moderationState`, and `storagePath` leak strings (`tests/shared/phase7d-responsive-accessibility-polish.test.ts`) | Student UI contract stays safe and avoids backend internals exposure | Implemented - passing |

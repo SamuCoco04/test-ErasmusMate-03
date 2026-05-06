@@ -12,7 +12,7 @@ export default async function CoordinatorReviewQueuePage() {
     for (const item of items) attachmentsBySubmission.set(item.id, await listAttachments(ctx, item.id));
   }
   return <div className='space-y-6'>
-    <PageHeader sectionLabel='Review queue' title='Coordinator tasks' subtitle='Start review and complete decisions for assigned student requests.' />
+    <PageHeader sectionLabel='Review queue' title='Review queue' subtitle='Start review and complete decisions for assigned student requests.' />
     <div className='rounded-xl border bg-white p-4'>
       <CoordinatorReviewQueueClient initialItems={items.map((s) => ({ id: s.id, title: s.procedure.title, state: s.state, reviewerNotes: s.reviewerNotes, attachments: (attachmentsBySubmission.get(s.id) ?? []).map((a) => ({ id: a.id, fileName: a.fileName, mimeType: a.mimeType, sizeBytes: a.sizeBytes, version: a.version, hasStoredContent: a.hasStoredContent })) }))} />
     </div>

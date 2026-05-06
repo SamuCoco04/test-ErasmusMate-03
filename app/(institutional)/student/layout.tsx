@@ -10,10 +10,11 @@ export default function StudentInstitutionalLayout({ children }: { children: Rea
           <SidebarNav
             items={[
               { label: 'Student dashboard', href: '/student/dashboard', active: true },
-              { label: 'My submissions', href: '/student/submissions' },
+              { label: 'Submissions', href: '/student/submissions' },
               { label: 'Learning Agreement', href: '/student/learning-agreement' },
-              { label: 'Academic Summary', href: '/student/academic-summary' },
-              { label: 'Deadlines and exceptions', href: '/student/deadlines' },
+              { label: 'Academic summary', href: '/student/academic-summary' },
+              { label: 'Deadlines', href: '/student/deadlines' },
+              { label: 'Exceptions', href: '/student/exceptions' },
               { label: 'Notifications', href: '/student/notifications' }
             ]}
           />

@@ -17,7 +17,7 @@ export default async function StudentSubmissionsPage() {
   orderBy: { id: 'asc' },
 });
   return <div className='space-y-6'>
-    <PageHeader sectionLabel='Student tasks' title='Submission requests' subtitle='Upload real files and send requests for coordinator review.' />
+    <PageHeader sectionLabel='Student tasks' title='Submissions' subtitle='Upload real files and send requests for coordinator review.' />
     <div className='rounded-xl border bg-white p-4'>
       <p className='mb-3 text-sm text-slate-600'>Choose a procedure, upload a file, and submit when ready.</p>
       <StudentSubmissionsClient

@@ -36,7 +36,7 @@ describe('phase 7B institutional UI contracts', () => {
   });
 
   it('keeps coordinator/admin scanning labels and statuses visible', () => {
-    expect(coordinatorQueue).toContain('Coordinator tasks');
+    expect(coordinatorQueue).toContain('Review queue');
     expect(adminProcedures).toContain('Procedure configuration');
     expect(adminProcedures).toContain('Active');
     expect(adminProcedures).toContain('Required');

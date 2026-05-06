@@ -838,3 +838,12 @@ A major phase is not complete unless relevant decisions are documented here with
 - **Evidence level:** Code and UI contract test coverage updated in Phase 7B.
 
 - Phase 7C Social UI/UX Overhaul | Social workflows UI polish using Phase 7A design primitives; preserve existing backend/schema/contracts and role/moderation guards; defer final responsive/accessibility micro-polish to Phase 7D. | Accepted
+
+### DEC-047 — Phase 7D responsive/accessibility/demo polish without backend contract changes
+- **Date:** 2026-05-06
+- **Phase:** Phase 7D — Responsive, Accessibility & Demo Polish
+- **Decision:** Apply focused UI-only improvements across institutional/social pages (responsive wrapping, clearer labels, explicit empty/error copy, and practical form/action accessibility labels) while keeping Prisma schema, API contracts, business rules, role guards, and moderation logic unchanged.
+- **Rationale:** Raise demo readiness and evidence quality without destabilizing validated workflows.
+- **Consequences / trade-offs:** UX clarity and accessibility improve with minimal code churn; a final full-application coverage audit is deferred to Phase 8A.
+- **Status:** Accepted
+- **Evidence level:** Confirmed by implementation and Phase 7D UI contract tests
