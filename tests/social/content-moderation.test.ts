@@ -4,6 +4,7 @@ import { seed } from '@/prisma/seed';
 import { createSocialReport, listSocialReports, transitionSocialReport } from '@/src/modules/social/moderation';
 import { listDiscoveryProfiles } from '@/src/modules/social/discovery';
 import { requestConnection } from '@/src/modules/social/connections';
+import { listRecommendations, getRecommendationMapItems, reportRecommendation } from '@/src/modules/social/recommendations';
 
 describe('Social: content, reporting, and moderation contract', () => {
   beforeEach(async () => { await seed(); });
@@ -20,20 +21,40 @@ describe('Social: content, reporting, and moderation contract', () => {
     await expect(createSocialReport(prisma, { role: 'STUDENT', userId: 'student-2' }, { targetMessageId: 'msg-seed-2', reason: 'No access' })).rejects.toThrow('Forbidden');
   });
 
-
   it('duplicate pending reports from same reporter and target are rejected', async () => {
     await createSocialReport(prisma, { role: 'STUDENT', userId: 'student-2' }, { targetProfileId: 'sp-student-3', reason: 'Inappropriate profile' });
     await expect(createSocialReport(prisma, { role: 'STUDENT', userId: 'student-2' }, { targetProfileId: 'sp-student-3', reason: 'Duplicate' })).rejects.toThrow('pending report');
   });
-  it('coordinator cannot access admin moderation routes', async () => {
-    await expect(listSocialReports(prisma, { role: 'COORDINATOR', userId: 'coordinator-1' })).rejects.toThrow('Forbidden');
+
+  it('admin can list profile, message and recommendation reports with target type labels', async () => {
+    await reportRecommendation(prisma, { role: 'STUDENT', userId: 'student-1' }, 'rec-1', 'Unsafe recommendation', 'Contains abusive wording');
+    const reports = await listSocialReports(prisma, { role: 'ADMIN', userId: 'admin-1' });
+    expect(reports.some((report) => report.targetType === 'PROFILE')).toBe(true);
+    expect(reports.some((report) => report.targetType === 'MESSAGE')).toBe(true);
+    expect(reports.some((report) => report.targetType === 'RECOMMENDATION')).toBe(true);
+    expect(reports[0]).toHaveProperty('reporterDisplayName');
   });
 
-  it('admin can list reports and dismiss pending report', async () => {
-    const reports = await listSocialReports(prisma, { role: 'ADMIN', userId: 'admin-1' });
-    expect(reports.some((report) => report.status === 'PENDING')).toBe(true);
-    const updated = await transitionSocialReport(prisma, { role: 'ADMIN', userId: 'admin-1' }, 'sreport-seed-1', { action: 'DISMISS', decisionRationale: 'Insufficient evidence' });
+  it('coordinator and student cannot access admin moderation routes', async () => {
+    await expect(listSocialReports(prisma, { role: 'COORDINATOR', userId: 'coordinator-1' })).rejects.toThrow('Forbidden');
+    await expect(listSocialReports(prisma, { role: 'STUDENT', userId: 'student-1' })).rejects.toThrow('Forbidden');
+  });
+
+  it('admin can dismiss pending recommendation report', async () => {
+    const report = await reportRecommendation(prisma, { role: 'STUDENT', userId: 'student-1' }, 'rec-1', 'Misleading');
+    const updated = await transitionSocialReport(prisma, { role: 'ADMIN', userId: 'admin-1' }, report.id, { action: 'DISMISS', decisionRationale: 'No policy breach found' });
     expect(updated.status).toBe('DISMISSED');
+  });
+
+  it('admin can action recommendation report and hide recommendation from list/map', async () => {
+    const report = await reportRecommendation(prisma, { role: 'STUDENT', userId: 'student-1' }, 'rec-1', 'Unsafe location details');
+    const updated = await transitionSocialReport(prisma, { role: 'ADMIN', userId: 'admin-1' }, report.id, { action: 'HIDE_RECOMMENDATION', decisionRationale: 'Confirmed unsafe content' });
+    expect(updated.status).toBe('ACTIONED');
+
+    const listItems = await listRecommendations(prisma, { role: 'STUDENT', userId: 'student-1' }, new URLSearchParams());
+    const mapItems = await getRecommendationMapItems(prisma, { role: 'STUDENT', userId: 'student-1' }, new URLSearchParams());
+    expect(listItems.find((item) => item.id === 'rec-1')).toBeFalsy();
+    expect(mapItems.find((item) => item.recommendationId === 'rec-1')).toBeFalsy();
   });
 
   it('admin can action report and hide target profile', async () => {

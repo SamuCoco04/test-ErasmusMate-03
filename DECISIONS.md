@@ -858,3 +858,10 @@ A major phase is not complete unless relevant decisions are documented here with
 - **Affected areas:** `app/page.tsx`, role layout shells, shared `TopBar`, and Phase 8A.1 UI contract tests/traceability rows.
 - **Status:** Accepted
 - **Evidence level:** Confirmed by implementation and tests
+
+## 2026-05-06 — Phase 8A.2 social moderation completion hotfix
+- **Decision:** Extend social moderation review to clearly support profile, message, and recommendation report targets with explicit target labels and state-aware actions.
+- **Rationale:** UX review identified that admin moderation felt limited to profiles and exposed overly technical data, which left unsafe social recommendation/message reports unclear to review.
+- **Consequences / trade-offs:** We reused the existing `SocialReport` and recommendation moderation state instead of adding schema changes; message moderation uses a safe actioned workflow (with rationale) without unsafe message deletion.
+- **Status:** Accepted.
+- **Evidence level:** Implemented in moderation service/API/UI with tests covering target visibility, recommendation hiding, authorization guards, and student-safe visibility.

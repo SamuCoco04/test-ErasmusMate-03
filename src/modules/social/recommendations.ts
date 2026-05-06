@@ -129,6 +129,8 @@ export async function reportRecommendation(prisma: PrismaClient, actor: ActorCon
   const recommendation = await prisma.cityRecommendation.findUnique({ where: { id: recommendationId } });
   if (!recommendation || recommendation.visibility !== 'VISIBLE' || recommendation.moderationState !== 'ACTIVE') throw new SocialValidationError('Recommendation is unavailable');
   if (recommendation.createdByProfileId === reporter.id) throw new SocialValidationError('You cannot report your own recommendation');
+  const existing = await prisma.socialReport.findFirst({ where: { reporterProfileId: reporter.id, targetRecommendationId: recommendation.id, status: 'PENDING' } });
+  if (existing) throw new SocialValidationError('You already have a pending report for this recommendation');
   return prisma.socialReport.create({
     data: {
       id: `sreport-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,

@@ -3,7 +3,13 @@ import { SocialForbiddenError, SocialNotFoundError, SocialValidationError } from
 
 interface ActorContext { role: string; userId: string }
 interface CreateReportInput { targetProfileId?: string; targetMessageId?: string; reason: string; details?: string }
-interface ReviewReportInput { action: 'DISMISS' | 'HIDE_PROFILE'; decisionRationale?: string }
+interface ReviewReportInput { action: 'DISMISS' | 'HIDE_PROFILE' | 'HIDE_RECOMMENDATION' | 'MARK_ACTIONED'; decisionRationale?: string }
+
+export interface ModerationReportListItem extends SocialReport {
+  targetType: 'PROFILE' | 'MESSAGE' | 'RECOMMENDATION';
+  reporterDisplayName: string;
+  reviewedByDisplayName: string | null;
+}
 
 function ensureStudent(role: string): void {
   if (role !== 'STUDENT') throw new SocialForbiddenError();
@@ -19,6 +25,12 @@ async function requireProfileByUser(prisma: PrismaClient, userId: string) {
   return profile;
 }
 
+function resolveTargetType(report: SocialReport): ModerationReportListItem['targetType'] {
+  if (report.targetRecommendationId) return 'RECOMMENDATION';
+  if (report.targetMessageId) return 'MESSAGE';
+  return 'PROFILE';
+}
+
 export async function createSocialReport(prisma: PrismaClient, actor: ActorContext, input: CreateReportInput): Promise<SocialReport> {
   ensureStudent(actor.role);
   const reporter = await requireProfileByUser(prisma, actor.userId);
@@ -30,7 +42,7 @@ export async function createSocialReport(prisma: PrismaClient, actor: ActorConte
     if (input.targetProfileId === reporter.id) throw new SocialValidationError('You cannot report your own profile');
     const target = await prisma.socialProfile.findUnique({ where: { id: input.targetProfileId } });
     if (!target || target.visibility !== 'VISIBLE' || target.moderationState !== 'ACTIVE') throw new SocialValidationError('Target profile is unavailable');
-    const existing = await prisma.socialReport.findFirst({ where: { reporterProfileId: reporter.id, targetProfileId: target.id, status: 'PENDING' } });
+    const existing = await prisma.socialReport.findFirst({ where: { reporterProfileId: reporter.id, targetProfileId: target.id, targetMessageId: null, targetRecommendationId: null, status: 'PENDING' } });
     if (existing) throw new SocialValidationError('You already have a pending report for this profile');
     return prisma.socialReport.create({ data: { id: `sreport-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`, reporterProfileId: reporter.id, targetProfileId: target.id, reason, details: input.details?.trim() || null, status: 'PENDING' } });
   }
@@ -44,9 +56,22 @@ export async function createSocialReport(prisma: PrismaClient, actor: ActorConte
   return prisma.socialReport.create({ data: { id: `sreport-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`, reporterProfileId: reporter.id, targetMessageId: message.id, targetProfileId: message.senderProfileId, reason, details: input.details?.trim() || null, status: 'PENDING' } });
 }
 
-export async function listSocialReports(prisma: PrismaClient, actor: ActorContext): Promise<SocialReport[]> {
+export async function listSocialReports(prisma: PrismaClient, actor: ActorContext): Promise<ModerationReportListItem[]> {
   ensureAdmin(actor.role);
-  return prisma.socialReport.findMany({ orderBy: [{ status: 'asc' }, { createdAt: 'desc' }] });
+  const reports = await prisma.socialReport.findMany({
+    orderBy: [{ status: 'asc' }, { createdAt: 'desc' }],
+    include: {
+      reporterProfile: { select: { displayName: true } },
+      reviewedBy: { select: { displayName: true } },
+    },
+  });
+
+  return reports.map((report) => ({
+    ...report,
+    targetType: resolveTargetType(report),
+    reporterDisplayName: report.reporterProfile.displayName,
+    reviewedByDisplayName: report.reviewedBy?.displayName ?? null,
+  }));
 }
 
 export async function transitionSocialReport(prisma: PrismaClient, actor: ActorContext, reportId: string, input: ReviewReportInput): Promise<SocialReport> {
@@ -59,9 +84,22 @@ export async function transitionSocialReport(prisma: PrismaClient, actor: ActorC
   if (input.action === 'DISMISS') {
     return prisma.socialReport.update({ where: { id: reportId }, data: { status: 'DISMISSED', decisionRationale: decision, reviewedById: actor.userId, reviewedAt: new Date() } });
   }
+
+  if (!decision) throw new SocialValidationError('Decision rationale is required for actioned reports');
+
   if (input.action === 'HIDE_PROFILE') {
     if (!report.targetProfileId) throw new SocialValidationError('Profile action requires a profile target');
     await prisma.socialProfile.update({ where: { id: report.targetProfileId }, data: { moderationState: 'HIDDEN_BY_MODERATION' } });
+    return prisma.socialReport.update({ where: { id: reportId }, data: { status: 'ACTIONED', decisionRationale: decision, reviewedById: actor.userId, reviewedAt: new Date() } });
+  }
+
+  if (input.action === 'HIDE_RECOMMENDATION') {
+    if (!report.targetRecommendationId) throw new SocialValidationError('Recommendation action requires a recommendation target');
+    await prisma.cityRecommendation.update({ where: { id: report.targetRecommendationId }, data: { moderationState: 'HIDDEN_BY_MODERATION' } });
+    return prisma.socialReport.update({ where: { id: reportId }, data: { status: 'ACTIONED', decisionRationale: decision, reviewedById: actor.userId, reviewedAt: new Date() } });
+  }
+
+  if (input.action === 'MARK_ACTIONED') {
     return prisma.socialReport.update({ where: { id: reportId }, data: { status: 'ACTIONED', decisionRationale: decision, reviewedById: actor.userId, reviewedAt: new Date() } });
   }
 

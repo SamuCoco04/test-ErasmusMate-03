@@ -7,7 +7,7 @@ import { SocialForbiddenError, SocialNotFoundError, SocialValidationError } from
 export async function PATCH(request: Request, { params }: { params: Promise<{ reportId: string }> }) {
   try {
     const actor = await getDemoContextFromRequest();
-    const body = (await request.json().catch(() => ({}))) as { action?: 'DISMISS' | 'HIDE_PROFILE'; decisionRationale?: string };
+    const body = (await request.json().catch(() => ({}))) as { action?: 'DISMISS' | 'HIDE_PROFILE' | 'HIDE_RECOMMENDATION' | 'MARK_ACTIONED'; decisionRationale?: string };
     const { reportId } = await params;
     return NextResponse.json(await transitionSocialReport(prisma, actor, reportId, { action: body.action ?? 'DISMISS', decisionRationale: body.decisionRationale }));
   } catch (error) {
