@@ -24,24 +24,28 @@ test.describe('Institutional E2E acceptance workflows', () => {
     await page.goto('/student/submissions');
 
     await expect(page.getByRole('heading', { name: 'Submissions' })).toBeVisible();
-    const transcriptCard = page.locator('div.rounded-lg.border.p-3').filter({ hasText: 'Transcript request' }).first();
+    const transcriptCard = page.locator('div').filter({ hasText: /Transcript request/ }).filter({ hasText: /Reference ID:\s*sub-4/ }).first();
     await expect(transcriptCard).toBeVisible();
     await expect(transcriptCard.getByText('Needs correction')).toBeVisible();
 
     await transcriptCard.getByRole('button', { name: 'Resubmit' }).click();
-    await expect(page.getByText('Waiting for review').first()).toBeVisible();
+    const resubmittedCard = page.locator('div').filter({ hasText: /Transcript request/ }).filter({ hasText: /Reference ID:\s*sub-4/ }).first();
+    await expect(resubmittedCard.getByText('Waiting for review')).toBeVisible();
 
     await setRole(page, 'COORDINATOR');
     await page.goto('/coordinator/review-queue');
     await expect(page.getByRole('heading', { name: 'Review queue' })).toBeVisible();
 
-    const transcriptQueueItem = page.locator('div.rounded-xl.border').filter({ hasText: 'Transcript request' }).first();
+    const transcriptQueueItem = page.locator('div').filter({ hasText: /Transcript request/ }).filter({ hasText: /Reference ID:\s*sub-4/ }).first();
     await expect(transcriptQueueItem).toBeVisible();
     await transcriptQueueItem.getByRole('button', { name: 'Start review' }).click();
-    await expect(transcriptQueueItem.getByText('In review')).toBeVisible();
-    await transcriptQueueItem.getByRole('button', { name: 'Approve' }).click();
 
-    await expect(page.getByText('Approved').first()).toBeVisible();
+    const inReviewQueueItem = page.locator('div').filter({ hasText: /Transcript request/ }).filter({ hasText: /Reference ID:\s*sub-4/ }).first();
+    await expect(inReviewQueueItem.getByText('In review')).toBeVisible();
+    await inReviewQueueItem.getByRole('button', { name: 'Approve' }).click();
+
+    const approvedQueueItem = page.locator('div').filter({ hasText: /Transcript request/ }).filter({ hasText: /Reference ID:\s*sub-4/ }).first();
+    await expect(approvedQueueItem.getByText('Approved')).toBeVisible();
 
     const studentView = await request.get('/api/institutional/submissions', {
       headers: { cookie: 'demo_role=STUDENT' },
