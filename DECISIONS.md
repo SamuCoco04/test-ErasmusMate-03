@@ -927,3 +927,14 @@ A major phase is not complete unless relevant decisions are documented here with
 - **Affected areas:** `e2e/institutional/workflows.spec.ts`, `TRACEABILITY_TEST_MATRIX.md`, `artifacts/phase-8a-coverage-audit.md`.
 - **Status:** Accepted
 - **Evidence level:** Confirmed by implementation
+
+### DEC-053 — Phase 8 closure via traceability and UI contract harmonization
+- **Date:** 2026-05-06
+- **Phase:** Phase 8B.4 — Closure
+- **Decision:** Close Phase 8 by harmonizing traceability statuses/evidence and strengthening launcher/role-label UI contracts, while deferring notification click-through routing to a later UX-focused phase.
+- **Rationale:** Institutional acceptance coverage was already functionally closed in 8B.1–8B.3; remaining risk was audit/readiness drift (status inconsistency and role/navigation contract ambiguity), not missing core workflow behavior.
+- **Alternatives considered:** Expanding closure into schema/UI feature work for generalized notification target routing.
+- **Consequences / trade-offs:** Phase 8 ends cleanly with stronger demo and audit confidence; notification action navigation remains partial and explicitly deferred to Phase 9C to avoid speculative route contracts.
+- **Affected areas:** `TRACEABILITY_TEST_MATRIX.md`, shared UI contract tests, phase audit artifact.
+- **Status:** Accepted
+- **Evidence level:** Confirmed by implementation

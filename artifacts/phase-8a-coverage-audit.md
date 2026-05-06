@@ -153,3 +153,33 @@ UI limitations observed:
 
 Validation note:
 - Local container baselines can differ for Playwright runtime prerequisites; GitHub Verify remains the authoritative baseline for merge readiness.
+
+## Phase 8B.4 closure (2026-05-06)
+
+Phase 8 is closed through traceability harmonization and UI contract finalization, not by adding new workflow scope.
+
+### Closed in Phase 8 overall
+- Institutional E2E acceptance gaps from 8B.1–8B.3 (submissions, exceptions, Learning Agreement revision/resubmission loop, institutional notification visibility/mark-read).
+- Service/API negative-path and ownership checks for institutional notifications and exception safety.
+- Traceability normalization for institutional acceptance evidence.
+- Launcher and role-label UI contract reinforcement for demo reliability and role-area clarity.
+
+### Resolved audit gaps
+- Institutional acceptance rows now point to executable evidence and consistent status wording.
+- Launcher/global navigation expectations are now explicitly covered by UI contract tests.
+- Role-area cues and return-to-launcher affordance are contract-tested.
+
+### Explicit deferrals
+- Notification click-through action navigation: **Partial - click-through/action navigation deferred**.
+  - Reason: current notification payload does not provide a stable, complete route contract for all institutional types without speculative mapping/schema coupling.
+  - Recommendation: handle in Phase 9C UX/front-end final audit.
+- No Phase 9A security hardening or Phase 9B evidence-pack expansion performed in this closure phase.
+
+### Legacy naming cleanup
+- Safe cleanup completed: shared phase-prefixed navigation contract test renamed to a neutral discoverable filename.
+- Additional broad phase-era renaming deferred to avoid cosmetic churn risk.
+
+### Forward recommendation
+- Proceed to Phase 9A for targeted hardening.
+- Proceed to Phase 9B for evidence-pack/report generation.
+- Proceed to Phase 9C for notification action routing UX and cross-area navigation polish.
