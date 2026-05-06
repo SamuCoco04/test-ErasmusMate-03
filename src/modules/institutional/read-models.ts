@@ -19,13 +19,100 @@ export async function getStudentDashboardSummary(ctx: DemoContext) {
 
 export async function getCoordinatorDashboardSummary(ctx: DemoContext) {
   ensureRole(ctx, ['COORDINATOR']);
-  const records = await prisma.mobilityRecord.findMany({ where: { coordinatorId: ctx.userId } });
+  const records = await prisma.mobilityRecord.findMany({
+    where: { coordinatorId: ctx.userId },
+    include: {
+      student: {
+        select: {
+          id: true,
+          displayName: true,
+          email: true,
+        },
+      },
+      submissions: {
+        select: {
+          state: true,
+          updatedAt: true,
+        },
+      },
+      deadlines: {
+        select: {
+          dueDate: true,
+          state: true,
+        },
+      },
+      exceptionRequests: {
+        where: { state: { in: ['PENDING', 'IN_REVIEW'] } },
+        select: {
+          id: true,
+        },
+      },
+    },
+  });
   const ids = records.map((r) => r.id);
+  const pendingReviewCount = records.reduce((acc, record) => acc + record.submissions.filter((s) => s.state === 'SUBMITTED').length, 0);
+  const inReviewCount = records.reduce((acc, record) => acc + record.submissions.filter((s) => s.state === 'IN_REVIEW').length, 0);
+  const needsCorrectionCount = records.reduce((acc, record) => acc + record.submissions.filter((s) => s.state === 'REJECTED').length, 0);
+  const overdueDeadlineCount = records.reduce((acc, record) => acc + record.deadlines.filter((d) => d.state === 'OVERDUE').length, 0);
+  const pendingExceptionCount = records.reduce((acc, record) => acc + record.exceptionRequests.length, 0);
+
+  const workload = records.map((record) => {
+    const submittedCount = record.submissions.filter((s) => s.state === 'SUBMITTED').length;
+    const inReviewSubmissionCount = record.submissions.filter((s) => s.state === 'IN_REVIEW').length;
+    const rejectedCount = record.submissions.filter((s) => s.state === 'REJECTED').length;
+    const nearestDeadline = [...record.deadlines].sort((a, b) => a.dueDate.getTime() - b.dueDate.getTime())[0] ?? null;
+    const hasOverdue = record.deadlines.some((d) => d.state === 'OVERDUE');
+    const hasPendingException = record.exceptionRequests.length > 0;
+    const riskLevel = hasOverdue || rejectedCount > 0 || hasPendingException
+      ? 'HIGH'
+      : submittedCount > 0 || inReviewSubmissionCount > 0
+        ? 'MEDIUM'
+        : 'LOW';
+
+    return {
+      mobilityRecordId: record.id,
+      studentId: record.studentId,
+      studentLabel: record.student.displayName || record.student.email,
+      mobilityStatus: record.mobilityStatus,
+      submissionCounts: {
+        submitted: submittedCount,
+        inReview: inReviewSubmissionCount,
+        rejected: rejectedCount,
+      },
+      nearestDeadline,
+      hasPendingException,
+      riskLevel,
+    };
+  });
+
+  const recentSubmissions = await prisma.documentSubmission.findMany({
+    where: { mobilityRecordId: { in: ids } },
+    orderBy: { updatedAt: 'desc' },
+    take: 5,
+    include: {
+      procedure: { select: { title: true } },
+      mobilityRecord: { select: { studentId: true, student: { select: { displayName: true, email: true } } } },
+    },
+  });
+
   return {
     assignedCount: records.length,
+    pendingReviewCount,
+    inReviewCount,
+    needsCorrectionCount,
+    overdueDeadlineCount,
+    pendingExceptionCount,
     reviewQueue: await prisma.documentSubmission.findMany({ where: { mobilityRecordId: { in: ids }, state: 'SUBMITTED' }, include: { procedure: true }, take: 5 }),
     deadlines: await prisma.deadline.findMany({ where: { mobilityRecordId: { in: ids } } }),
-    exceptions: await prisma.exceptionRequest.findMany({ where: { mobilityRecordId: { in: ids }, state: { in: ['PENDING', 'UNDER_REVIEW'] } }, take: 5 }),
+    exceptions: await prisma.exceptionRequest.findMany({ where: { mobilityRecordId: { in: ids }, state: { in: ['PENDING', 'IN_REVIEW'] } }, take: 5 }),
+    workload,
+    recentSubmissions: recentSubmissions.map((item) => ({
+      id: item.id,
+      state: item.state,
+      updatedAt: item.updatedAt,
+      procedureTitle: item.procedure.title,
+      studentLabel: item.mobilityRecord.student.displayName || item.mobilityRecord.student.email,
+    })),
   };
 }
 

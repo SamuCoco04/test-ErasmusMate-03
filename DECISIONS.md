@@ -806,3 +806,14 @@ A major phase is not complete unless relevant decisions are documented here with
 - **Affected areas:** `app/api/institutional/procedures/route.ts`.
 - **Status:** Accepted
 - **Evidence level:** Confirmed by implementation
+
+### DEC-032 — Phase 6E coordinator operational dashboard read model and deterministic risk tiers
+- **Date:** 2026-05-06
+- **Phase:** Phase 6E — Coordinator Operational Review Workspace
+- **Decision:** Extend the coordinator dashboard read model with server-side scoped operational counts, assigned-student workload rows, and deterministic HIGH/MEDIUM/LOW risk classification based on overdue deadlines, rejected submissions, pending exceptions, and pending review workload.
+- **Rationale:** Coordinators need a practical assigned-student operations view without duplicating transition authority or exposing unassigned data.
+- **Alternatives considered:** Client-side aggregation from multiple endpoints; complex weighted risk score.
+- **Consequences / trade-offs:** Better coordinator triage and testability with simple transparent logic; risk model is intentionally coarse and may need refinement in Phase 7.
+- **Affected areas:** `src/modules/institutional/read-models.ts`, coordinator dashboard UI, institutional tests, traceability mapping.
+- **Status:** Accepted
+- **Evidence level:** Confirmed by implementation

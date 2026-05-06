@@ -18,6 +18,34 @@ describe('institutional read models', () => {
     const result = await getCoordinatorDashboardSummary({ role: 'COORDINATOR', userId: 'coordinator-1' });
     expect(result.assignedCount).toBeGreaterThan(0);
     expect(result.reviewQueue.some((s) => s.state === 'SUBMITTED')).toBe(true);
+    expect(result.pendingReviewCount).toBe(1);
+    expect(result.inReviewCount).toBe(1);
+    expect(result.needsCorrectionCount).toBe(1);
+    expect(result.overdueDeadlineCount).toBe(1);
+    expect(result.pendingExceptionCount).toBe(2);
+    expect(result.workload.length).toBeGreaterThan(0);
+    expect(result.recentSubmissions.length).toBeGreaterThan(0);
+    expect(result.workload[0]?.riskLevel).toBe('HIGH');
+  });
+
+  it('coordinator risk classification includes medium and low cases', async () => {
+    await prisma.user.upsert({ where: { id: 'student-medium' }, update: {}, create: { id: 'student-medium', email: 'student-medium@erasmusmate.local', displayName: 'Student Medium', role: 'STUDENT', institutionId: 'inst-home-1' } });
+    await prisma.user.upsert({ where: { id: 'student-low' }, update: {}, create: { id: 'student-low', email: 'student-low@erasmusmate.local', displayName: 'Student Low', role: 'STUDENT', institutionId: 'inst-home-1' } });
+    await prisma.mobilityRecord.upsert({ where: { id: 'mobility-medium' }, update: {}, create: { id: 'mobility-medium', studentId: 'student-medium', coordinatorId: 'coordinator-1', homeInstitutionId: 'inst-home-1', hostInstitutionId: 'inst-host-1', mobilityStatus: 'PENDING' } });
+    await prisma.mobilityRecord.upsert({ where: { id: 'mobility-low' }, update: {}, create: { id: 'mobility-low', studentId: 'student-low', coordinatorId: 'coordinator-1', homeInstitutionId: 'inst-home-1', hostInstitutionId: 'inst-host-1', mobilityStatus: 'PENDING' } });
+    await prisma.documentSubmission.upsert({ where: { id: 'sub-medium' }, update: {}, create: { id: 'sub-medium', mobilityRecordId: 'mobility-medium', procedureId: 'proc-1', state: 'SUBMITTED' } });
+
+    const result = await getCoordinatorDashboardSummary({ role: 'COORDINATOR', userId: 'coordinator-1' });
+    expect(result.workload.find((item) => item.studentId === 'student-medium')?.riskLevel).toBe('MEDIUM');
+    expect(result.workload.find((item) => item.studentId === 'student-low')?.riskLevel).toBe('LOW');
+  });
+
+  it('coordinator with no assignments gets empty workload', async () => {
+    await prisma.user.upsert({ where: { id: 'coordinator-empty' }, update: {}, create: { id: 'coordinator-empty', email: 'coordinator-empty@erasmusmate.local', displayName: 'Coordinator Empty', role: 'COORDINATOR', institutionId: 'inst-home-1' } });
+    const result = await getCoordinatorDashboardSummary({ role: 'COORDINATOR', userId: 'coordinator-empty' });
+    expect(result.assignedCount).toBe(0);
+    expect(result.workload).toEqual([]);
+    expect(result.reviewQueue).toEqual([]);
   });
 
   it('review queue preview includes submitted items', async () => {
