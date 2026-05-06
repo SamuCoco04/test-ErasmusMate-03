@@ -189,16 +189,16 @@ await prisma.mobilityRecord.upsert({ where: { id: 'mobility-1' }, update: { stud
     await prisma.learningAgreementRow.upsert({ where: { id: row.id }, update: row, create: row });
   }
   const laEvents = [
-    { id: 'laevt-seed-1', agreementId: 'la-seed-1', actorId: 'student-1', actionType: 'submit_agreement', fromState: 'DRAFT', toState: 'SUBMITTED', rowId: null, noteOrRationale: null },
-    { id: 'laevt-seed-2', agreementId: 'la-seed-1', actorId: 'coordinator-1', actionType: 'deny_row', fromState: 'IN_REVIEW', toState: 'DENIED', rowId: 'lar-seed-3', noteOrRationale: 'Course content mismatch' },
+    { id: 'laevt-seed-1', agreementId: 'la-seed-1', actorId: 'student-1', actionType: 'submit_agreement', fromState: 'DRAFT', toState: 'SUBMITTED', rowId: null, noteOrRationale: null, createdAt: new Date('2026-05-01T10:00:00.000Z') },
+    { id: 'laevt-seed-2', agreementId: 'la-seed-1', actorId: 'coordinator-1', actionType: 'deny_row', fromState: 'IN_REVIEW', toState: 'DENIED', rowId: 'lar-seed-3', noteOrRationale: 'Course content mismatch', createdAt: new Date('2026-05-01T11:00:00.000Z') },
   ] as const;
   for (const event of laEvents) {
     await prisma.learningAgreementEvent.upsert({ where: { id: event.id }, update: event, create: event });
   }
 
   const auditSeedData = [
-    { id: 'audit-1', mobilityRecordId: 'mobility-1', actorId: 'student-1', eventType: 'SUBMISSION_CREATED', details: 'Created draft for Passport copy' },
-    { id: 'audit-2', mobilityRecordId: 'mobility-1', actorId: 'coordinator-1', eventType: 'SUBMISSION_APPROVED', details: 'Approved Arrival certificate' },
+    { id: 'audit-1', mobilityRecordId: 'mobility-1', actorId: 'student-1', eventType: 'SUBMISSION_CREATED', details: 'Created draft for Passport copy', createdAt: new Date('2026-04-01T09:00:00.000Z') },
+    { id: 'audit-2', mobilityRecordId: 'mobility-1', actorId: 'coordinator-1', eventType: 'SUBMISSION_APPROVED', details: 'Approved Arrival certificate', createdAt: new Date('2026-04-02T09:00:00.000Z') },
   ] as const;
 
   for (const audit of auditSeedData) {

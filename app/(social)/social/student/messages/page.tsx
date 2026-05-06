@@ -1,6 +1,5 @@
 'use client';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { EmptyState } from '@/src/components/States';
 import { PageHeader, PageShell } from '@/src/components/layout/page-shell';
 
 type Thread = { connectionId: string; otherProfile: { displayName: string }; latestMessage: { body: string; createdAt: string } | null };
@@ -55,7 +54,10 @@ export default function MessagesPage() {
 
   return <PageShell>
     <PageHeader sectionLabel='Social support' title='Messages' subtitle='Messaging is available only for accepted connections.' />
-    {threads.length === 0 ? <EmptyState description='No messages yet. Accept a connection to start a conversation.' /> : <div className='grid gap-4 lg:grid-cols-[300px_1fr]'>
+    {threads.length === 0 ? <div role='status' aria-live='polite' className='rounded-2xl border border-dashed p-8 text-center'>
+      <p className='font-medium text-slate-700'>No messages yet. Accept a connection to start a conversation.</p>
+      <p className='mt-1 text-sm text-slate-500'>No accepted connections yet. Go to Connections to get started.</p>
+    </div> : <div className='grid gap-4 lg:grid-cols-[300px_1fr]'>
       <aside className='rounded-xl border bg-white p-3'>
         <h2 className='mb-3 text-lg font-semibold'>Connections</h2>
         {threads.map((thread) => <button key={thread.connectionId} onClick={() => setSelected(thread.connectionId)} className='mb-2 w-full rounded border p-2 text-left'>

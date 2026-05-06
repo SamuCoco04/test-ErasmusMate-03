@@ -41,7 +41,7 @@ export async function getActivityFeed(ctx: DemoContext, limit?: number): Promise
   }
 
   const auditWhere = ctx.role === 'ADMIN' ? {} : { mobilityRecordId: { in: mobilityScope } };
-  const auditRecords = await prisma.auditRecord.findMany({ where: auditWhere, orderBy: { createdAt: 'desc' }, take });
+  const auditRecords = await prisma.auditRecord.findMany({ where: auditWhere, orderBy: { createdAt: 'desc' } });
 
   const laEvents = await prisma.learningAgreementEvent.findMany({
     where: ctx.role === 'ADMIN'
@@ -50,11 +50,10 @@ export async function getActivityFeed(ctx: DemoContext, limit?: number): Promise
         ? { agreement: { studentId: ctx.userId } }
         : { agreement: { coordinatorId: ctx.userId } },
     orderBy: { createdAt: 'desc' },
-    take,
   });
 
   const socialReports = ctx.role === 'ADMIN'
-    ? await prisma.socialReport.findMany({ orderBy: { updatedAt: 'desc' }, take })
+    ? await prisma.socialReport.findMany({ orderBy: { updatedAt: 'desc' } })
     : [];
 
   const feed: ActivityFeedItem[] = [
@@ -118,5 +117,9 @@ export async function getActivityFeed(ctx: DemoContext, limit?: number): Promise
     }),
   ];
 
-  return feed.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()).slice(0, take);
+  return feed.sort((a, b) => {
+    const byDate = new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime();
+    if (byDate !== 0) return byDate;
+    return String(b.id).localeCompare(String(a.id));
+  }).slice(0, take);
 }
