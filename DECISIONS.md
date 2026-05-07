@@ -1004,3 +1004,14 @@ A major phase is not complete unless relevant decisions are documented here with
 - **Affected areas:** `e2e/institutional/workflows.spec.ts`, `playwright.config.ts`.
 - **Status:** Accepted
 - **Evidence level:** Confirmed by targeted and full E2E runs
+
+### DEC-017 — Phase 8D.1 social demo-readiness before security hardening
+- **Date:** 2026-05-07
+- **Phase:** Phase 8D.1 — Social Demo Data and Connection Request Lifecycle Readiness
+- **Decision:** Expand deterministic social seed states and close lifecycle clarity gaps (request/cancel/re-request, incoming accept/reject, block/unblock, unavailable privacy explanations) before starting Phase 9A security hardening.
+- **Rationale:** Security hardening needs stable social demo journeys and deterministic state coverage to avoid mixing behavior fixes with security scope.
+- **Alternatives considered:** Start Phase 9A immediately and defer social demo readiness.
+- **Consequences / trade-offs:** Slight short-term delay to hardening; stronger demo reliability and clearer acceptance evidence for social workflows.
+- **Affected areas:** `prisma/seed.ts`, social discovery/connections UX, social lifecycle service tests, traceability evidence.
+- **Status:** Accepted
+- **Evidence level:** Confirmed by implementation

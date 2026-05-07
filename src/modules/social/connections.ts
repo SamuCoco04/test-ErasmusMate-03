@@ -60,6 +60,9 @@ export async function requestConnection(prisma: PrismaClient, actor: {role: stri
   if (me.id === targetProfileId) throw new SocialValidationError('You cannot request yourself');
   const target = await prisma.socialProfile.findUnique({ where: { id: targetProfileId } });
   if (!target || target.visibility !== 'VISIBLE' || target.moderationState !== 'ACTIVE') throw new SocialValidationError('Target profile is unavailable');
+  if (target.contactPreference === 'HIDDEN' || target.contactPreference === 'CONNECTIONS_ONLY') {
+    throw new SocialValidationError('Target profile is unavailable');
+  }
   const existing = await prisma.socialConnection.findUnique({ where: { pairKey: pairKey(me.id, target.id) } });
   if (existing?.state === 'BLOCKED') throw new SocialDuplicateError('Connection is blocked for this pair');
   if (existing && activeStates.includes(existing.state)) throw new SocialDuplicateError('Connection already exists for this pair');
