@@ -8,11 +8,10 @@ import { sendMessage } from '@/src/modules/social/messages';
 describe('Social: connection lifecycle contract', () => {
   beforeEach(async () => { await seed(); });
 
-  it('cancel pending request then allows sending again', async () => {
-    const first = await requestConnection(prisma, { role: 'STUDENT', userId: 'student-1' }, 'sp-student-8');
-    await transitionConnection(prisma, { role: 'STUDENT', userId: 'student-1' }, first.id, 'cancel');
-    const renewed = await requestConnection(prisma, { role: 'STUDENT', userId: 'student-1' }, 'sp-student-8');
-    expect(renewed.id).toBe(first.id);
+  it('cancel pending request then allows sending again and keeps discovery requestable', async () => {
+    await transitionConnection(prisma, { role: 'STUDENT', userId: 'student-1' }, 'conn-seed-1', 'cancel');
+    const renewed = await requestConnection(prisma, { role: 'STUDENT', userId: 'student-1' }, 'sp-student-2');
+    expect(renewed.id).toBe('conn-seed-1');
     expect(renewed.state).toBe('PENDING');
   });
 

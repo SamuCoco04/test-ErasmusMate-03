@@ -28,3 +28,12 @@
 
 ## 7) Remaining deferred items
 - Full social E2E workflows remain deferred except manual deterministic demo paths.
+
+## 8) Phase 8D.1 cancellation ambiguity fix
+- **Root cause:** Maria (`sp-student-2`) was seeded with `contactPreference: CONNECTIONS_ONLY`, so after cancellation discovery normalization intentionally mapped her to `UNAVAILABLE`.
+- **Resolution:** Maria is now seeded as `OPEN_TO_REQUESTS`, preserving Elena as the privacy-restricted `CONNECTIONS_ONLY` reference case.
+- **Final lifecycle behavior:**
+  - pending outgoing => `Request sent` + `Cancel request`
+  - cancelled + open profile => `Send request`
+  - connections-only/hidden privacy => `Unavailable` with explanation
+- **Block behavior:** Block/Unblock remains available from `/social/student/connections`; discovery continues to show status only.

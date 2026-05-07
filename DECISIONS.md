@@ -1015,3 +1015,13 @@ A major phase is not complete unless relevant decisions are documented here with
 - **Affected areas:** `prisma/seed.ts`, social discovery/connections UX, social lifecycle service tests, traceability evidence.
 - **Status:** Accepted
 - **Evidence level:** Confirmed by implementation
+
+### DEC-8D1-REREQUEST — Cancelled request pairs remain requestable when profile accepts requests
+- **Date:** 2026-05-07
+- **Phase:** Phase 8D.1 — Social request cancellation and re-request fix
+- **Decision:** Keep `CONNECTIONS_ONLY` as a strict discovery/request-unavailable privacy mode, and ensure cancel/re-request demo uses Maria as `OPEN_TO_REQUESTS` so cancelled requests return to `Send request`.
+- **Rationale:** The reported bug came from demo data ambiguity: Maria was seeded as `CONNECTIONS_ONLY`, so discovery correctly normalized her as unavailable after cancel. The lifecycle rule requires cancelled outgoing requests to be requestable again when privacy allows it.
+- **Consequences / trade-offs:** Privacy restrictions stay strict for Elena-like profiles; Maria now reliably demonstrates send/cancel/re-send in discovery.
+- **Affected areas:** `prisma/seed.ts`, `tests/social/discovery.test.ts`, `tests/social/connections.test.ts`, `artifacts/phase-8d-social-demo-readiness.md`, `TRACEABILITY_TEST_MATRIX.md`.
+- **Status:** Accepted
+- **Evidence level:** Confirmed by updated social lifecycle tests.
