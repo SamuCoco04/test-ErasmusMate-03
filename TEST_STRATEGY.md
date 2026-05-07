@@ -92,6 +92,26 @@ E2E tests validate complete user journeys through the UI.
 
 They should verify that the application works as a real product, not just as separate technical components.
 
+## Current institutional E2E baseline (Phase 8C.4)
+
+Institutional Playwright acceptance workflows in `e2e/institutional/workflows.spec.ts` are currently maintained as **API-assisted acceptance tests**:
+
+- they still validate end-user outcomes on real pages
+- they use API calls for selected transitions that are flaky via direct UI interaction in local dev mode
+- they preserve role guards, persistence checks, and student/coordinator visible outcomes
+
+This is an intentional stability choice for the current MVP baseline, not a replacement of institutional workflows with service-only tests.
+
+## Current social E2E baseline (Phase 8C.4)
+
+The 3 tests in `e2e/social/workflows.spec.ts` are intentionally `test.skip` and treated as deferred acceptance contracts:
+
+- discovery -> connection lifecycle -> accepted-only messaging
+- recommendation/reporting/moderation visibility lifecycle
+- map discovery with filtering and report flow
+
+They remain in the suite as explicit deferred scope markers and traceability anchors.
+
 ## Recommended folder structure
 
     e2e/

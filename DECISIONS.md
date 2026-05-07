@@ -951,6 +951,17 @@ A major phase is not complete unless relevant decisions are documented here with
 - **Status:** Accepted
 - **Evidence level:** Confirmed by implementation
 
+### DEC-054 — Phase 8C.4 E2E baseline closure with workers=1 and API-assisted institutional acceptance
+- **Date:** 2026-05-07
+- **Phase:** Phase 8C.4 — Test baseline closure
+- **Decision:** Set `npm run test:e2e` baseline to `playwright test --workers=1`; document institutional Playwright workflows as API-assisted acceptance tests; keep the 3 social Playwright workflow contracts intentionally skipped/deferred.
+- **Rationale:** Institutional acceptance flows were stabilized in local dev mode by combining real UI outcomes with selected API-triggered transitions. Running a single worker avoids flaky concurrency effects during demo-context role switching.
+- **Alternatives considered:** Keep pure UI-only institutional E2E interactions despite instability; keep default worker parallelism for E2E baseline.
+- **Consequences / trade-offs:** E2E baseline is reproducible and stable for closure; institutional E2E are not pure click-path tests today and this is explicitly documented; social full acceptance flows remain visible but deferred.
+- **Affected areas:** `package.json`, `e2e/institutional/workflows.spec.ts`, `e2e/social/workflows.spec.ts`, `TEST_STRATEGY.md`, `TRACEABILITY_TEST_MATRIX.md`.
+- **Status:** Accepted
+- **Evidence level:** Confirmed by implementation
+
 ### DEC-8C2 — Apply focused UX hotfixes before Phase 9A/9C
 - **Date:** 2026-05-06
 - **Phase:** Phase 8C.2 — Frontend UX hotfixes
