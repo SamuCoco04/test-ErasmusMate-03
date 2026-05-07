@@ -22,7 +22,7 @@ async function resetDatabase() {
   }
 }
 
-export async function seed() {
+async function runSeedOnce() {
   await resetDatabase();
 
   await prisma.institution.upsert({ where: { id: 'inst-home-1' }, update: { name: 'Universidad de Sevilla', code: 'US', country: 'Spain' }, create: { id: 'inst-home-1', name: 'Universidad de Sevilla', code: 'US', country: 'Spain' } });
@@ -130,6 +130,8 @@ await prisma.mobilityRecord.upsert({ where: { id: 'mobility-1' }, update: { stud
     { id: 'dead-3', mobilityRecordId: 'mobility-1', title: 'Arrival registration', dueDate: new Date('2026-03-20T00:00:00.000Z'), overrideDueDate: null, relatedProcedureId: 'proc-3', state: 'FULFILLED', fulfilledAt: new Date('2026-03-18T00:00:00.000Z') },
     { id: 'dead-4', mobilityRecordId: 'mobility-1', title: 'Insurance extension', dueDate: new Date('2026-04-20T00:00:00.000Z'), overrideDueDate: new Date('2026-05-20T00:00:00.000Z'), relatedProcedureId: 'proc-2', state: 'OVERRIDDEN', fulfilledAt: null },
     { id: 'dead-5', mobilityRecordId: 'mobility-1', title: 'Late transcript support', dueDate: new Date('2026-03-15T00:00:00.000Z'), overrideDueDate: new Date('2026-04-01T00:00:00.000Z'), relatedProcedureId: 'proc-4', state: 'OVERRIDDEN', fulfilledAt: null },
+    { id: 'dead-6', mobilityRecordId: 'mobility-1', title: 'Bank confirmation for grant transfer', dueDate: new Date('2026-05-08T00:00:00.000Z'), overrideDueDate: null, relatedProcedureId: 'proc-1', state: 'UPCOMING', fulfilledAt: null },
+    { id: 'dead-7', mobilityRecordId: 'mobility-1', title: 'Final mobility checklist', dueDate: new Date('2026-06-28T00:00:00.000Z'), overrideDueDate: null, relatedProcedureId: 'proc-3', state: 'UPCOMING', fulfilledAt: null },
   ] as const;
 
   for (const deadline of deadlines) {
@@ -206,6 +208,13 @@ await prisma.mobilityRecord.upsert({ where: { id: 'mobility-1' }, update: { stud
   }
 }
 
+
+let seedQueue: Promise<void> = Promise.resolve();
+
+export async function seed() {
+  seedQueue = seedQueue.then(() => runSeedOnce());
+  return seedQueue;
+}
 async function runSeedCli() {
   try {
     await seed();
