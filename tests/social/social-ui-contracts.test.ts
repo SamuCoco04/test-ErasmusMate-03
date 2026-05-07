@@ -43,7 +43,9 @@ describe('Phase 7C social UI contracts', () => {
     expect(files.discovery).toContain('This student only accepts contact from existing connections.');
     expect(files.discovery).toContain("Connection request unavailable due to this student's privacy preferences.");
     expect(files.discovery).toContain('Request sent');
+    expect(files.discovery).toContain('Cancel request');
     expect(files.discovery).toContain('Unavailable');
+    expect(files.discovery).toContain('This student is not accepting new connection requests.');
     expect(files.discovery).not.toContain('pairKey');
   });
 

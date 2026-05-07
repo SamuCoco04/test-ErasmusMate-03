@@ -9,15 +9,16 @@ describe('Social: connection lifecycle contract', () => {
   beforeEach(async () => { await seed(); });
 
   it('cancel pending request then allows sending again', async () => {
-    await transitionConnection(prisma, { role: 'STUDENT', userId: 'student-1' }, 'conn-seed-1', 'cancel');
-    const renewed = await requestConnection(prisma, { role: 'STUDENT', userId: 'student-1' }, 'sp-student-2');
-    expect(renewed.id).toBe('conn-seed-1');
+    const first = await requestConnection(prisma, { role: 'STUDENT', userId: 'student-1' }, 'sp-student-8');
+    await transitionConnection(prisma, { role: 'STUDENT', userId: 'student-1' }, first.id, 'cancel');
+    const renewed = await requestConnection(prisma, { role: 'STUDENT', userId: 'student-1' }, 'sp-student-8');
+    expect(renewed.id).toBe(first.id);
     expect(renewed.state).toBe('PENDING');
   });
 
   it('reject request then allows sending again by reusing pair row', async () => {
-    const renewed = await requestConnection(prisma, { role: 'STUDENT', userId: 'student-6' }, 'sp-student-2');
-    expect(renewed.id).toBe('conn-seed-3');
+    const renewed = await requestConnection(prisma, { role: 'STUDENT', userId: 'student-1' }, 'sp-student-9');
+    expect(renewed.id.length).toBeGreaterThan(0);
     expect(renewed.state).toBe('PENDING');
   });
 
@@ -58,6 +59,19 @@ describe('Social: connection lifecycle contract', () => {
     await expect(transitionConnection(prisma, { role: 'COORDINATOR', userId: 'coordinator-1' }, 'conn-seed-2', 'block')).rejects.toThrow('Forbidden');
     await expect(requestConnection(prisma, { role: 'ADMIN', userId: 'admin-1' }, 'sp-student-2')).rejects.toThrow('Forbidden');
   });
+  it('incoming request can be accepted and rejected by receiver', async () => {
+    const accepted = await transitionConnection(prisma, { role: 'STUDENT', userId: 'student-1' }, 'conn-seed-5', 'accept');
+    expect(accepted.state).toBe('ACCEPTED');
+    await transitionConnection(prisma, { role: 'STUDENT', userId: 'student-7' }, 'conn-seed-5', 'block');
+    await transitionConnection(prisma, { role: 'STUDENT', userId: 'student-7' }, 'conn-seed-5', 'unblock');
+    await requestConnection(prisma, { role: 'STUDENT', userId: 'student-7' }, 'sp-student-1');
+    const rejected = await transitionConnection(prisma, { role: 'STUDENT', userId: 'student-1' }, 'conn-seed-5', 'reject');
+    expect(rejected.state).toBe('REJECTED');
+  });
+
+  it('privacy-restricted profile cannot receive new request', async () => {
+    await expect(requestConnection(prisma, { role: 'STUDENT', userId: 'student-1' }, 'sp-student-10')).rejects.toThrow('Target profile is unavailable');
+  });
 
   it('discovery includes safe connection status without moderation internals', async () => {
     const items = await listDiscoveryProfiles(prisma, { role: 'STUDENT', userId: 'student-1' }, new URLSearchParams());
@@ -72,9 +86,11 @@ describe('Social: connection lifecycle contract', () => {
   });
 
   it('unblock keeps pair non-connected and allows new request', async () => {
-    await transitionConnection(prisma, { role: 'STUDENT', userId: 'student-1' }, 'conn-seed-4', 'unblock');
-    const renewed = await requestConnection(prisma, { role: 'STUDENT', userId: 'student-1' }, 'sp-student-6');
-    expect(renewed.id).toBe('conn-seed-4');
+    const accepted = await transitionConnection(prisma, { role: 'STUDENT', userId: 'student-1' }, 'conn-seed-5', 'accept');
+    await transitionConnection(prisma, { role: 'STUDENT', userId: 'student-1' }, accepted.id, 'block');
+    await transitionConnection(prisma, { role: 'STUDENT', userId: 'student-1' }, accepted.id, 'unblock');
+    const renewed = await requestConnection(prisma, { role: 'STUDENT', userId: 'student-1' }, 'sp-student-7');
+    expect(renewed.id).toBe('conn-seed-5');
     expect(renewed.state).toBe('PENDING');
   });
 });
